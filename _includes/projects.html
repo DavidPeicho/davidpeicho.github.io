@@ -1,0 +1,21 @@
+<div class="container">
+
+  <div class="user-details">
+    <h3> Featured Projects </h3>
+  </div>
+
+  <div class="row user-projects">
+    {% for project in site.projects %}
+    <div class="six columns images">
+      <img alt="{{project.title}}" src="{{site.projects_img_folder}}/{{project.thumbnail}}" />
+    </div>
+    <div class="six columns contents">
+      <h5>
+        <a href="{{ project.url }}">{{project.title}}</a>
+      </h5>
+      <p>{{project.description}}</p>
+      <a class="project-link" href="{{ project.url }}">Learn more</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>

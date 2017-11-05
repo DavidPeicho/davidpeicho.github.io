@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% include head.html %}
+  <body style="background-color: #e8e8e8;">
+      {% include header.html %}
+      <section id="down">
+        <div class="article-content">
+          <h2 class="project-header-title">{{page.title}}</h2>
+              <div class="technology-header">
+                <div id="technology-header-left">
+                    <div class="row" style="display: inline-block; margin: auto">
+                        <div style="float: left;">
+                            <p class="{{page.headers[0].icon}}"></p>
+                        </div>
+                        <div style="float: right;">
+                            <p style="margin-left: 0.6em;">{{page.headers[0].description}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="technology-header-middle">
+                    <div class="row" style="display: inline-block; margin: auto">
+                        <div style="float: left;">
+                            <p class="{{page.headers[1].icon}}"></p>
+                        </div>
+                        <div style="float: right;">
+                            <p style="margin-left: 0.6em;">{{page.headers[1].description}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="technology-header-right">
+                    <div class="row" style="display: inline-block; margin: auto">
+                        <div style="float: left;">
+                            <p class="{{page.headers[2].icon}}"></p>
+                        </div>
+                        <div style="float: right;">
+                            <p style="margin-left: 0.6em;">{{page.headers[2].description}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          <div style="margin: auto;">
+            <img class="project-header-img" src="{{site.url}}/{{site.projects_img_folder}}/{{page.image}}"></img>
+          </div>
+
+          <div class="article-body">
+            {{content}}
+          </div>
+        </div>
+      </section>
+      {% include footer.html %}
+  </body>

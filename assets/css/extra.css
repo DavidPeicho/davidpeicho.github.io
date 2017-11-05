@@ -1,0 +1,107 @@
+/* ABOUT PAGE */
+
+.about_img {
+    margin-top: 75px;
+    border-radius: 50%;
+    width: 35%;
+    height: auto;
+}
+
+.icon-inversed {
+    text-align:center;
+    font-size:60px;
+    padding:10px;
+    margin:2px;
+    border-radius:50%;
+    border:2px solid #fff;
+    transition:all .7s
+}
+
+.interest-title {
+    color: #7f8c8d
+}
+
+/* PROJECTS PAGE */
+
+.project-title {
+    font-size:50px;
+    display:block;
+    line-height:1;
+    text-decoration: none;
+    border-bottom: 4px solid white;
+}
+@media only screen and (min-width:768px) {
+    .project-title {
+        margin:0;
+        font-size:100px
+    }
+}
+
+.project-header-img {
+    max-width: 100%;
+}
+
+.article-content {
+    max-width: 900px;
+    margin: 50px auto 30px auto;
+    padding: 50px 80px;
+    font-family: "Lato",Calibri,Arial,sans-serif;
+    color: rgba(34,34,34,0.8);
+    background-color: #fff;
+    box-shadow: 0 0 0 0, 0 6px 12px rgba(0,0,0,0.1);
+    border-radius: 3px;
+}
+
+.article-content .project-header-title {
+    border-bottom: 4px solid rgba(34,34,34,0.8);;
+    margin: 0 auto;
+}
+
+.technology-header {
+    width: 100%;
+    display: inline-block;
+    margin: auto
+}
+
+@media (min-width: 600px) {
+    .technology-header #technology-header-left {
+        float: left;
+    }
+    .technology-header #technology-header-middle {
+        float: left;
+        margin-left: 5em;
+    }
+    .technology-header #technology-header-right {
+        float: right;
+    }
+}
+
+.technology-header p {
+    font-size: 1.2em;
+    color: #bdc3c7;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.article-body p h1 h2 h3 {
+    display: block;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+}
+
+.article-body h1 {
+    font-size: 3em !important;
+    font-weight: bold;
+}
+
+.article-body h2 {
+    font-size: 2em !important;
+    font-weight: bold;
+}
+
+.article-body h3 {
+    font-size: 1.17em !important;
+    font-weight: bold;
+}

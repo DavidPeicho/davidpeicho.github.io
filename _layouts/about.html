@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% include head.html %}
+  <body>
+      {% include header.html %}
+      <div class="container">
+        <section id="down">
+          <div class="user-details">
+            <img class="about_img" src="{{ site.url }}/images/{{page.user_img}}"></img>
+          </div>
+        </section>
+        {% for section in page.sections %}
+          <div class="user-details">
+            <h3>{{section.name}} </h3>
+            <p> {{section.description}}</p>
+          </div>
+        {% endfor %}
+        <div class="user-details">
+          <h3>Interests</h3>
+          <div class="row user">
+            {% for interest in page.interests %}
+              <div class="four columns">
+                <h5 class="interest-title">{{interest.name}}</h4>
+                <img src="{{interest.image}}" style="width: 200px"></img>
+                <p>{{interest.description}}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="user-details">
+          <h3>{{page.find_me[0].title}}</h3>
+          <div class="icons-header">
+            <a aria-label="My Twitter" target="_blank" href="https://twitter.com/{{site.twitter_username}}"><i class="icon-inversed fa fa-twitter" aria-hidden="true"></i></a>
+            <a aria-label="My Github" target="_blank" href="https://github.com/{{site.github_username}}"><i class="icon-inversed fa fa-github-alt" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+      {% include footer.html %}
+  </body>
