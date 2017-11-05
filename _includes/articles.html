@@ -6,6 +6,22 @@
 
   <div class="row user-projects">
     {% for article in site.posts %}
+    <div class="article-content">
+      {% if article.thumbnail %}
+      <div style="margin: auto;">
+          <img class="project-header-img" src="{{site.url}}/{{article.thumbnail}}"></img>
+      </div>
+      {% endif %}
+      <div style="display: inline-block; width: 100%; color: #bdc3c7">
+        <div style="float: left">{{ article.date | date: '%B %d, %Y' }}</div>
+        <div style="float: right">{{ article.subject }}</div>
+      </div>
+      <h1 id="title-article-preview">
+          <a href="{{ article.url}}">{{ article.title }}</a>
+      </h1>
+      {{article.description}}
+      </br><a style="float: right;" href="{{ article.url}}">Read more</a>
+    </div>
     {% endfor %}
   </div>
 </div>

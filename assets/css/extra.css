@@ -105,3 +105,19 @@
     font-size: 1.17em !important;
     font-weight: bold;
 }
+
+#title-article-preview {
+    color: rgba(34,34,34,0.8);
+}
+
+#title-article-preview a {
+    text-decoration: none;
+    color: rgba(34,34,34,0.8);
+}
+
+#title-article-preview a:hover {
+    color: #2980b9;
+    -webkit-transition: color 600ms linear;
+    -ms-transition: color 600ms linear;
+    transition: color 600ms linear;
+}
