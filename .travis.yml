@@ -2,6 +2,10 @@ language: node_js
 node_js:
   - "6.10.3"
 
+branches:
+  only:
+    - master
+
 script:
   - gulp jekyll-build
 
