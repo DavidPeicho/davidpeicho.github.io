@@ -1,10 +1,11 @@
 # Site settings
-title: A blog about lorem ipsum dolor sit amet
-description: A blog about lorem ipsum dolor sit amet
+title: David Peicho
+description: Computer Science Student
 # baseurl: "/particle" # the subpath of your site, e.g. /blog
 # url: "localhost:3000" # the base hostname & protocol for your site e.g. http://willianjusten.com.br
 
 # Urls to avoid hacording paths
+img_folder: images/
 projects_img_folder: images/projects
 
 # User settings
@@ -12,6 +13,7 @@ username: David Peicho
 user_description: Bicycle rights irony actually neutra typewriter lyft. Man bun taxidermy put a bird on it, umami yr ramps pop-up ugh bushwick chia lo-fi. Occupy bitters pour-over snackwave you probably haven't heard of them small batch. Cornhole mustache man bun letterpress echo park VHS.
 user_title: Computer Science Student
 email: david.peicho@gmail.com
+linkedin_username: david-peicho
 twitter_username: davidpeicho
 github_username: DavidPeicho
 

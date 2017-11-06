@@ -5,7 +5,12 @@
       {% include header.html %}
       <section id="down">
         <div class="article-content">
-          <h2 class="project-header-title">{{page.title}}</h2>
+            {% if page.link %}
+            <h2 class="project-header-title">
+                <a style="text-decoration: none; color: rgba(34,34,34,0.8);" href="{{ page.link }}">{{ page.title }}</a>
+            </h2>
+            {% else %}
+            {% endif %}
               <div class="technology-header">
                 <div id="technology-header-left">
                     <div class="row" style="display: inline-block; margin: auto">

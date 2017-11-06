@@ -6,6 +6,7 @@
 
   <div class="row user-projects">
     {% for article in site.posts %}
+    {% if article.published %}
     <div class="article-content">
       {% if article.thumbnail %}
       <div style="margin: auto;">
@@ -22,6 +23,7 @@
       {{article.description}}
       </br><a style="float: right;" href="{{ article.url}}">Read more</a>
     </div>
+    {% endif %}
     {% endfor %}
   </div>
 </div>

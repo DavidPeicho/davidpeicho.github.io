@@ -4,10 +4,15 @@
     <h3> Featured Projects </h3>
   </div>
 
+  {% assign sorted = site.projects | date_sort | reverse %}
+  {% for project in sorted %}
   <div class="row user-projects">
-    {% for project in site.projects %}
     <div class="six columns images">
-      <img alt="{{project.title}}" src="{{site.projects_img_folder}}/{{project.thumbnail}}" />
+        {% if project.thumbnail contains '://' %}
+        <img alt="{{ project.title }}" src="{{ project.thumbnail }}" />
+        {% else %}
+        <img alt="{{ project.title }}" src="{{ site.url }}/{{ site.projects_img_folder }}/{{ project.thumbnail }}" />
+        {% endif %}
     </div>
     <div class="six columns contents">
       <h5>
@@ -16,6 +21,6 @@
       <p>{{project.description}}</p>
       <a class="project-link" href="{{ project.url }}">Learn more</a>
     </div>
-    {% endfor %}
   </div>
+  {% endfor %}
 </div>

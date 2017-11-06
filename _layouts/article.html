@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% include head.html %}
+  <body style="background-color: #e8e8e8;">
+      {% include header.html %}
+      <section id="down">
+        <div class="article-content">
+            <div style="display: inline-block; width: 100%; color: #bdc3c7">
+                <div style="float: left">{{ page.date | date: '%B %d, %Y' }}</div>
+                <div style="float: right">{{ page.subject }}</div>
+            </div>
+            {% if page.image %}
+            <div style="margin-top: 2em; margin-bottom: 2em;">
+                <img class="project-header-img" src="{{site.url}}/{{site.img_folder}}/{{page.image}}"></img>
+            </div>
+            {% endif %}
+          <div class="article-body">
+            {{content}}
+          </div>
+        </div>
+      </section>
+      {% include footer.html %}
+  </body>
