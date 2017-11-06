@@ -19,6 +19,11 @@ google-analytics:
   id: ""
 
 exclude: ['package.json', 'src' , 'node_modules']
+assets:
+  sources:
+    - assets/fonts
+    - assets/js
+    - assets/css
 
 collections:
   projects:

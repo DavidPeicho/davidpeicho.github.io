@@ -63,7 +63,7 @@
     margin: auto
 }
 
-@media (min-width: 600px) {
+@media screen and (orientation: landscape) {
     .technology-header #technology-header-left {
         float: left;
     }
@@ -81,6 +81,12 @@
     color: #bdc3c7;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
+}
+
+@media (max-width: 400px) {
+    .technology-header p {
+        font-size: 3.0vw;
+    }
 }
 
 .article-body p h1 h2 h3 {
@@ -108,6 +114,22 @@
 
 .article-body h4 {
     font-size: 1.5em !important;
+}
+
+.header-article {
+  display: inline-block;
+  width: 100%;
+  color: #bdc3c7;
+}
+
+@media screen and (orientation: landscape) {
+  .header-article #header-article-left {
+    float: left;
+  }
+
+  .header-article #header-article-right {
+    float: right;
+  }
 }
 
 #title-article-preview {

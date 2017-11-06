@@ -43,9 +43,11 @@
                     </div>
                 </div>
             </div>
-          <div style="margin: auto;">
-            <img class="project-header-img" src="{{site.url}}/{{site.projects_img_folder}}/{{page.image}}"></img>
-          </div>
+            {% if page.image %}
+            <div style="margin: auto;">
+                <img class="project-header-img" src="{{site.url}}/{{site.projects_img_folder}}/{{page.image}}"></img>
+            </div>
+            {% endif %}
 
           <div class="article-body">
             {{content}}

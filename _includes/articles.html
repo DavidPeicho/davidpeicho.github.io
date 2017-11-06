@@ -13,9 +13,9 @@
           <img class="project-header-img" src="{{site.url}}/{{article.thumbnail}}"></img>
       </div>
       {% endif %}
-      <div style="display: inline-block; width: 100%; color: #bdc3c7">
-        <div style="float: left">{{ article.date | date: '%B %d, %Y' }}</div>
-        <div style="float: right">{{ article.subject }}</div>
+      <div class="header-article">
+        <div id="header-article-left">{{ article.date | date: '%B %d, %Y' }}</div>
+        <div id="header-article-right">{{ article.subject }}</div>
       </div>
       <h1 id="title-article-preview">
           <a href="{{ article.url}}">{{ article.title }}</a>
