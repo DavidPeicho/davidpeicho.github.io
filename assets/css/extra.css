@@ -5,6 +5,31 @@ a {
     color: #3498db;
 }
 
+.link {
+    color: white;
+}
+
+.link:hover {
+    color: #2980b9;
+    -webkit-transition: color 600ms linear;
+    -ms-transition: color 600ms linear;
+    transition: color 600ms linear;
+}
+
+.icons-header {
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+}
+
+#header-content {
+  position: relative;
+  top: -40vh;
+}
+
+.content {
+   top: 10vh !important;
+}
+
 /* ABOUT PAGE */
 
 .about_img {
@@ -46,6 +71,17 @@ a {
 
 .project-header-img {
     max-width: 100%;
+}
+
+.project-card {
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+
+.project-card-elt {
+  flex: 1 1 0;
+  padding: 20px;
 }
 
 .article-content {
@@ -170,3 +206,4 @@ a {
     -ms-transition: color 600ms linear;
     transition: color 600ms linear;
 }
+
