@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - "6.10.3"
+
+script:
+  - gulp jekyll-build
+
+before_script:
+  - npm install
