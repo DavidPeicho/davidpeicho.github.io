@@ -1,4 +1,6 @@
-<div id="particles-js">
+<div style="height: 60vh; margin-bottom: 50vh;">
+<div id="particles-js"></div>
+<div id="header-content">
   <div class="content">
       <h1>
         <span class="site-title">{{site.username}}</span>
@@ -13,6 +15,18 @@
       <a class="link" href="{{site.url}}/projects.html">Projects</a>
       <a class="link" href="{{site.url}}/articles.html">Articles</a>
       <a class="link" href="{{site.url}}/about.html">About me</a>
+      <a class="link" href="{{site.url}}/artflow">ArtFlow</a>
   </div>
-  <a class="down" href="#down" data-scroll><i class="icon fa fa-chevron-down" aria-hidden="true"></i></a>
 </div>
+</div>
+
+<script>
+  window.addEventListener("load", () => {
+    const sweetScroll = new SweetScroll({
+      quickMode: true,
+      duration: 2000,
+      easing: "easeOutExpo" // Recommended
+    });
+    sweetScroll.toElement(document.getElementById("down"));
+  });
+</script>

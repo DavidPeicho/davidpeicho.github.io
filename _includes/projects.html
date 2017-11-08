@@ -6,20 +6,20 @@
 
   {% assign sorted = site.projects | date_sort | reverse %}
   {% for project in sorted %}
-  <div class="row user-projects">
-    <div class="six columns images">
-        {% if project.thumbnail contains '://' %}
-        <img alt="{{ project.title }}" src="{{ project.thumbnail }}" />
-        {% else %}
-        <img alt="{{ project.title }}" src="{{ site.url }}/{{ site.projects_img_folder }}/{{ project.thumbnail }}" />
-        {% endif %}
-    </div>
-    <div class="six columns contents">
+  <div class="row project-card">
+    <div class="project-card-elt">
       <h5>
         <a href="{{ project.url }}">{{project.title}}</a>
       </h5>
       <p>{{project.description}}</p>
       <a class="project-link" href="{{ project.url }}">Learn more</a>
+    </div>
+    <div class="project-card-elt">
+        {% if project.thumbnail contains '://' %}
+        <img alt="{{ project.title }}" src="{{ project.thumbnail }}" />
+        {% else %}
+        <img alt="{{ project.title }}" src="{{ site.url }}/{{ site.projects_img_folder }}/{{ project.thumbnail }}" />
+        {% endif %}
     </div>
   </div>
   {% endfor %}

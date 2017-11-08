@@ -14,8 +14,8 @@
       </div>
       {% endif %}
       <div class="header-article">
-        <div id="header-article-left">{{ article.date | date: '%B %d, %Y' }}</div>
-        <div id="header-article-right">{{ article.subject }}</div>
+        <p>{{ article.date | date: '%B %d, %Y' }}</p>
+        <p>{{ article.subject }}</p>
       </div>
       <h1 id="title-article-preview">
           <a href="{{ article.url}}">{{ article.title }}</a>
