@@ -10,7 +10,7 @@
           </div>
         </section>
         {% for section in page.sections %}
-          <div class="user-details">
+          <div class="user-details" style="margin-bottom:20vh">
             <h3>{{section.name}} </h3>
             <p> {{section.description}}</p>
           </div>
@@ -19,7 +19,7 @@
           <h3>Interests</h3>
           <div class="row user">
             {% for interest in page.interests %}
-              <div class="four columns">
+              <div class="four columns interest-col">
                 <h5 class="interest-title">{{interest.name}}</h4>
                 <img src="{{interest.image}}" style="width: 200px"></img>
                 <p>{{interest.description}}</p>

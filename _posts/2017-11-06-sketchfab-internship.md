@@ -38,13 +38,8 @@ shading models, including <a href="https://en.wikipedia.org/wiki/Physically_base
 
 Below is an example of one of the most liked 3D model on Sketchfab.
 
-<div class="sketchfab-embed-wrapper"><iframe width="640" height="480" src="https://sketchfab.com/models/96340701c2ed4d37851c7d9109eee9c0/embed" frameborder="0" allowvr allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" onmousewheel=""></iframe>
-
-<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
-    <a href="https://sketchfab.com/models/96340701c2ed4d37851c7d9109eee9c0?utm_medium=embed&utm_source=website&utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Scifi Girl v.01</a>
-    by <a href="https://sketchfab.com/patrix?utm_medium=embed&utm_source=website&utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">patrix</a>
-    on <a href="https://sketchfab.com?utm_medium=embed&utm_source=website&utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
-</p>
+<div>
+    <iframe style="width: 100%; height: 80vh;" src="https://sketchfab.com/models/885d9f60b3a9429bb4077cfac5653cf9/embed"></iframe>
 </div>
 
 ### Projects
