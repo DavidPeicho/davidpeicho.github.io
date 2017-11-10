@@ -4,7 +4,7 @@ published: true
 title: 'Internship at Skektchfab'
 date: '2017-1-06 01:40:00 -0100'
 subject: Computer Graphics
-categories: [Computer Graphics, Job]
+categories: [Computer Graphics, Internship]
 thumbnail:
 image: logo-sketchfab.png
 description: |

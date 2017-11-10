@@ -7,42 +7,24 @@
         <div class="article-content">
             {% if page.link %}
             <div class="project-header-title" style="font-size:0px;">
-              <i style="font-size:3.5rem;" class="fa fa-link"></i>
-              <span style="font-size: 4.2rem;"><a href="{{ page.link }}">{{ page.title }}</a></span>
+              <i class="fa fa-link"></i>
+              <span><a href="{{ page.link }}">{{ page.title }}</a></span>
             </div>
             {% else %}
-            <h2 class="project-header-title">{{ page.title }}</h2>
+            <span class="project-header-title">{{ page.title }}</span>
             {% endif %}
-              <div class="technology-header">
-                <div id="technology-header-left">
-                    <div class="row" style="display: inline-block; margin: auto">
-                        <div style="float: left;">
-                            <p class="{{page.headers[0].icon}}"></p>
-                        </div>
-                        <div style="float: right;">
-                            <p style="margin-left: 0.6em;">{{page.headers[0].description}}</p>
-                        </div>
-                    </div>
+            <div class="technology-header" style="display: flex">
+                <div class="technology-header-elt">
+                    <i class="{{ page.headers[0].icon }}"></i>
+                    <span>{{ page.headers[0].description }}</span>
                 </div>
-                <div id="technology-header-middle">
-                    <div class="row" style="display: inline-block; margin: auto">
-                        <div style="float: left;">
-                            <p class="{{page.headers[1].icon}}"></p>
-                        </div>
-                        <div style="float: right;">
-                            <p style="margin-left: 0.6em;">{{page.headers[1].description}}</p>
-                        </div>
-                    </div>
+                <div class="technology-header-elt" id="technology-header-elt-2">
+                    <i class="{{ page.headers[1].icon }}"></i>
+                    <span>{{ page.headers[1].description }}</span>
                 </div>
-                <div id="technology-header-right">
-                    <div class="row" style="display: inline-block; margin: auto">
-                        <div style="float: left;">
-                            <p class="{{page.headers[2].icon}}"></p>
-                        </div>
-                        <div style="float: right;">
-                            <p style="margin-left: 0.6em;">{{page.headers[2].description}}</p>
-                        </div>
-                    </div>
+                <div class="technology-header-elt" id="technology-header-elt-3">
+                    <i class="{{ page.headers[2].icon }}"></i>
+                    <span>{{ page.headers[2].description }}</span>
                 </div>
             </div>
             {% if page.image %}
