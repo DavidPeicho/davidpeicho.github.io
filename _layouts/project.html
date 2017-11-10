@@ -6,10 +6,11 @@
       <section id="down">
         <div class="article-content">
             {% if page.link %}
-            <h2 class="project-header-title">
-                <a style="text-decoration: none; color: rgba(34,34,34,0.8);" href="{{ page.link }}">{{ page.title }}</a>
+            <h2 class="project-header-title fa-link">
+                <a href="{{ page.link }}">{{ page.title }}</a>
             </h2>
             {% else %}
+            <h2 class="project-header-title">{{ page.title }}</h2>
             {% endif %}
               <div class="technology-header">
                 <div id="technology-header-left">
@@ -44,7 +45,7 @@
                 </div>
             </div>
             {% if page.image %}
-            <div style="margin: auto;">
+            <div style="margin: auto; margin-bottom: 3vh;">
                 <img class="project-header-img" src="{{site.url}}/{{site.projects_img_folder}}/{{page.image}}"></img>
             </div>
             {% endif %}

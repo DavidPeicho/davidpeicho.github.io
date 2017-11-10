@@ -1,3 +1,16 @@
+.link a {
+  color: white;
+}
+
+.link:hover {
+  color: #3498db;
+  transition-timing-function: ease-out;
+  -webkit-transition: color 600ms;
+  -moz-transition: color 600ms;
+  -o-transition: color 600ms;
+  transition: color 600ms;
+}
+
 .icon-header {
     margin-top: 5vh;
     margin-bottom: 5vh;
@@ -86,6 +99,22 @@
     }
 }
 
+.project-header-title a {
+  text-decoration: none;
+  color: rgba(34,34,34,0.8);
+  font-size: 4.2rem;
+}
+
+.project-header-title a:hover {
+  color: #3498db;
+  font-size: 4.8rem;
+  transition-timing-function: ease-out;
+  -webkit-transition: color 600ms, font-size 600ms;
+  -moz-transition: color 600ms, font-size 600ms;
+  -o-transition: color 600ms, font-size 600ms;
+  transition: color 600ms, font-size 600ms;
+}
+
 .project-header-img {
     max-width: 100%;
 }
@@ -172,10 +201,16 @@
 }
 
 .article-body p {
-    font-size: 1.5em !important;
+    font-size: 1.3em !important;
 }
-@media (min-width:320px)  {
+.article-body li {
+    font-size: 1.3em !important;
+}
+@media (max-width:320px)  {
   .article-body p {
+    font-size: 1.0em !important;
+  }
+  .article-body ul {
     font-size: 1.0em !important;
   }
 }
@@ -199,6 +234,18 @@
     font-size: 1.5em !important;
 }
 
+.article-body a {
+  text-decoration: none;
+  color: #3498db;
+}
+
+.article-body a:hover {
+  color: #e67e22;
+  -webkit-transition: color 400ms linear;
+  -ms-transition: color 400ms linear;
+  transition: color 400ms linear;
+}
+
 #title-article-preview {
     color: rgba(34,34,34,0.8);
 }
@@ -214,3 +261,19 @@
     -ms-transition: color 600ms linear;
     transition: color 600ms linear;
 }
+
+/* TO USE IN MARKDOWN POSTS */
+
+.markdown-img-large {
+  width: 100%;
+}
+
+.markdown-img-caption {
+  text-align: center;
+  color: #bdc3c7;
+}
+
+.markdown-img-link {
+  width: 50%;
+}
+
