@@ -78,6 +78,7 @@
     text-decoration: none;
     border-bottom: 4px solid white;
 }
+
 @media only screen and (min-width:768px) {
     .project-title {
         margin:0;
@@ -100,6 +101,12 @@
     border-radius: 3px;
 }
 
+@media (max-aspect-ratio: 6/5) {
+  .article-content {
+    padding: 50px 20px;
+  }
+}
+
 .article-content .project-header-title {
     border-bottom: 4px solid rgba(34,34,34,0.8);;
     margin: 0 auto;
@@ -108,7 +115,8 @@
 .technology-header {
     width: 100%;
     display: inline-block;
-    margin: auto
+    margin: auto;
+    margin-top: 1vh;
 }
 
 @media (min-width: 600px), screen and (min-device-aspect: 1) {
@@ -165,6 +173,11 @@
 
 .article-body p {
     font-size: 1.5em !important;
+}
+@media (min-width:320px)  {
+  .article-body p {
+    font-size: 1.0em !important;
+  }
 }
 
 .article-body h1 {

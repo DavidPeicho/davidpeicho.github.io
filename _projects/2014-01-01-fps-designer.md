@@ -13,11 +13,11 @@ description: |
     to add some game logic.
 
 headers:
-    - icon: fa-calendar
+    - icon: fa fa-calendar
       description: 2014
-    - icon: fa-clock-o
+    - icon: fa fa-clock-o
       description: 8 months
-    - icon: fa-wrench
+    - icon: fa fa-wrench
       description: C++, XNA, DirectX, WPF
 
 ---
