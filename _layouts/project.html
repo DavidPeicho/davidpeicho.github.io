@@ -6,9 +6,10 @@
       <section id="down">
         <div class="article-content">
             {% if page.link %}
-            <h2 class="project-header-title fa-link">
-                <a href="{{ page.link }}">{{ page.title }}</a>
-            </h2>
+            <div class="project-header-title" style="font-size:0px;">
+              <i style="font-size:3.5rem;" class="fa fa-link"></i>
+              <span style="font-size: 4.2rem;"><a href="{{ page.link }}">{{ page.title }}</a></span>
+            </div>
             {% else %}
             <h2 class="project-header-title">{{ page.title }}</h2>
             {% endif %}
