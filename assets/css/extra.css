@@ -16,6 +16,10 @@
     margin-bottom: 5vh;
 }
 
+.icon {
+    margin: 0.65vw !important;
+}
+
 .project-card {
   display: flex;
   align-items: center;
