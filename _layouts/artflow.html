@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% include head.html %}
+  <body>
+      {% include header.html %}
+      <div class="container">
+        <div class="user-details" style="margin-bottom:10vh">
+          <a class="project-link" href="{{site.url}}/artflow" style="margin: auto">Go to ArtFlow!</a>
+        </div>
+        <div class="user-details" style="margin-bottom:10vh">
+          <h2>Tutorials</h2>
+        </div>
+
+        {% for section in page.sections %}
+        <div class="row project-card">
+          {% if section.img %}
+          <div id="project-card-elt-1" class="project-card-elt">
+            <img alt="{{ section.name }}" src="{{ site.url }}/{{ site.img_folder }}/{{ section.img }}" />
+          </div>
+          {% endif %}
+          <div id="project-card-elt-2" class="project-card-elt">
+            <div id="project-card-elt-2-text">
+              <h3>{{section.name}}</h3>
+              <p>{{section.description}}</p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% include footer.html %}
+  </body>
