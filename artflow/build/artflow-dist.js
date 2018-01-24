@@ -60,7 +60,7 @@ var Artflow =
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "2664203d6caaebb3f633"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "a265d72b6b12b1017b4b"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -707,7 +707,7 @@ var Artflow =
 /******/ 	__webpack_require__.h = function() { return hotCurrentHash; };
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return hotCreateRequire(37)(__webpack_require__.s = 37);
+/******/ 	return hotCreateRequire(38)(__webpack_require__.s = 38);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -45818,11 +45818,11 @@ var _htmlView = __webpack_require__(8);
 
 var _htmlView2 = _interopRequireDefault(_htmlView);
 
-var _htmlTextArea = __webpack_require__(28);
+var _htmlTextArea = __webpack_require__(29);
 
 var _htmlTextArea2 = _interopRequireDefault(_htmlTextArea);
 
-__webpack_require__(61);
+__webpack_require__(60);
 
 var _eventDispatcher = __webpack_require__(6);
 
@@ -45857,11 +45857,13 @@ var Main = function () {
         this.clickView = null;
 
         this._dimensions = { width: 0, height: 0, halfW: 0, halfH: 0 };
+
+        this._createHTMLLoading();
     }
 
     _createClass(Main, [{
-        key: 'init',
-        value: function init(w, h, renderer, vr) {
+        key: 'ready',
+        value: function ready(w, h, renderer, vr) {
             var _this = this;
 
             this._renderer = renderer;
@@ -45872,7 +45874,7 @@ var Main = function () {
             // Adds default cubemap as background of the scene
             // TODO: Update the THREE.JS version with the update handling background
             // on both eyes.
-            var cubemap = AssetManager.assets.texture.cubemap.galaxy;
+            var cubemap = AssetManager.assets.texture.cubemap['cartoon-cloudy'];
             this._rootScene.background = cubemap;
 
             this._createLighting();
@@ -45885,6 +45887,10 @@ var Main = function () {
 
                 _this._rootScene.background = skybox;
             });
+
+            // Hides 'loading...' message
+            this.loadingView.toggleVisibility(false);
+            document.body.removeChild(this.loadingView.getDOMElement());
         }
     }, {
         key: 'render',
@@ -45967,15 +45973,6 @@ var Main = function () {
             centerCube.translateY(0.5);
             xAxisCube.translateX(2);
             zAxisCube.translateZ(2);
-
-            /*this._group.add( centerCube );
-            this._group.add( xAxisCube );
-            this._group.add( zAxisCube );*/
-
-            // DEBUG
-            //this._group.add( AssetManager.assets.model.tool.tree_preview );
-            //this._group.add( AssetManager.assets.model.tool.brush_preview );
-            // END DEBUG
         }
     }, {
         key: '_createLighting',
@@ -45991,6 +45988,29 @@ var Main = function () {
 
             var ambLight = new THREE.AmbientLight(0xf0f0f0);
             this._rootScene.add(ambLight);
+        }
+    }, {
+        key: '_createHTMLLoading',
+        value: function _createHTMLLoading() {
+
+            this.loadingView = new _htmlView2.default({
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                top: '0px',
+                backgroundColor: 'rgba(22, 31, 40, 0.99)'
+            });
+            this.loadingView.setProp('align', 'center');
+
+            var msg = new _htmlTextArea2.default(null, {
+                position: 'relative',
+                top: '50%'
+            });
+            msg.setMessage('Loading...');
+
+            this.loadingView.addChild(msg);
+
+            document.body.appendChild(this.loadingView.getDOMElement());
         }
     }, {
         key: '_createHTMLBackground',
@@ -46069,7 +46089,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * SOFTWARE.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
-var _threeView = __webpack_require__(29);
+var _threeView = __webpack_require__(30);
 
 var _threeView2 = _interopRequireDefault(_threeView);
 
@@ -46134,12 +46154,12 @@ var Tool = function () {
         key: 'triggerEvent',
         value: function triggerEvent(eventID, data, status) {
 
-            if (!this.enabled) return;
+            if (!this.enabled) return undefined;
 
-            if (!(eventID in this.listenTo)) return;
+            if (!(eventID in this.listenTo)) return undefined;
 
             var callback = this.listenTo[eventID];
-            if (!callback) return;
+            if (!callback) return undefined;
 
             // The event is of the form:
             // {
@@ -46149,12 +46169,12 @@ var Tool = function () {
             // }
 
             if (typeof callback !== 'function') {
-                if (callback[status]) callback[status](data);
-                return;
+                if (callback[status]) return callback[status](data);
+                return undefined;
             }
 
             // The event is a function
-            callback(data);
+            return callback(data);
         }
     }, {
         key: 'registerEvent',
@@ -46169,11 +46189,11 @@ var Tool = function () {
         }
     }, {
         key: '_update',
-        value: function _update(delta) {
+        value: function _update(delta, controllerID) {
 
             if (!this.enabled || !this.dynamic || !this.update) return;
 
-            this.update(delta);
+            this.update(delta, controllerID);
         }
     }, {
         key: '_onItemChanged',
@@ -46252,9 +46272,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 // MTLLoader is auto-added to the THREE namespace.
 
 
-__webpack_require__(63);
-
 __webpack_require__(62);
+
+__webpack_require__(61);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -46676,14 +46696,11 @@ var Manager = function () {
                 }
             };
 
-            var cubemapTextures = [{ file: 'cartoon-cloudy.png' }, { file: 'cartoon-nightsky.png' }, { file: 'sunset-dark.png' }, { file: 'galaxy.jpg' }];
+            var cubemapTextures = [{ file: 'cartoon-cloudy.png' }, { file: 'cartoon-nightsky.png' }, { file: 'sunset-dark.png' }];
 
             var envTextures = [{ file: 'controller-diffuse.png' }, { file: 'controller-specular.png' }, { file: 'floor.jpg' }];
 
-            var toolTextures = [{ file: 'brush3.png', id: 'brush1' }, { file: 'brush3_N.png', id: 'brush1_N' }, { file: 'particle_raw.png', id: 'brush1_N' }, { file: 'perlin-512.png', id: 'particle_noise' }, { file: 'noise.jpg', id: 'particle_position' }, { file: 'noise.jpg', id: 'particle_velocity' }, // Why?
-            { file: 'noise.jpg', id: 'particle_position_out' }, // Why?
-            { file: 'noise.jpg', id: 'particle_velocity_out' }, // Why?
-            { file: 'water_normal.png' }];
+            var toolTextures = [{ file: 'brush3.png', id: 'brush1' }, { file: 'brush3_N.png', id: 'brush1_N' }, { file: 'particle_raw.png', id: 'particle_raw' }, { file: 'water_normal.png' }];
 
             var uiTextures = [{ file: 'ui.spritesheet' }, { file: 'background.png', id: 'background' }, { file: 'button-hover.png', id: 'button-hover' }];
 
@@ -46695,7 +46712,9 @@ var Manager = function () {
             // TREE
             { file: 'tree/bush.png', id: 'tree-bush' }, { file: 'tree/contextSens.png', id: 'tree-contextSens' }, { file: 'tree/cube.png', id: 'tree-cube' }, { file: 'tree/simple.png', id: 'tree-simple' }, { file: 'tree/tilt.png', id: 'tree-tilt' },
             // BRUSH
-            { file: 'brush/brush_items.spritesheet' }];
+            { file: 'brush/brush_items.spritesheet' },
+            // PARTICLE
+            { file: 'particles/particles.spritesheet' }];
 
             var toolModels = [{ file: 'teleporter.obj' }, { file: 'water_preview.obj' }, { file: 'tree_preview.obj' }, { file: 'particle_preview.obj' }, { file: 'brush_preview.obj' }];
 
@@ -46796,7 +46815,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.LSystem = exports.AssetManager = exports.EventDispatcher = exports.InfoTable = undefined;
 
-var _infoTable = __webpack_require__(56);
+var _infoTable = __webpack_require__(55);
 
 var _infoTable2 = _interopRequireDefault(_infoTable);
 
@@ -46806,7 +46825,7 @@ var _eventDispatcher2 = _interopRequireDefault(_eventDispatcher);
 
 var _assetManager = __webpack_require__(3);
 
-var _lSystem = __webpack_require__(27);
+var _lSystem = __webpack_require__(28);
 
 var _lSystem2 = _interopRequireDefault(_lSystem);
 
@@ -47212,24 +47231,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var AbstractBrushStroke = function () {
-    function AbstractBrushStroke(isVR) {
-        var materialId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'material_with_tex';
-
+    function AbstractBrushStroke(isVR, material) {
         _classCallCheck(this, AbstractBrushStroke);
 
         this.mesh = null;
-
         this.isVR = isVR;
-        this.materialId = materialId;
+
+        var mat = material.clone();
 
         var optionsHelper = {
             isVR: this.isVR,
             maxSpread: 20,
             brushThickness: this.isVR ? 0.2 : 0.5,
             delta: this.isVR ? 0.01 : 0.005,
-            enablePressure: false,
-            color: 0x808080,
-            materialId: this.materialId
+            enablePressure: true,
+            material: mat
         };
 
         this._helper = new _brushHelper2.default(optionsHelper);
@@ -47251,9 +47267,7 @@ var AbstractBrushStroke = function () {
             this.mesh = this._helper.createMesh();
             brushTool.worldGroup.addTHREEObject(this.mesh);
 
-            console.log(this.mesh);
-
-            return new _addCommand2.default(brushTool.worldGroup, this.mesh);
+            return new _addCommand2.default(brushTool.worldGroup.object);
         }
     }, {
         key: 'setColor',
@@ -47273,7 +47287,7 @@ exports.default = AbstractBrushStroke;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(THREE) {
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -47284,37 +47298,50 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var AddCommand = function () {
-    function AddCommand(view) {
+    function AddCommand(container, functions) {
         _classCallCheck(this, AddCommand);
 
-        this._view = view;
-        this._redomesh = null;
+        // Container in which the element has been added.
+        this._container = container;
+        // Last poped element.
+        this.object = null;
+
+        // Developer can give several functions
+        // applied in post-order.
+        if (functions) {
+            this._clearFunc = functions.clear || AddCommand.CLEAR_MESH;
+            this._undoFunc = functions.undo;
+            this._redoFunc = functions.redo;
+        } else {
+            this._clearFunc = AddCommand.CLEAR_MESH;
+        }
     }
 
     _createClass(AddCommand, [{
         key: 'undo',
         value: function undo() {
 
-            var objects = this._view.object.children;
-            this._redomesh = objects.pop();
+            if (this._container.constructor === Array) this.object = this._container.pop();else if (this._container.constructor === THREE.Group) this.object = this._container.children.pop();else console.warn('ArtFlow: undo(): called on unsupported container.');
+
+            if (this._undoFunc) this._undoFunc(this.object);
         }
     }, {
         key: 'redo',
         value: function redo() {
 
-            var objects = this._view.object.children;
-            objects.push(this._redomesh);
+            if (this._container.constructor === Array) this._container.push(this.object);else if (this._container.constructor === THREE.Group) this._container.children.push(this.object);else console.warn('ArtFlow: redo(): called on unsupported container.');
 
-            this._redomesh = null;
+            if (this._redoFunc) this._redoFunc(this.object);
+
+            this.object = null;
         }
     }, {
         key: 'clear',
         value: function clear() {
 
-            if (this._redomesh === null) return;
+            if (this.object === null) return;
 
-            this._redomesh.geometry.dispose();
-            this._redomesh.material.dispose();
+            this._clearFunc(this.object);
         }
     }]);
 
@@ -47322,6 +47349,14 @@ var AddCommand = function () {
 }();
 
 exports.default = AddCommand;
+
+
+AddCommand.CLEAR_MESH = function (obj) {
+
+    obj.geometry.dispose();
+    obj.material.dispose();
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 11 */
@@ -47375,15 +47410,14 @@ var DEFAULT_OPTIONS = {
     computeTangents: false
 };
 
-var DEFAULT_MAT = {
-    noTexutre: new THREE.MeshStandardMaterial({
-        side: THREE.DoubleSide,
-        transparent: true,
-        depthTest: false,
-        metalness: 0.0,
-        roughness: 0.3
-    })
-};
+var DEFAULT_MAT = new THREE.MeshStandardMaterial({
+    side: THREE.DoubleSide,
+    transparent: true,
+    depthTest: false,
+    metalness: 0.0,
+    roughness: 0.85,
+    color: 0x000000
+});
 
 var BrushHelper = function () {
     function BrushHelper(options, uvMode) {
@@ -47395,8 +47429,7 @@ var BrushHelper = function () {
         (0, _object.setPropIfUndefined)(this.options, {
             brushThickness: 1.0,
             maxSpread: 1,
-            color: 0x808080,
-            materialId: 'material_without_tex'
+            color: 0x808080
         });
 
         // We can choose how the UVs should be computed.
@@ -47429,14 +47462,14 @@ var BrushHelper = function () {
         this._lastPressure = 0.0;
         this._thickness = this.options.brushThickness / 2.0;
 
-        this._computeThickness = function () {
-
-            return _this._thickness;
-        };
-
-        // TOOD: Helper shound not access the object pool directly like this.
-        this._material = DEFAULT_MAT.noTexutre;
-        if ('color' in this._material) this._material.color.setHex(this.options.color);
+        this._computeThickness = this._computeThicknessWithPressure;
+        if (!this.options.enablePressure) {
+            this._computeThickness = function () {
+                return _this._thickness;
+            };
+        }
+        this._material = this.options.material || DEFAULT_MAT.clone();
+        if (this._material.color) this._material.color.setHex(this.options.color);
     }
 
     _createClass(BrushHelper, [{
@@ -48067,7 +48100,23 @@ module.exports = {
 
     vertex: ['uniform float uTime;', 'varying vec2 vUv;', 'void main()	{', '   vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );', '   gl_Position = projectionMatrix * mvPosition;', '   vUv = uv;', '}'].join('\n'),
 
-    fragment: ['uniform float uTime;', 'uniform vec2 vResolution;', 'varying vec2 vUv;', 'void main( void )', '{', '    vec2 uv = ( gl_FragCoord.xy / vResolution.xy ) * 20.0-1.0;', '    uv.x *= vResolution.x/vResolution.y;', '    ', '    vec3 finalColor = vec3( 0.0, 0.0, 0.0 );', '    ', '    float g = -mod( gl_FragCoord.y + uTime, cos( gl_FragCoord.x ) + 0.004 );', '    g = g + clamp(uv.y, -1.0, 0.0);	', '    ', '    finalColor = vec3( 0.0, g, 0.0 );', '    ', '    gl_FragColor = vec4( finalColor, 1.0 );', '}'].join('\n')
+    // Old (screen-space):
+    /*'    vec2 uv = ( gl_FragCoord.xy / vResolution.xy ) * 20.0-1.0;',
+    '    uv.x *= vResolution.x/vResolution.y;',
+    '    ',
+    '    vec3 finalColor = vec3( 0.0, 0.0, 0.0 );',
+    '    ',
+    '    float g = -mod( gl_FragCoord.y + uTime, cos( gl_FragCoord.x ) + 0.004 );',
+    '    g = g + clamp(uv.y, -1.0, 0.0);	',
+    '    ',
+    '    finalColor = vec3( 0.0, g, 0.0 );',
+    '    ',
+    '    gl_FragColor = vec4( finalColor, 1.0 );',*/
+
+    fragment: [
+
+    // UV-space
+    'uniform float uTime;', 'uniform vec2 vResolution;', 'varying vec2 vUv;', 'void main( void )', '{', '    vec2 uv = ( vec2(500.0) + vUv * vResolution.xy / 5.0 ) / vResolution.xy * 20.0-1.0;', '    uv.x *= vResolution.x/vResolution.y;', '    ', '    vec3 finalColor = vec3( 0.0, 0.0, 0.0 );', '    ', '    float g = -mod( vUv.x * vResolution.x / 5.0 + uTime, cos( vUv.y * vResolution.y / 5.0 ) + 0.004 );', '    g = g + clamp(uv.x, -1.0, 0.0);	', '    ', '    finalColor = vec3( 0.0, g, 0.0 );', '    ', '    gl_FragColor = vec4( finalColor, 1.0 );', '}'].join('\n')
 
 };
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -48503,6 +48552,46 @@ module.exports = {
 "use strict";
 
 
+/**
+ * ArtFlow application
+ * https://github.com/artflow-vr/artflow
+ *
+ * MIT License
+ *
+ * Copyright (c) 2017 artflow
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+module.exports = {
+    vertex: ['attribute float size;', 'attribute vec2 idx;', 'varying vec2 a_idx;', 'uniform sampler2D tPositions;', 'uniform float pointMaxSize;', 'uniform float brushSize;', 'uniform float particlesTexWidth;', 'void main() {', '	vec4 position_v = texture2D(tPositions, vec2(idx.x / particlesTexWidth, idx.y / particlesTexWidth));', '	vec3 position_offset = position_v.xyz;', '	gl_PointSize = position_v.a * pointMaxSize;', '	position_offset = (position_offset - 0.5) * brushSize;', '	vec4 mvPosition = modelViewMatrix * vec4((position + position_offset), 1.0);', '	gl_Position = projectionMatrix * mvPosition;', '	a_idx = idx;', '}'].join('\n'),
+
+    fragment: ['uniform sampler2D tSprite;', 'varying vec2 a_idx;', 'uniform sampler2D tPositions;', 'uniform vec3 pColor;', 'void main() {', '	vec4 tex = texture2D( tSprite, gl_PointCoord ) * vec4(pColor, 1.0);', '	gl_FragColor = vec4( tex );', '}'].join('\n')
+};
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -48797,7 +48886,7 @@ var LSystem = function () {
 exports.LSystem = LSystem;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48899,7 +48988,7 @@ var HTMLTextArea = function (_HTMLView) {
 exports.default = HTMLTextArea;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48999,7 +49088,7 @@ exports.default = THREEView;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49011,7 +49100,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _vrUi = __webpack_require__(64);
+var _vrUi = __webpack_require__(63);
 
 var _vrUi2 = _interopRequireDefault(_vrUi);
 
@@ -49039,6 +49128,9 @@ var DEFAULT_COLOR_POS = new THREE.Vector3(0.75, 0.5, 0.5);
 var DEFAULT_COLOR_POS_VR = new THREE.Vector3(0.25, 0.5, 0.0);
 var DEFAULT_SKYBOX_POS = new THREE.Vector3(-0.75, 0.5, 0.5);
 var DEFAULT_SKYBOX_POS_VR = new THREE.Vector3(-0.25, 0.5, 0.0);
+
+var DEFAULT_ITEM_COL = { r: 1.0, g: 1.0, b: 1.0 };
+var ITEM_SELECTED_COL = { r: 46 / 255.0, g: 204 / 255.0, b: 113 / 255.0 };
 
 var GUI_FACTOR_NO_VR = 4.0;
 
@@ -49100,6 +49192,9 @@ var UI = function () {
         // having to loop through every UI. When no item UI is currently open,
         // this variable has a null value.
         this._currItemUI = null;
+        // This reference points toward the last THREE.Mesh selected.
+        // This is used to quickly change their color when selected.
+        this._currSelectedItem = null;
 
         this._prevController = null;
         this._controllers = null;
@@ -49245,6 +49340,16 @@ var UI = function () {
                     var controllerID = 0;
                     if (_this3._vr) controllerID = (_this3._prevController + 1) % 2;
                     callback(item.id, controllerID, evt);
+
+                    // Changes the color of the item to show the user it is
+                    // selected.
+                    if (!evt.pressed) return;
+
+                    if (_this3._currSelectedItem) _this3._currSelectedItem.material.color.setRGB(DEFAULT_ITEM_COL.r, DEFAULT_ITEM_COL.g, DEFAULT_ITEM_COL.b);
+
+                    object.mesh.material.color.setRGB(ITEM_SELECTED_COL.r, ITEM_SELECTED_COL.g, ITEM_SELECTED_COL.b);
+
+                    _this3._currSelectedItem = object.mesh;
                 }
             };
 
@@ -49443,7 +49548,6 @@ var UI = function () {
 
             for (var k in _assetManager.AssetManager.assets.texture.ui.cubemap) {
                 var tex = _assetManager.AssetManager.assets.texture.ui.cubemap[k];
-                console.log(this._ui);
                 this._add(k, this._ui.skybox, {
                     background: this._textures.background,
                     button: tex
@@ -49726,7 +49830,7 @@ exports.default = new UI();
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49741,11 +49845,11 @@ var _htmlView = __webpack_require__(8);
 
 var _htmlView2 = _interopRequireDefault(_htmlView);
 
-var _htmlTextArea = __webpack_require__(28);
+var _htmlTextArea = __webpack_require__(29);
 
 var _htmlTextArea2 = _interopRequireDefault(_htmlTextArea);
 
-var _threeView = __webpack_require__(29);
+var _threeView = __webpack_require__(30);
 
 var _threeView2 = _interopRequireDefault(_threeView);
 
@@ -49788,7 +49892,7 @@ exports.THREEView = _threeView2.default;
 exports.MainView = _mainView2.default;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49826,7 +49930,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 
-var _artflow = __webpack_require__(33);
+var _artflow = __webpack_require__(34);
 
 var Artflow = _interopRequireWildcard(_artflow);
 
@@ -49926,7 +50030,10 @@ var Main = function () {
         key: '_initData',
         value: function _initData(w, h, callback) {
 
-            MainView.init(w, h, this._renderer, ModuleManager.vr);
+            // Hides the 'loading...' message,
+            // and keeps reference to renderer.
+            MainView.ready(w, h, this._renderer, ModuleManager.vr);
+
             ModuleManager.init();
 
             // Gives an access to the controllers for modules needing it.
@@ -49946,7 +50053,7 @@ exports.default = new Main();
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49957,15 +50064,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.utils = exports.view = exports.modules = exports.vr = undefined;
 
-var _vr = __webpack_require__(59);
+var _vr = __webpack_require__(58);
 
 var vr = _interopRequireWildcard(_vr);
 
-var _modules = __webpack_require__(40);
+var _modules = __webpack_require__(41);
 
 var modules = _interopRequireWildcard(_modules);
 
-var _view = __webpack_require__(31);
+var _view = __webpack_require__(32);
 
 var view = _interopRequireWildcard(_view);
 
@@ -50008,7 +50115,7 @@ exports.view = view;
 exports.utils = utils;
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50019,11 +50126,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ViveController = exports.FPSControls = undefined;
 
-var _fpsController = __webpack_require__(35);
+var _fpsController = __webpack_require__(36);
 
 var _fpsController2 = _interopRequireDefault(_fpsController);
 
-var _viveController = __webpack_require__(36);
+var _viveController = __webpack_require__(37);
 
 var _viveController2 = _interopRequireDefault(_viveController);
 
@@ -50033,7 +50140,7 @@ exports.FPSControls = _fpsController2.default;
 exports.ViveController = _viveController2.default;
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50152,7 +50259,7 @@ exports.default = FPSControls;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50164,7 +50271,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _math = __webpack_require__(57);
+var _math = __webpack_require__(56);
 
 var _math2 = _interopRequireDefault(_math);
 
@@ -50183,6 +50290,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var MIN_SIZE_SELECTION = 0.25;
 var MAX_SIZE_SELECTION = 1.5;
 var SIZE_SCALE_SPEED = 0.15;
+
+var GLOW = [new THREE.Color(0.0, 0.0, 0.0), new THREE.Color(52.0 / 255.0, 152.0 / 255.0, 219.0 / 255.0)];
+var GLOW_TIME = 0.65;
 
 var ViveController = function (_THREE$Object3D) {
     _inherits(ViveController, _THREE$Object3D);
@@ -50210,6 +50320,12 @@ var ViveController = function (_THREE$Object3D) {
         _this.matrixAutoUpdate = false;
 
         _this._axesDiff = new Array(2);
+
+        _this.glow = {
+            delta: 0.0,
+            meshes: [],
+            target: 1
+        };
 
         var self = _this;
         _this.userData.vrui = {};
@@ -50259,6 +50375,17 @@ var ViveController = function (_THREE$Object3D) {
                 triggerEvent: function triggerEvent() {
                     self._triggerBoolButton('menu', self._gamepad.buttons[3].pressed);
                 }
+            },
+            undo: {
+                pressed: false,
+                triggerEvent: function triggerEvent() {
+                    if (self.buttons.undo.pressed !== self._gamepad.buttons[2].pressed) {
+                        self.buttons.undo.pressed = self._gamepad.buttons[2].pressed;
+                        if (self.buttons.undo.pressed) self.dispatchEvent({
+                            type: 'undo'
+                        });
+                    }
+                }
             }
         };
 
@@ -50267,7 +50394,7 @@ var ViveController = function (_THREE$Object3D) {
 
     _createClass(ViveController, [{
         key: 'update',
-        value: function update() {
+        value: function update(data) {
 
             this._gamepad = this._findGamepad(this._gamepadID);
             if (this._gamepad === undefined || this._gamepad.pose === undefined) {
@@ -50291,6 +50418,57 @@ var ViveController = function (_THREE$Object3D) {
             // Sends trigger / release event for every registered button.
             for (var bID in this.buttons) {
                 this.buttons[bID].triggerEvent();
+            } // Makes selected material glow (e.g: half of controller).
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = this.glow.meshes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var mat = _step.value;
+
+                    mat.emissive.lerp(GLOW[this.glow.target], this.glow.delta / GLOW_TIME);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            if (this.glow.delta >= GLOW_TIME) {
+                this.glow.target = (this.glow.target + 1) % 2;
+                this.glow.delta = 0.0;
+            }
+
+            this.glow.delta += data.delta;
+        }
+    }, {
+        key: 'addGlow',
+        value: function addGlow(id) {
+
+            var root = this.children[0];
+            for (var i = 0; i < root.children.length; ++i) {
+                var elt = root.children[i];
+                elt.material = elt.material.clone();
+                if (elt.name === id) this.glow.meshes.push(elt.material);
+            }
+        }
+    }, {
+        key: 'eraseGlow',
+        value: function eraseGlow(id) {
+
+            for (var i = 0; i < this.glow.meshes.length; ++i) {
+                var elt = this.glow.meshes[i];
+                if (elt.name === id) this.glow.meshes.splice(i, 1);
             }
         }
     }, {
@@ -50360,13 +50538,13 @@ exports.default = ViveController;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _main = __webpack_require__(32);
+var _main = __webpack_require__(33);
 
 var _main2 = _interopRequireDefault(_main);
 
@@ -50414,7 +50592,7 @@ window.onload = function () {
 };
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50455,11 +50633,11 @@ var _utils = __webpack_require__(5);
 
 var Utils = _interopRequireWildcard(_utils);
 
-var _controller = __webpack_require__(34);
+var _controller = __webpack_require__(35);
 
 var Controller = _interopRequireWildcard(_controller);
 
-var _ui = __webpack_require__(30);
+var _ui = __webpack_require__(31);
 
 var _ui2 = _interopRequireDefault(_ui);
 
@@ -50496,7 +50674,8 @@ var CONTROLLER_TO_ACTION = {
     triggerdown: 'interactDown',
     triggerup: 'interactUp',
     axisChanged: 'axisChanged',
-    menu: 'menu'
+    menu: 'menu',
+    undo: 'undo'
 };
 
 var Control = function () {
@@ -50593,10 +50772,10 @@ var Control = function () {
         }
     }, {
         key: '_updateVR',
-        value: function _updateVR() {
+        value: function _updateVR(data) {
 
-            this._controllers[0].update();
-            this._controllers[1].update();
+            this._controllers[0].update(data);
+            this._controllers[1].update(data);
 
             // Keeps track of controllers orientation
             // relative to the world origin.
@@ -50656,12 +50835,14 @@ var Control = function () {
             // This callback is in charge of stopping event propagation
             // if the UI intercept input events.
             var triggerCallback = function triggerCallback() {
+
                 _ui2.default.setPressed(true);
                 return !_ui2.default.hover;
             };
             var releaseCallback = function releaseCallback() {
+
                 _ui2.default.setPressed(false);
-                return true;
+                return !_ui2.default.hover;
             };
             // We will put the events on the UI as the most important event.
             // UI events have priority 0, meaning they are executed first and
@@ -50712,6 +50893,8 @@ var Control = function () {
 
                 var viveController = new ViveController(i, meshes[i]);
                 viveController.standingMatrix = renderer.vr.getStandingMatrix();
+                viveController.addGlow('menubutton');
+
                 _this._controllers[i] = viveController;
                 _mainView2.default.addToScene(_this._controllers[i]);
             };
@@ -50840,12 +51023,12 @@ var Control = function () {
             // and also because it does not make sense to change the binding.
             document.addEventListener('keydown', function (event) {
                 switch (event.keyCode) {
-                    case 49:
-                        // TODO: To remove (only for debug)
+                    case 89:
+                        // TODO: To remove (only for debug) // U
                         EventDispatcher.dispatch('undo');
                         break;
-                    case 50:
-                        // TODO: To remove (only for debug)
+                    case 85:
+                        // TODO: To remove (only for debug) // Y
                         EventDispatcher.dispatch('redo');
                         break;
                     case 65:
@@ -50928,7 +51111,7 @@ exports.default = new Control();
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51026,7 +51209,7 @@ var Manager = function () {
 exports.default = new Manager();
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51037,15 +51220,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ToolModule = exports.ControlModule = exports.ModuleManager = undefined;
 
-var _moduleManager = __webpack_require__(39);
+var _moduleManager = __webpack_require__(40);
 
 var _moduleManager2 = _interopRequireDefault(_moduleManager);
 
-var _controlModule = __webpack_require__(38);
+var _controlModule = __webpack_require__(39);
 
 var _controlModule2 = _interopRequireDefault(_controlModule);
 
-var _toolModule = __webpack_require__(41);
+var _toolModule = __webpack_require__(42);
 
 var _toolModule2 = _interopRequireDefault(_toolModule);
 
@@ -51085,7 +51268,7 @@ exports.ControlModule = _controlModule2.default;
 exports.ToolModule = _toolModule2.default;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51096,33 +51279,33 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * ArtFlow application
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * https://github.com/artflow-vr/artflow
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * MIT License
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * Copyright (c) 2017 artflow
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * Permission is hereby granted, free of charge, to any person obtaining a copy
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * of this software and associated documentation files (the "Software"), to deal
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * in the Software without restriction, including without limitation the rights
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * copies of the Software, and to permit persons to whom the Software is
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * furnished to do so, subject to the following conditions:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * The above copyright notice and this permission notice shall be included in all
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * copies or substantial portions of the Software.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * SOFTWARE.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * ArtFlow application
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * https://github.com/artflow-vr/artflow
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * MIT License
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Copyright (c) 2017 artflow
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Permission is hereby granted, free of charge, to any person obtaining a copy
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * of this software and associated documentation files (the "Software"), to deal
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * in the Software without restriction, including without limitation the rights
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * copies of the Software, and to permit persons to whom the Software is
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * furnished to do so, subject to the following conditions:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * The above copyright notice and this permission notice shall be included in all
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * copies or substantial portions of the Software.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
-var _tool = __webpack_require__(46);
+var _tool = __webpack_require__(47);
 
 var Tool = _interopRequireWildcard(_tool);
 
@@ -51134,33 +51317,21 @@ var _mainView = __webpack_require__(1);
 
 var _mainView2 = _interopRequireDefault(_mainView);
 
-var _ui = __webpack_require__(30);
+var _ui = __webpack_require__(31);
 
 var _ui2 = _interopRequireDefault(_ui);
 
-var _particleShader = __webpack_require__(50);
+var _particleShader = __webpack_require__(27);
 
 var _particleShader2 = _interopRequireDefault(_particleShader);
 
-var _particleShader3 = __webpack_require__(51);
-
-var _particleShader4 = _interopRequireDefault(_particleShader3);
-
-var _particleHelix = __webpack_require__(49);
+var _particleHelix = __webpack_require__(50);
 
 var _particleHelix2 = _interopRequireDefault(_particleHelix);
 
-var _positionUpdate = __webpack_require__(53);
-
-var _positionUpdate2 = _interopRequireDefault(_positionUpdate);
-
-var _positionHelix = __webpack_require__(52);
+var _positionHelix = __webpack_require__(51);
 
 var _positionHelix2 = _interopRequireDefault(_positionHelix);
-
-var _velocityUpdate = __webpack_require__(54);
-
-var _velocityUpdate2 = _interopRequireDefault(_velocityUpdate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51170,6 +51341,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var AssetManager = Utils.AssetManager;
 var EventDispatcher = Utils.EventDispatcher;
+
+var BASE_TOOL = 'Brush';
 
 var ToolModule = function () {
     function ToolModule() {
@@ -51226,15 +51399,18 @@ var ToolModule = function () {
 
             // Sets the name of the preview to find it more easily.
             if (tool.preview) {
-                tool.preview.name = 'preview';
-                tool.preview.position.z -= 0.07;
-                tool.preview.scale.set(0.01, 0.01, 0.01);
+                var prev = tool.preview;
+                prev.name = 'preview';
+                prev.position.z -= 0.07;
+                prev.scale.set(0.01, 0.01, 0.01);
+
+                tool.previews = new Array(2);
+                tool.previews[0] = prev.clone();
+                tool.previews[1] = prev.clone();
             }
 
             // Adds the tool to the UI if a texture was provided.
             if (!tool.uiTexture) return;
-
-            console.log(tool.uiTexture);
 
             _ui2.default.addTool({ id: toolID, data: tool }, AssetManager.assets.texture.ui['button-back'], this._onUISelection.bind(this));
         }
@@ -51362,10 +51538,10 @@ var ToolModule = function () {
             this.instanciate('Water');
             this.instanciate('Tree');
 
-            this._selected[0] = this._instance.Water[0];
-            this._selected[1] = this._instance.Water[1];
-
-            // TODO: Add onEnterChild & onExitChild event trigger.
+            for (var i = 0; i < 2; ++i) {
+                this._selected[i] = this._instance[BASE_TOOL][i];
+                this._selected[i]._onEnter();
+            }
 
             /*
                 The Code below registers every supported events, such as the
@@ -51424,8 +51600,8 @@ var ToolModule = function () {
             var instances = null;
             for (var toolID in this._instance) {
                 instances = this._instance[toolID];
-                instances[0]._update(data);
-                instances[1]._update(data);
+                instances[0]._update(data, 0);
+                instances[1]._update(data, 1);
             }
         }
     }, {
@@ -51433,6 +51609,9 @@ var ToolModule = function () {
         value: function setControllerRef(controllers) {
 
             this._controllers = controllers;
+            // Adds preview above each controller.
+            this._changeControllerPreview(0, BASE_TOOL);
+            this._changeControllerPreview(1, BASE_TOOL);
         }
     }, {
         key: '_onColorChange',
@@ -51449,31 +51628,17 @@ var ToolModule = function () {
 
             if (!evt.pressed) return;
 
-            this._selected[controllerID] = this._instance[toolID][controllerID];
-            // TODO: handle onExit.
+            var inst = this._instance[toolID][controllerID];
+            if (this._selected[controllerID] === inst) return;
+
+            this._selected[controllerID]._onExit();
+            this._selected[controllerID] = inst;
             this._selected[controllerID]._onEnter();
 
             //
             // Handles Tool preview
             //
-
-            if (this._controllers === null || controllerID >= this._controllers.filter(function () {
-                return true;
-            }).length) return;
-
-            var controller = this._controllers[controllerID];
-
-            // Removes previous preview.
-            for (var i = controller.children.length - 1; i >= 0; i--) {
-                if (controller.children[i].name === 'preview') {
-                    controller.remove(controller.children[i]);
-                    break;
-                }
-            }
-
-            // Adds new preview
-            var preview = this._tools[toolID].preview;
-            if (preview) controller.add(preview);
+            this._changeControllerPreview(controllerID, toolID);
         }
     }, {
         key: '_onItemSelection',
@@ -51494,19 +51659,56 @@ var ToolModule = function () {
                     _this2._selected[data.controllerID].triggerEvent(eventID, data, 'use');
                 },
                 trigger: function trigger(data) {
-                    var cmd = _this2._selected[data.controllerID].triggerEvent(eventID, data, 'trigger');
-                    if (cmd) _this2.undoStack.push(cmd);
 
-                    for (var i = _this2.redoStack.length - 1; i >= 0; --i) {
-                        var c = _this2.redoStack.pop();
-                        if (c.clear) c.clear();
-                    }
+                    var cmd = _this2._selected[data.controllerID].triggerEvent(eventID, data, 'trigger');
+                    _this2._pushActionToUndo(cmd);
                 },
                 release: function release(data) {
 
-                    _this2._selected[data.controllerID].triggerEvent(eventID, data, 'release');
+                    var cmd = _this2._selected[data.controllerID].triggerEvent(eventID, data, 'release');
+                    _this2._pushActionToUndo(cmd);
                 }
             };
+        }
+    }, {
+        key: '_pushActionToUndo',
+        value: function _pushActionToUndo(cmd) {
+
+            if (cmd) this.undoStack.push(cmd);
+
+            for (var i = this.redoStack.length - 1; i >= 0; --i) {
+                var c = this.redoStack.pop();
+                if (c.clear) c.clear();
+            }
+        }
+
+        /**
+         * Changes the 3D model displayed on a given controller.
+         *
+         * @memberof ToolModule
+         */
+
+    }, {
+        key: '_changeControllerPreview',
+        value: function _changeControllerPreview(controllerID, toolID) {
+
+            if (this._controllers === null || controllerID >= this._controllers.filter(function () {
+                return true;
+            }).length) return;
+
+            var controller = this._controllers[controllerID];
+
+            // Removes previous preview.
+            for (var i = controller.children.length - 1; i >= 0; i--) {
+                if (controller.children[i].name === 'preview') {
+                    controller.remove(controller.children[i]);
+                    break;
+                }
+            }
+
+            // Adds new preview
+            var preview = this._tools[toolID].previews[controllerID];
+            if (preview) controller.add(preview);
         }
     }, {
         key: '_registerBasicTools',
@@ -51541,96 +51743,79 @@ var ToolModule = function () {
         value: function _registerBasicItems() {
 
             var itemsTextures = AssetManager.assets.texture.ui.item;
+            var toolTextures = AssetManager.assets.texture.tool;
 
             //
             // PARTICLES
             //
-            this.registerToolItem('Particle', 'snow', {
-                uiTexture: AssetManager.assets.texture.ui.item['snow-item'],
-                data: {
-                    brushSize: 3,
-                    thickness: 10,
-                    initialParticlesPerEmitter: 20,
-                    maxParticlesPerEmitter: 512 * 512,
-                    bufferSide: 512,
-                    maxEmitters: 1000,
-                    debugPlane: false,
-                    positionInitialTex: THREE.ImageUtils.generateRandomDataTexture(512, 512),
-                    velocityInitialTex: THREE.ImageUtils.generateDataTexture(512, 512, new THREE.Color(0.5, 0.495, 0.5)),
-                    renderingUniforms: {
-                        pointMaxSize: { type: 'f', value: 200 },
-                        brushSize: { type: 'f', value: 3 } },
-                    positionUniforms: {
-                        normVelocity: { type: 'f', value: 10.0 },
-                        lifespanEntropy: { type: 'f', value: 0.001 }
-                    },
-                    renderingShader: _particleShader2.default,
-                    positionUpdate: _positionUpdate2.default,
-                    velocityUpdate: _velocityUpdate2.default
-                }
-            });
-            this.registerToolItem('Particle', 'spiral', {
-                uiTexture: AssetManager.assets.texture['spiral-item'],
-                data: {
-                    brushSize: 3,
-                    thickness: 10,
-                    initialParticlesPerEmitter: 20,
-                    maxParticlesPerEmitter: 512 * 512,
-                    bufferSide: 512,
-                    maxEmitters: 20,
-                    debugPlane: false,
-                    positionInitialTex: THREE.ImageUtils.generateRandomDataTexture(512, 512),
-                    velocityInitialTex: THREE.ImageUtils.generateDataTexture(512, 512, new THREE.Color(0.5, 0.495, 0.5)),
-                    renderingUniforms: {
-                        pointMaxSize: { type: 'f', value: 20 },
-                        brushSize: { type: 'f', value: 3 },
-                        rotation: { type: '3f', value: [180.0 * Math.PI / 180.0, 0 / 180.0, 0 / 180.0] }
-                    },
-                    positionUniforms: {
-                        normVelocity: { type: 'f', value: 10.0 },
-                        lifespanEntropy: { type: 'f', value: 0.001 },
-                        a: { type: 'f', value: 1.0 },
-                        b: { type: 'f', value: 1.0 }
-                    },
-                    renderingShader: _particleHelix2.default,
-                    positionUpdate: _positionHelix2.default,
-                    velocityUpdate: _velocityUpdate2.default
-                }
-            });
-            this.registerToolItem('Particle', 'confetti', {
-                uiTexture: AssetManager.assets.texture['confetti-item'],
-                data: {
-                    brushSize: 3,
-                    thickness: 10,
-                    initialParticlesPerEmitter: 20,
-                    maxParticlesPerEmitter: 512 * 512,
-                    bufferSide: 512,
-                    maxEmitters: 20,
-                    debugPlane: false,
-                    positionInitialTex: THREE.ImageUtils.generateRandomDataTexture(512, 512),
-                    velocityInitialTex: THREE.ImageUtils.generateRandomDataTexture(512, 512),
-                    renderingUniforms: {
-                        pointMaxSize: { type: 'f', value: 20 },
-                        brushSize: { type: 'f', value: 3 }
-                    },
-                    positionUniforms: {
-                        normVelocity: { type: 'f', value: 10.0 },
-                        lifespanEntropy: { type: 'f', value: 0.001 }
-                    },
-                    renderingShader: _particleShader4.default,
-                    positionUpdate: _positionUpdate2.default,
-                    velocityUpdate: _velocityUpdate2.default
+            this.registerToolItems('Particle', {
+                snow: {
+                    uiTexture: itemsTextures.snow,
+                    data: {
+
+                        velocityInitialTex: THREE.ImageUtils.generateDataTexture(20, 20, new THREE.Color(0.5, 0.495, 0.5)),
+                        renderingUniforms: {
+                            pointMaxSize: { type: 'f', value: 20 },
+                            brushSize: { type: 'f', value: 3 } }
+                    }
+                },
+                spiral: {
+                    uiTexture: itemsTextures.spiral,
+                    data: {
+                        velocityInitialTex: THREE.ImageUtils.generateDataTexture(20, 20, new THREE.Color(0.5, 0.495, 0.5)),
+                        renderingUniforms: {
+                            pointMaxSize: { type: 'f', value: 20 },
+                            brushSize: { type: 'f', value: 3 },
+                            rotation: { type: '3f', value: [180.0 * Math.PI / 180.0, 0 / 180.0, 0 / 180.0] }
+                        },
+                        positionUniforms: {
+                            normVelocity: { type: 'f', value: 10.0 },
+                            lifespanEntropy: { type: 'f', value: 0.001 },
+                            a: { type: 'f', value: 1.0 },
+                            b: { type: 'f', value: 1.0 }
+                        },
+                        renderingShader: _particleHelix2.default,
+                        positionUpdate: _positionHelix2.default
+                    }
+                },
+                confetti: {
+                    uiTexture: itemsTextures.confetti,
+                    data: {
+                        renderingShader: _particleShader2.default
+                    }
                 }
             });
 
+            //
+
             this.registerToolItems('Brush', {
-                squareAnim: {
-                    uiTexture: itemsTextures['brush-square'],
-                    data: { shaderPath: 'squares-shader', timeMod: 100, timeOffset: 0.5 }
+                brushBasic: {
+                    uiTexture: itemsTextures['brush-basic'],
+                    data: { 'static': true }
+                },
+                brushUnified: {
+                    uiTexture: itemsTextures['brush-unified'],
+                    data: {
+                        'static': true,
+                        'texture': toolTextures.brush1,
+                        'normal': toolTextures.brush1_N
+                    }
+                },
+                waveAnim: {
+                    uiTexture: itemsTextures['brush-wave'],
+                    data: { shaderPath: 'wave-shader' }
                 },
                 rainbowAnim: {
                     uiTexture: itemsTextures['brush-rainbow'],
                     data: { shaderPath: 'rainbow-shader', timeModCondition: 3 }
+                },
+                electricAnim: {
+                    uiTexture: itemsTextures['brush-lightning'],
+                    data: { shaderPath: 'electric-shader', thicknessMult: 2.0 }
+                },
+                squareAnim: {
+                    uiTexture: itemsTextures['brush-square'],
+                    data: { shaderPath: 'squares-shader', timeMod: 100, timeOffset: 0.5 }
                 },
                 matrixAnim: {
                     uiTexture: itemsTextures['brush-matrix'],
@@ -51639,10 +51824,6 @@ var ToolModule = function () {
                 fractalAnim: {
                     uiTexture: itemsTextures['brush-fractal'],
                     data: { shaderPath: 'fractal-shader' }
-                },
-                electricAnim: {
-                    uiTexture: itemsTextures['brush-lightning'],
-                    data: { shaderPath: 'electric-shader', thicknessMult: 2.0 }
                 },
                 starsAnim: {
                     uiTexture: itemsTextures['brush-stars'],
@@ -51671,10 +51852,6 @@ var ToolModule = function () {
                 voronoiAnim: {
                     uiTexture: itemsTextures['brush-confettis  '],
                     data: { shaderPath: 'voronoi-shader' }
-                },
-                waveAnim: {
-                    uiTexture: itemsTextures['brush-wave'],
-                    data: { shaderPath: 'wave-shader' }
                 }
             });
 
@@ -51713,7 +51890,7 @@ exports.default = new ToolModule();
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51752,7 +51929,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _view = __webpack_require__(31);
+var _view = __webpack_require__(32);
 
 var _abstractBrushStroke = __webpack_require__(9);
 
@@ -51774,10 +51951,8 @@ var AbstractBrushAnimatedStroke = function (_AbstractBrushStroke) {
     function AbstractBrushAnimatedStroke(isVR, options) {
         _classCallCheck(this, AbstractBrushAnimatedStroke);
 
-        var _this = _possibleConstructorReturn(this, (AbstractBrushAnimatedStroke.__proto__ || Object.getPrototypeOf(AbstractBrushAnimatedStroke)).call(this, isVR, 'material_test_shader'));
-
-        _this.options = Object.assign({}, options);
-        (0, _object.setPropIfUndefined)(_this.options, {
+        var opt = Object.assign({}, options);
+        (0, _object.setPropIfUndefined)(opt, {
             timeOffset: 0.01,
             timeMod: 0,
             timeModCondition: 0,
@@ -51785,24 +51960,24 @@ var AbstractBrushAnimatedStroke = function (_AbstractBrushStroke) {
             thicknessMult: 1.0
         });
 
-        _this.shader = __webpack_require__(65)("./" + _this.options.shaderPath);
-        _this.uniforms = THREE.UniformsUtils.clone(_this.shader.uniforms);
+        var shader = __webpack_require__(64)("./" + opt.shaderPath);
+        var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
         var material = new THREE.ShaderMaterial({
-            uniforms: _this.uniforms,
-            vertexShader: _this.shader.vertex,
-            fragmentShader: _this.shader.fragment,
+            uniforms: uniforms,
+            vertexShader: shader.vertex,
+            fragmentShader: shader.fragment,
             side: THREE.DoubleSide,
             transparent: true
         });
 
-        _this._helper._material = material.clone();
+        var _this = _possibleConstructorReturn(this, (AbstractBrushAnimatedStroke.__proto__ || Object.getPrototypeOf(AbstractBrushAnimatedStroke)).call(this, isVR, material));
 
-        _this.timeOffset = _this.options.timeOffset;
-        _this.timeMod = _this.options.timeMod;
-        _this.timeModCondition = _this.options.timeModCondition;
-        _this.timeModConditionStart = _this.options.timeModConditionStart;
-        _this._helper._thickness *= _this.options.thicknessMult;
+        _this.timeOffset = opt.timeOffset;
+        _this.timeMod = opt.timeMod;
+        _this.timeModCondition = opt.timeModCondition;
+        _this.timeModConditionStart = opt.timeModConditionStart;
+        _this._helper._thickness *= opt.thicknessMult;
 
         return _this;
     }
@@ -51816,9 +51991,8 @@ var AbstractBrushAnimatedStroke = function (_AbstractBrushStroke) {
                 if (this.timeModCondition && Math.floor(m2.material.uniforms.uTime.value + 1) % this.timeModCondition === 0) m2.material.uniforms.uTime.value = this.timeModConditionStart;
                 if (this.timeMod) m2.material.uniforms.uTime.value %= this.timeMod;
                 m2.material.uniforms.uTime.value += this.timeOffset;
-                // TODO: Remove Vector2 instanciation, you can just instanciate it
-                // once and update its value.
-                m2.material.uniforms.vResolution.value = new THREE.Vector2(_view.MainView._dimensions.width, _view.MainView._dimensions.height);
+                m2.material.uniforms.vResolution.value.x = _view.MainView._dimensions.width;
+                m2.material.uniforms.vResolution.value.y = _view.MainView._dimensions.height;
             }
         }
     }]);
@@ -51830,11 +52004,11 @@ exports.default = AbstractBrushAnimatedStroke;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(THREE) {
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -51850,7 +52024,7 @@ var _abstractBrushStroke = __webpack_require__(9);
 
 var _abstractBrushStroke2 = _interopRequireDefault(_abstractBrushStroke);
 
-var _abstractBrushAnimatedStroke = __webpack_require__(42);
+var _abstractBrushAnimatedStroke = __webpack_require__(43);
 
 var _abstractBrushAnimatedStroke2 = _interopRequireDefault(_abstractBrushAnimatedStroke);
 
@@ -51889,6 +52063,24 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SIZE_FACTOR = 0.2;
 
+var DEFAULT_MAT = new THREE.MeshStandardMaterial({
+    side: THREE.DoubleSide,
+    transparent: true,
+    depthTest: false,
+    metalness: 0.0,
+    roughness: 0.3
+});
+
+var TEXTURE_MAT = new THREE.MeshPhongMaterial({
+    side: THREE.DoubleSide,
+    map: null,
+    normalMap: null,
+    transparent: true,
+    depthTest: false,
+    shininess: 40,
+    normalScale: new THREE.Vector2(2, 2)
+});
+
 var BrushTool = function (_AbstractTool) {
     _inherits(BrushTool, _AbstractTool);
 
@@ -51924,10 +52116,19 @@ var BrushTool = function (_AbstractTool) {
         _this.registeredStrokes = {};
         for (var k in BrushTool.items) {
             var data = BrushTool.items[k].data;
-            _this.registeredStrokes[k] = new _abstractBrushAnimatedStroke2.default(isVR, data);
+            if (!data.static) {
+                _this.registeredStrokes[k] = new _abstractBrushAnimatedStroke2.default(isVR, data);
+                continue;
+            }
+            if (!data.texture) {
+                _this.registeredStrokes[k] = new _abstractBrushStroke2.default(isVR, DEFAULT_MAT);
+                continue;
+            }
+            var material = TEXTURE_MAT;
+            material.map = data.texture;
+            material.normalMap = data.normal;
+            _this.registeredStrokes[k] = new _abstractBrushStroke2.default(isVR, material);
         }
-        _this.registeredStrokes.withoutTex = new _abstractBrushStroke2.default(isVR, 'material_without_tex');
-        _this.registeredStrokes.withTex = new _abstractBrushStroke2.default(isVR);
 
         _this.currentStroke = stroke;
         _this._lastHsv = { h: 0.0, s: 0.0, v: 0.0 };
@@ -51960,7 +52161,7 @@ var BrushTool = function (_AbstractTool) {
         key: 'trigger',
         value: function trigger() {
 
-            this.registeredStrokes[this.currentStroke].trigger(this);
+            return this.registeredStrokes[this.currentStroke].trigger(this);
         }
     }, {
         key: 'useAxisChanged',
@@ -51995,9 +52196,10 @@ var BrushTool = function (_AbstractTool) {
 }(_abstractTool2.default);
 
 exports.default = BrushTool;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52040,6 +52242,10 @@ var _abstractTool = __webpack_require__(2);
 
 var _abstractTool2 = _interopRequireDefault(_abstractTool);
 
+var _addCommand = __webpack_require__(10);
+
+var _addCommand2 = _interopRequireDefault(_addCommand);
+
 var _assetManager = __webpack_require__(3);
 
 var _baseShader = __webpack_require__(4);
@@ -52049,6 +52255,18 @@ var _baseShader2 = _interopRequireDefault(_baseShader);
 var _mainView = __webpack_require__(1);
 
 var _mainView2 = _interopRequireDefault(_mainView);
+
+var _particleShader = __webpack_require__(27);
+
+var _particleShader2 = _interopRequireDefault(_particleShader);
+
+var _positionUpdate = __webpack_require__(52);
+
+var _positionUpdate2 = _interopRequireDefault(_positionUpdate);
+
+var _velocityUpdate = __webpack_require__(53);
+
+var _velocityUpdate2 = _interopRequireDefault(_velocityUpdate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -52063,11 +52281,11 @@ var PrimitivesRenderer = function () {
         _classCallCheck(this, PrimitivesRenderer);
 
         this.options = options;
-        this._bufferSide = PrimitivesRenderer._getNextPowerTwo(this.options.bufferSide);
+        this._bufferSide = this.options.bufferSide;
         this._renderer = _mainView2.default._renderer;
         this._t = 0.0;
 
-        // Set up RTTs
+        // Sets up RTTs
         this.initPositionRenderPass();
 
         this._indices = [];
@@ -52077,6 +52295,7 @@ var PrimitivesRenderer = function () {
     _createClass(PrimitivesRenderer, [{
         key: 'initIndicesArray',
         value: function initIndicesArray() {
+
             for (var i = this._bufferSide - 1; i >= 0; i--) {
                 for (var j = this._bufferSide - 1; j >= 0; j--) {
                     this._indices.push(i * this._bufferSide + j);
@@ -52086,12 +52305,14 @@ var PrimitivesRenderer = function () {
     }, {
         key: 'getAvailableIndex',
         value: function getAvailableIndex() {
+
             var idx = this._indices.pop();
             return { x: idx % this._bufferSide, y: Math.floor(idx / this._bufferSide) };
         }
     }, {
         key: 'initPositionRenderPass',
         value: function initPositionRenderPass() {
+
             // Set up cameras
             this._positionsCamera = new THREE.OrthographicCamera(this._bufferSide / -2, this._bufferSide / 2, this._bufferSide / 2, this._bufferSide / -2, -10000, 10000);
 
@@ -52132,9 +52353,12 @@ var PrimitivesRenderer = function () {
                 vertexShader: this.options.positionUpdate.vertex,
                 fragmentShader: this.options.positionUpdate.fragment
             });
+
             for (var elt in this.options.positionUniforms) {
                 this._positionsTargetTextureMat.uniforms[elt] = this.options.positionUniforms[elt];
-            }this._velocitiesTargetTextureMat = new THREE.ShaderMaterial({
+            }this._positionsTargetTextureMat.needsUpdate = true;
+
+            this._velocitiesTargetTextureMat = new THREE.ShaderMaterial({
                 uniforms: {
                     tPositionsMap: { type: 't', value: this._positionBufferTex1 },
                     tVelocitiesMap: { type: 't', value: this._velocityBufferTex1 },
@@ -52146,17 +52370,20 @@ var PrimitivesRenderer = function () {
                 vertexShader: this.options.velocityUpdate.vertex,
                 fragmentShader: this.options.velocityUpdate.fragment
             });
+
             for (var _elt in this.options.velocityUniforms) {
-                this._positionsTargetTextureMat.uniforms[_elt] = this.options.velocityUniforms[_elt];
+                this._velocitiesTargetTextureMat.uniforms[_elt] = this.options.velocityUniforms[_elt];
             }this._velocitiesTargetTextureMat.needsUpdate = true;
 
             // Setup render-to-texture scene
-            this._positionsTargetTextureGeo = new THREE.PlaneGeometry(this._bufferSide, this._bufferSide);
+            var plane = new THREE.PlaneGeometry(this._bufferSide, this._bufferSide);
+
+            this._positionsTargetTextureGeo = plane;
             this._positionsTargetTextureMesh = new THREE.Mesh(this._positionsTargetTextureGeo, this._positionsTargetTextureMat);
             this._positionsTargetTextureMesh.position.z = 1;
             this._positionRTTScene.add(this._positionsTargetTextureMesh);
 
-            this._velocitiesTargetTextureGeo = new THREE.PlaneGeometry(this._bufferSide, this._bufferSide);
+            this._velocitiesTargetTextureGeo = plane;
             this._velocitiesTargetTextureMesh = new THREE.Mesh(this._velocitiesTargetTextureGeo, this._velocitiesTargetTextureMat);
             this._velocitiesTargetTextureMesh.position.z = 1;
             this._velocityRTTScene.add(this._velocitiesTargetTextureMesh);
@@ -52169,19 +52396,28 @@ var PrimitivesRenderer = function () {
                 vertexShader: _baseShader2.default.vertex,
                 fragmentShader: _baseShader2.default.fragment
             });
-            this._debugPlaneGeo = new THREE.PlaneGeometry(this._bufferSide, this._bufferSide);
+
+            this._debugPlaneGeo = plane;
             this._debugPlaneMesh = new THREE.Mesh(this._debugPlaneGeo, this._debugPlaneMat);
         }
     }, {
         key: 'update',
         value: function update(dt) {
+
             this._t += dt;
             if (this._t < 0) this._t = 0;
+
             this._debugPlaneMat.uniforms.tSprite.value = this._positionRT2.texture;
 
             this._velocitiesTargetTextureMesh.material.uniforms.dt.value = dt;
             this._velocitiesTargetTextureMesh.material.uniforms.t.value = this._t;
-            this._renderer.render(this._velocityRTTScene, this._positionsCamera, this._velocityRT1, true);
+
+            if (this._renderer.vr.enabled) {
+                this._renderer.vr.enabled = false;
+                this._renderer.render(this._velocityRTTScene, this._positionsCamera, this._velocityRT1, true);
+                this._renderer.vr.enabled = true;
+            } else this._renderer.render(this._velocityRTTScene, this._positionsCamera, this._velocityRT1, true);
+
             var sw = this._velocityRT1;
             this._velocityRT1 = this._velocityRT2;
             this._velocityRT2 = sw;
@@ -52190,7 +52426,13 @@ var PrimitivesRenderer = function () {
             this._positionsTargetTextureMat.uniforms.tVelocitiesMap.value = this._velocityRT2.texture;
             this._positionsTargetTextureMesh.material.uniforms.dt.value = dt;
             this._positionsTargetTextureMesh.material.uniforms.t.value = this._t;
-            this._renderer.render(this._positionRTTScene, this._positionsCamera, this._positionRT1, true);
+
+            if (this._renderer.vr.enabled) {
+                this._renderer.vr.enabled = false;
+                this._renderer.render(this._positionRTTScene, this._positionsCamera, this._positionRT1, true);
+                this._renderer.vr.enabled = true;
+            } else this._renderer.render(this._positionRTTScene, this._positionsCamera, this._positionRT1, true);
+
             sw = this._positionRT1;
             this._positionRT1 = this._positionRT2;
             this._positionRT2 = sw;
@@ -52200,9 +52442,27 @@ var PrimitivesRenderer = function () {
 
             return this._positionRT2.texture;
         }
+    }, {
+        key: 'clear',
+        value: function clear() {
+
+            // TODO: This is actually gross. Eveything should be packed
+            // in a better way in order to avoid messing the memory
+            // up if the layout of the particle system changes.
+            this._positionRT1.dispose();
+            this._positionRT2.dispose();
+            this._velocityRT1.dispose();
+            this._velocityRT2.dispose();
+
+            this._positionInitialTex.dispose();
+            this._velocityInitialTex.dispose();
+
+            this._positionsTargetTextureGeo.dispose();
+        }
     }], [{
         key: '_getNextPowerTwo',
         value: function _getNextPowerTwo(nb) {
+
             var i = 1;
             while (i < nb) {
                 i *= 2;
@@ -52238,6 +52498,7 @@ var ParticleEmitter = function (_THREE$Object3D) {
         _this._primitivesRenderer._debugPlaneMesh.position.y = 1;
         _this._primitivesRenderer._debugPlaneMesh.position.z = 0;
         if (_this._particleSystem.options.debugPlane) _mainView2.default.addToMovingGroup(_this._primitivesRenderer._debugPlaneMesh);
+
         _this._updatedPositions = _this._primitivesRenderer.update(0);
 
         // geometry
@@ -52253,25 +52514,29 @@ var ParticleEmitter = function (_THREE$Object3D) {
         _this.particleShaderGeo.addAttribute('idx', new THREE.BufferAttribute(new Float32Array(_this._particleMaxCount * 2), 2).setDynamic(true));
 
         // material
-        _this._particleTexture = _assetManager.AssetManager.assets.texture.particle_raw;
+        var particleTex = _assetManager.AssetManager.assets.texture.tool.particle_raw;
+
         _this.particleShaderMat = new THREE.ShaderMaterial({
             transparent: true,
             depthWrite: false,
             uniforms: {
-                tSprite: { type: 't', value: _this._particleTexture },
+                tSprite: { type: 't', value: particleTex },
                 tPositions: { type: 't', value: _this._updatedPositions },
                 pointMaxSize: { type: 'f', value: _this.options.pointMaxSize },
-                particlesTexWidth: { type: 'f', value: PrimitivesRenderer._getNextPowerTwo(_this.options.bufferSide) }
+                particlesTexWidth: { type: 'f', value: PrimitivesRenderer._getNextPowerTwo(_this.options.bufferSide) },
+                pColor: { type: '3f', value: new THREE.Vector3(_this.options.color.r, _this.options.color.g, _this.options.color.b) }
             },
             blending: THREE.AdditiveBlending,
             vertexShader: _this.options.renderingShader.vertex,
             fragmentShader: _this.options.renderingShader.fragment
         });
+
         for (var elt in _this.options.renderingUniforms) {
             _this.particleShaderMat.uniforms[elt] = _this.options.renderingUniforms[elt];
         }_this.position.set(0, 0, 0);
 
         _this.init();
+
         return _this;
     }
 
@@ -52304,6 +52569,7 @@ var ParticleEmitter = function (_THREE$Object3D) {
     }, {
         key: 'init',
         value: function init() {
+
             this.particleGeometry = new THREE.Points(this.particleShaderGeo, this.particleShaderMat);
             this.particleGeometry.frustumCulled = false;
             _get(ParticleEmitter.prototype.__proto__ || Object.getPrototypeOf(ParticleEmitter.prototype), 'add', this).call(this, this.particleGeometry);
@@ -52311,8 +52577,16 @@ var ParticleEmitter = function (_THREE$Object3D) {
     }, {
         key: 'update',
         value: function update(delta) {
+
             this._updatedPositions = this._primitivesRenderer.update(delta);
             this.particleShaderMat.uniforms.tPositionsMap = this._updatedPositions;
+        }
+    }, {
+        key: 'clear',
+        value: function clear() {
+
+            this._primitivesRenderer.clear();
+            this.particleShaderGeo.dispose();
         }
     }]);
 
@@ -52322,10 +52596,36 @@ var ParticleEmitter = function (_THREE$Object3D) {
 var ParticleTool = function (_AbstractTool) {
     _inherits(ParticleTool, _AbstractTool);
 
-    function ParticleTool() {
+    function ParticleTool(options) {
         _classCallCheck(this, ParticleTool);
 
-        var _this2 = _possibleConstructorReturn(this, (ParticleTool.__proto__ || Object.getPrototypeOf(ParticleTool)).call(this));
+        var _this2 = _possibleConstructorReturn(this, (ParticleTool.__proto__ || Object.getPrototypeOf(ParticleTool)).call(this, options));
+
+        _this2.dynamic = true;
+        _this2.defaultOptions = {
+            brushSize: 3,
+            thickness: 100,
+            initialParticlesPerEmitter: 20 * 20,
+            maxParticlesPerEmitter: 20 * 20,
+            bufferSide: 20,
+            maxEmitters: 200,
+            debugPlane: false,
+            positionInitialTex: THREE.ImageUtils.generateRandomDataTexture(20, 20),
+            velocityInitialTex: THREE.ImageUtils.generateRandomDataTexture(20, 20),
+            renderingUniforms: {
+                pointMaxSize: { type: 'f', value: 20 },
+                brushSize: { type: 'f', value: 3 }
+            },
+            positionUniforms: {
+                normVelocity: { type: 'f', value: 10.0 },
+                lifespanEntropy: { type: 'f', value: 0.001 }
+            },
+            renderingShader: _particleShader2.default,
+            positionUpdate: _positionUpdate2.default,
+            velocityUpdate: _velocityUpdate2.default,
+            color: new THREE.Color(1.0, 1.0, 1.0)
+        };
+        _this2.setOptionsIfUndef(_this2.defaultOptions);
 
         _this2._thickness = _this2.options.thickness;
         _this2._maxEmitters = _this2.options.maxEmitters;
@@ -52335,19 +52635,21 @@ var ParticleTool = function (_AbstractTool) {
 
         // Initializing particles
         _this2._particleEmitters = [];
-        _this2.initCursorMesh();
 
         // preload a million random numbers
         _this2._randomIndex = 0;
         for (_this2._randomIndex = 1e5; _this2._randomIndex > 0; _this2._randomIndex--) {
             _this2.rand.push(Math.random() - 0.5);
-        }
-
-        // Bind functions to events
+        } // Bind functions to events
         _this2.registerEvent('interact', {
-            use: _this2.use.bind(_this2),
-            trigger: _this2.trigger.bind(_this2),
+
             release: _this2.release.bind(_this2)
+
+        });
+
+        _this2.registerEvent('colorChanged', function (hsv) {
+
+            _this2.options.color.setHSL(hsv.h, hsv.s, hsv.v);
         });
         return _this2;
     }
@@ -52355,64 +52657,53 @@ var ParticleTool = function (_AbstractTool) {
     _createClass(ParticleTool, [{
         key: '_spawnParticleEmitter',
         value: function _spawnParticleEmitter(data) {
-            if (this._particleEmitters.length < this._maxEmitters) {
-                var c = new ParticleEmitter(this._particlesPerEmitter, this);
-                this._particleEmitters.push(c);
-                this.worldGroup.addTHREEObject(c);
-                for (var i = 0; i < this._particlesPerEmitter; i++) {
-                    c.spawnParticle(data.position.world);
+
+            if (this._particleEmitters.length >= this._maxEmitters) return undefined;
+
+            var c = new ParticleEmitter(this._particlesPerEmitter, this);
+            this._particleEmitters.push(c);
+            this.worldGroup.addTHREEObject(c);
+            for (var i = 0; i < this._particlesPerEmitter; i++) {
+                c.spawnParticle(data.position.world);
+            }return new _addCommand2.default(this._particleEmitters, {
+                clear: function clear(pEmitter) {
+                    pEmitter.clear();
+                },
+                undo: function undo(pEmitter) {
+                    pEmitter.particleGeometry.visible = false;
+                },
+                redo: function redo(pEmitter) {
+                    pEmitter.particleGeometry.visible = true;
                 }
-            }
+            });
         }
     }, {
         key: 'getRandom',
         value: function getRandom() {
+
             if (++this._randomIndex >= this.rand.length) this._randomIndex = 1;
             return this.rand[this._randomIndex];
         }
     }, {
-        key: 'initCursorMesh',
-        value: function initCursorMesh() {
-            this._cursorMesh = new THREE.Mesh(new THREE.SphereGeometry(this.options.brushSize / 2, 16, 16, 0, Math.PI * 2, 0, Math.PI * 2), new THREE.MeshBasicMaterial({
-                color: 0xfff0000,
-                wireframe: true
-            }));
-            this._cursorMesh.visible = false;
-            this._cursorMesh.castShadow = false;
-            this._cursorMesh.receiveShadow = false;
-            // this.worldGroup.addTHREEObject( this._cursorMesh );
-        }
-    }, {
-        key: 'use',
-        value: function use(data) {
-            this._updateBrush(data.position.world);
-        }
-    }, {
-        key: '_updateBrush',
-        value: function _updateBrush(pointCoords) {
-            this._cursorMesh.position.x = pointCoords.x;
-            this._cursorMesh.position.y = pointCoords.y;
-            this._cursorMesh.position.z = pointCoords.z;
-        }
-    }, {
         key: 'update',
         value: function update(delta) {
+
             for (var i = 0; i < this._particleEmitters.length; i++) {
                 this._particleEmitters[i].update(delta.delta);
             }
         }
     }, {
-        key: 'trigger',
-        value: function trigger() {}
-    }, {
         key: 'release',
         value: function release(data) {
-            this._spawnParticleEmitter(data);
+
+            return this._spawnParticleEmitter(data);
         }
     }, {
         key: 'onItemChanged',
         value: function onItemChanged(id) {
+
             this.options = ParticleTool.items[id.slice(0)].data;
+            this.setOptionsIfUndef(this.defaultOptions);
         }
     }]);
 
@@ -52423,7 +52714,7 @@ exports.default = ParticleTool;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52604,6 +52895,8 @@ var TeleporterTool = function (_AbstractTool) {
             // Using Newton's second law of motion, we have something of the form:
             // 0.5 * g * t^2 + Vy0 * t + Oy0 = 0.
             var delta = vy * vy - 4 * HALF_GRAVITY_CONST * py;
+            if (delta <= 0.0) return 0.0;
+
             var sqrtDelta = Math.sqrt(delta);
             return (-vy - sqrtDelta) / GRAVITY_CONST;
         }
@@ -52647,7 +52940,7 @@ exports.default = TeleporterTool;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52658,23 +52951,23 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TreeTool = exports.TeleporterTool = exports.WaterTool = exports.ParticleTool = exports.BrushTool = undefined;
 
-var _brushTool = __webpack_require__(43);
+var _brushTool = __webpack_require__(44);
 
 var _brushTool2 = _interopRequireDefault(_brushTool);
 
-var _particleTool = __webpack_require__(44);
+var _particleTool = __webpack_require__(45);
 
 var _particleTool2 = _interopRequireDefault(_particleTool);
 
-var _waterTool = __webpack_require__(48);
+var _waterTool = __webpack_require__(49);
 
 var _waterTool2 = _interopRequireDefault(_waterTool);
 
-var _teleporterTool = __webpack_require__(45);
+var _teleporterTool = __webpack_require__(46);
 
 var _teleporterTool2 = _interopRequireDefault(_teleporterTool);
 
-var _treeTool = __webpack_require__(47);
+var _treeTool = __webpack_require__(48);
 
 var _treeTool2 = _interopRequireDefault(_treeTool);
 
@@ -52712,7 +53005,7 @@ exports.TreeTool = _treeTool2.default; /**
                                        */
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52728,15 +53021,11 @@ var _abstractTool = __webpack_require__(2);
 
 var _abstractTool2 = _interopRequireDefault(_abstractTool);
 
-var _addCommand = __webpack_require__(10);
-
-var _addCommand2 = _interopRequireDefault(_addCommand);
-
 var _brushHelper = __webpack_require__(11);
 
 var _brushHelper2 = _interopRequireDefault(_brushHelper);
 
-var _lSystem = __webpack_require__(27);
+var _lSystem = __webpack_require__(28);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -52771,54 +53060,49 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                                                                                                                                                           * SOFTWARE.
                                                                                                                                                           */
 
-var State = function State(pos, hlu /*, angle, step , orientation, pressure*/) {
+var MAX_TREE = 3;
+var INIT_MAT = new THREE.Matrix3();
+INIT_MAT.set(0, -1, 0, 1, 0, 0, 0, 0, 1);
+
+var State = function State(pos, hlu) {
     _classCallCheck(this, State);
 
     this.pos = pos;
     this.hlu = hlu;
-    //this.angle = angle;
-    //this.step = step;
-    //this.orientation = orientation;
-    //this.pressure = pressure;
 };
 
 var Tree = function () {
-    function Tree(options, hsv) {
+    function Tree() {
         _classCallCheck(this, Tree);
 
+        this.activated = false;
         this.states = [];
-        this.helper = new _brushHelper2.default(options);
-
-        if (hsv) {
-            this.helper.setColor(hsv);
-        }
-
-        this.curIdx = 0;
-        this.newMesh = false;
-        this.needPoint = false;
-        this.time = 0;
     }
 
     _createClass(Tree, [{
         key: 'init',
-        value: function init(data, lSysID /*angle, step, str, speed */) {
+        value: function init(data, lSysID, options, hsv) {
 
-            var m = new THREE.Matrix3();
-            m.set(0, -1, 0, 1, 0, 0, 0, 0, 1);
+            this.helper = new _brushHelper2.default(options);
+            this.helper.setColor(hsv);
 
-            this.pushState(data.position.world, m /*, angle, step, data.orientation, data.pressure */
-            );
+            this.pushState(data.position.world, INIT_MAT);
 
             this.lSysID = lSysID;
             this.ori = data.orientation.clone();
             this.pres = data.pressure;
+
+            this.curIdx = 0;
+            this.newMesh = false;
+            this.needPoint = false;
+            this.time = 0;
+            this.activated = true;
         }
     }, {
         key: 'pushState',
-        value: function pushState(pos, hlu /*, angle, step, orientation, pressure*/) {
+        value: function pushState(pos, hlu) {
 
-            var state = new State(pos.clone(), hlu.clone() /*, angle, step, orientation.clone(), pressure */
-            );
+            var state = new State(pos.clone(), hlu.clone());
             this.states.push(state);
         }
     }, {
@@ -52848,7 +53132,7 @@ var TreeTool = function (_AbstractTool) {
             maxSpread: 20,
             brushThickness: 0.1,
             texture: null,
-            enablePressure: true,
+            enablePressure: false,
             color: 0x45220a,
             materialId: 'material_without_tex'
         }));
@@ -52856,15 +53140,22 @@ var TreeTool = function (_AbstractTool) {
         _this.dynamic = true;
 
         _this.registerEvent('interact', {
-            trigger: _this.trigger.bind(_this),
             release: _this.release.bind(_this)
         });
 
-        _this.registerEvent('colorChanged', function (hsv) {
-            _this._hsv = hsv;
+        _this.registerEvent('axisChanged', {
+            use: function use(data) {
+                _this.options.brushThickness = data.controller.sizeMesh.scale.x * 0.2;
+            }
         });
 
-        _this._hsv = null;
+        _this.registerEvent('colorChanged', function (hsv) {
+            _this._hsv.h = hsv.h;
+            _this._hsv.s = hsv.s;
+            _this._hsv.v = hsv.v;
+        });
+
+        _this._hsv = {};
 
         _this.lSystems = {};
 
@@ -52878,7 +53169,7 @@ var TreeTool = function (_AbstractTool) {
 
         _this.lSystems.tiltTree = new _lSystem.LSystem('F', 'F->FF-[-F+F+F]+[+F-F-F]', 22.5 / 180.0 * Math.PI, 3, 0.1, 1);
 
-        _this._changeTree('simpleTree');
+        _this.onItemChanged('simpleTree');
 
         _this.interpretations = {
             'F': _this.drawForward.bind(_this),
@@ -52896,43 +53187,31 @@ var TreeTool = function (_AbstractTool) {
 
         _this.trees = [];
 
+        for (var i = 0; i < MAX_TREE; ++i) {
+            _this.trees.push(new Tree());
+        }
+
+        _this.m = new THREE.Matrix3();
+
         return _this;
     }
 
     _createClass(TreeTool, [{
-        key: '_changeTree',
-        value: function _changeTree(treeID) {
-
-            this._lSysID = treeID;
-            this.lSystems[treeID].derivate();
-            //this._str = this._lSystem.derivate();
-            //this.angle = this._lSystem.defaultAngle;
-            //this.step = this._lSystem.defaultStep;
-            //this.speed = this._lSystem.defaultSpeed;
-        }
-    }, {
-        key: 'trigger',
-        value: function trigger() {
-
-            if (this.trees.length >= 3) return;
-            this._triggered = true;
-            var tree = new Tree(this.options, this._hsv);
-            this.trees.push(tree);
-            this._addMesh(tree);
-        }
-    }, {
         key: 'release',
         value: function release(data) {
 
-            if (!this._triggered) return;
+            var i = 0;
 
-            this._triggered = false;
-            var tree = this.trees[this.trees.length - 1];
+            for (; i < MAX_TREE; ++i) {
+                if (!this.trees[i].activated) break;
+            }
 
-            if (!tree) return;
+            if (i >= MAX_TREE) return;
 
-            tree.init(data, this._lSysID);
-            //tree.init( data, this.angle, this.step, this._str, this.speed );
+            var tree = this.trees[i];
+            tree.init(data, this._lSysID, this.options, this._hsv);
+
+            this._addMesh(tree);
             this._draw(tree);
         }
     }, {
@@ -52941,7 +53220,7 @@ var TreeTool = function (_AbstractTool) {
 
             var toRemove = [];
 
-            for (var i = 0; i < this.trees.length; ++i) {
+            for (var i = 0; i < MAX_TREE; ++i) {
                 if (this._interpretNext(i, data.delta)) toRemove.push(i);
             }
 
@@ -52954,7 +53233,8 @@ var TreeTool = function (_AbstractTool) {
                     var _i = _step.value;
 
                     if (this.trees[_i].needPoint) this._draw(this.trees[_i]);
-                    this.trees.splice(_i, 1);
+                    this.trees[_i].activated = false;
+                    this.trees[_i].states.length = 0;
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -52975,7 +53255,8 @@ var TreeTool = function (_AbstractTool) {
         key: 'onItemChanged',
         value: function onItemChanged(itemID) {
 
-            this._changeTree(itemID);
+            this._lSysID = itemID;
+            this.lSystems[itemID].derivate();
         }
     }, {
         key: '_addMesh',
@@ -52983,7 +53264,7 @@ var TreeTool = function (_AbstractTool) {
 
             var mesh = tree.helper.createMesh();
             this.worldGroup.addTHREEObject(mesh);
-            return new _addCommand2.default(this.worldGroup, mesh);
+            //return new AddCommand( this.worldGroup.object );
         }
     }, {
         key: '_interpretNext',
@@ -52991,18 +53272,16 @@ var TreeTool = function (_AbstractTool) {
 
             var tree = this.trees[treeIdx];
 
+            if (!tree.activated) return false;
             if (tree.lSysID === undefined) return false;
-            //if ( !tree || !tree.str ) return false;
 
             tree.time += delta * 100.0;
 
             var speed = this.lSystems[tree.lSysID].defaultSpeed;
 
             if (!(tree.time / speed)) return false;
-            //if ( !( tree.time / tree.speed ) ) return false;
 
             tree.time %= speed;
-            //tree.time %= tree.speed;
 
             var i = tree.curIdx;
 
@@ -53020,10 +53299,6 @@ var TreeTool = function (_AbstractTool) {
             state.pos.x += this.lSystems[tree.lSysID].defaultStep * state.hlu.elements[0];
             state.pos.y += this.lSystems[tree.lSysID].defaultStep * state.hlu.elements[1];
             state.pos.z += this.lSystems[tree.lSysID].defaultStep * state.hlu.elements[2];
-
-            //state.pos.x += state.step * state.hlu.elements[ 0 ];
-            //state.pos.y += state.step * state.hlu.elements[ 1 ];
-            //state.pos.z += state.step * state.hlu.elements[ 2 ];
         }
     }, {
         key: '_draw',
@@ -53056,75 +53331,65 @@ var TreeTool = function (_AbstractTool) {
         }
     }, {
         key: '_updateAngle',
-        value: function _updateAngle(tree, rmat) {
+        value: function _updateAngle(tree) {
 
             tree.needPoint = true;
-            tree.peekState().hlu.multiply(rmat);
+            tree.peekState().hlu.multiply(this.m);
         }
     }, {
         key: '_getRuMatrix',
         value: function _getRuMatrix(angle) {
 
-            var m = new THREE.Matrix3();
             var c = Math.cos(angle);
             var s = Math.sin(angle);
 
-            m.set(c, s, 0, -s, c, 0, 0, 0, 1);
-
-            return m;
+            this.m.set(c, s, 0, -s, c, 0, 0, 0, 1);
         }
     }, {
         key: 'turnLeft',
         value: function turnLeft(sign, tree) {
 
             var a = this.lSystems[tree.lSysID].defaultAngle * sign;
-            //let a = tree.peekState().angle * sign;
-            var m = this._getRuMatrix(a);
-            this._updateAngle(tree, m);
+            this._getRuMatrix(a);
+            this._updateAngle(tree);
         }
     }, {
         key: 'turnAround',
         value: function turnAround(tree) {
 
-            var m = this._getRuMatrix(Math.PI);
-            this._updateAngle(tree, m);
+            this._getRuMatrix(Math.PI);
+            this._updateAngle(tree);
         }
     }, {
         key: 'turnDown',
         value: function turnDown(sign, tree) {
 
-            var m = new THREE.Matrix3();
             var a = this.lSystems[tree.lSysID].defaultAngle * sign;
-            //let a = sign * tree.peekState().angle;
             var c = Math.cos(a);
             var s = Math.sin(a);
 
-            m.set(c, 0, -s, 0, 1, 0, s, 0, c);
+            this.m.set(c, 0, -s, 0, 1, 0, s, 0, c);
 
-            this._updateAngle(tree, m);
+            this._updateAngle(tree);
         }
     }, {
         key: 'rollLeft',
         value: function rollLeft(sign, tree) {
 
-            var m = new THREE.Matrix3();
             var a = this.lSystems[tree.lSysID].defaultAngle * sign;
-            //let a = sign * tree.peekState().angle;
             var c = Math.cos(a);
             var s = Math.sin(a);
 
-            m.set(1, 0, 0, 0, c, -s, 0, s, c);
+            this.m.set(1, 0, 0, 0, c, -s, 0, s, c);
 
-            this._updateAngle(tree, m);
+            this._updateAngle(tree);
         }
     }, {
         key: 'pushState',
         value: function pushState(tree) {
 
             var state = tree.peekState();
-            tree.pushState(state.pos, state.hlu /*, state.angle, state.step, state.orientation,
-                                                state.pressure */
-            );
+            tree.pushState(state.pos, state.hlu);
         }
     }, {
         key: 'popState',
@@ -53143,7 +53408,7 @@ exports.default = TreeTool;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53159,13 +53424,13 @@ var _abstractTool = __webpack_require__(2);
 
 var _abstractTool2 = _interopRequireDefault(_abstractTool);
 
-var _waterShader = __webpack_require__(55);
+var _waterShader = __webpack_require__(54);
 
 var _waterShader2 = _interopRequireDefault(_waterShader);
 
 var _assetManager = __webpack_require__(3);
 
-var _pathDraw = __webpack_require__(58);
+var _pathDraw = __webpack_require__(57);
 
 var _pathDraw2 = _interopRequireDefault(_pathDraw);
 
@@ -53202,7 +53467,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * SOFTWARE.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
-var MARKER_SCALE = 0.2;
+var TRIGGER_TIME = 4.0;
+
+var WIREFRAME_SCALE = 0.2;
 var MARKER_SCALE_VR = 0.05;
 
 var MARKER_MATERIAL = new THREE.MeshStandardMaterial({
@@ -53253,9 +53520,10 @@ var WaterTool = function (_AbstractTool) {
 
         var cubeGeom = _assetManager.AssetManager.assets.model.cube;
         _this._wireframe = new THREE.Mesh(cubeGeom, MARKER_MATERIAL.clone());
-        _this._wireframe.scale.set(MARKER_SCALE.x, MARKER_SCALE.y, MARKER_SCALE.z);
+        _this._wireframe.scale.set(WIREFRAME_SCALE * 2.0, WIREFRAME_SCALE * 0.4, WIREFRAME_SCALE * 0.4);
         _this._wireframe.material.wireframe = true;
         _this._wireframe.material.needsUpdate = true;
+        _this._wireframe.visible = false;
 
         // Contains the spline drawn by the user. Whenever the drawing is ready,
         // this will be deleted.
@@ -53268,6 +53536,12 @@ var WaterTool = function (_AbstractTool) {
         _this.worldGroup.addTHREEObject(_this._waterGroup);
 
         _this.localGroup.addTHREEObject(_this._wireframe);
+
+        // This boolean will be set to `true' if
+        // the tool is currently selected by the user.
+        // We track this using onEnter and onExit.
+        _this._selected = false;
+
         // Contains a reference to the previous marked added. This is used
         // to link them with a visual line.
         _this._prevMarker = null;
@@ -53276,27 +53550,55 @@ var WaterTool = function (_AbstractTool) {
         _this._lineColorID = 1;
         _this._lineAnimTime = 0.0;
 
-        // The BrushHelper is used to draw the planes above the
-        //this._helper = new BrushHelper( null, BrushHelper.UV_MODE.quad );
+        // This variables accumulates time the user spent on the trigger.
+        // It will be used to validate the drawing.
+        _this._triggerTime = 0.0;
+        _this._triggering = false;
 
         _this.registerEvent('interact', {
+
+            release: _this.release.bind(_this),
             trigger: _this.trigger.bind(_this)
+
         });
 
         _this.registerEvent('axisChanged', {
+
             use: _this.useAxisChanged.bind(_this)
+
         });
 
-        _this.test = [];
+        _this._points = [];
 
         return _this;
     }
 
     _createClass(WaterTool, [{
         key: 'update',
-        value: function update(data) {
+        value: function update(data, controllerID) {
             var _this2 = this;
 
+            if (this._selected) {
+                // Animates the placeholder according to controller.
+                var localPos = data.controllers[controllerID].position.local;
+                var rot = data.controllers[controllerID].orientation;
+                this._wireframe.position.set(localPos.x, localPos.y, localPos.z);
+                this._wireframe.quaternion.copy(rot);
+
+                // Updates time the user spent triggering the button.
+                if (this._triggering) {
+                    this._triggerTime += data.delta;
+                    if (this._triggerTime >= TRIGGER_TIME) {
+                        this._createPath();
+                        this._triggerTime = 0.0;
+                        this._triggering = false;
+                        this._points.length = 0;
+                        this._prevMarker = null;
+                    }
+                }
+            }
+
+            // Updates spline color through time.
             this._splineGroup.traverse(function (child) {
 
                 if (child.constructor !== THREE.Line) return;
@@ -53305,6 +53607,13 @@ var WaterTool = function (_AbstractTool) {
                 child.material.needsUpdate = true;
             });
 
+            this._lineAnimTime += data.delta * 0.65;
+            if (this._lineAnimTime >= 1.0) {
+                this._lineColorID = (this._lineColorID + 1) % LINE_COLORS.length;
+                this._lineAnimTime = 0.0;
+            }
+
+            // Updates time unfirom used to move the water texture.
             this._waterGroup.traverse(function (child) {
 
                 if (child instanceof THREE.Mesh) {
@@ -53312,27 +53621,20 @@ var WaterTool = function (_AbstractTool) {
                     uniform.value = uniform.value + data.delta;
                 }
             });
-
-            this._lineAnimTime += data.delta * 0.65;
-            if (this._lineAnimTime >= 1.0) {
-                this._lineColorID = (this._lineColorID + 1) % LINE_COLORS.length;
-                this._lineAnimTime = 0.0;
-            }
-        }
-    }, {
-        key: 'use',
-        value: function use(data) {
-
-            var localPos = data.position.local;
-
-            this._wireframe.orientation.applyQuaternion(data.orientation);
-            this._wireframe.position.set(localPos.x, localPos.y, localPos.z);
         }
     }, {
         key: 'trigger',
-        value: function trigger(data) {
+        value: function trigger() {
 
-            this.test.push({
+            this._triggering = true;
+        }
+    }, {
+        key: 'release',
+        value: function release(data) {
+
+            if (!this._triggering) return;
+
+            this._points.push({
                 orientation: data.orientation.clone(),
                 coords: data.position.world.clone()
             });
@@ -53362,45 +53664,70 @@ var WaterTool = function (_AbstractTool) {
 
             this._prevMarker = mesh;
 
-            if (this.test.length === 8) {
-                var geometry = (0, _pathDraw2.default)(this.test, { uvFactor: 0.5 });
-                var material = WATER_MATERIAL.clone();
-                var m = new THREE.Mesh(geometry, material);
-                m.frustumCulled = false;
-                m.drawMode = THREE.TrianglesDrawMode; //default
-
-                var cubemap = _assetManager.AssetManager.assets.texture.cubemap.cubemap;
-                m.material.uniforms.normalMap.value = _assetManager.AssetManager.assets.texture.tool.water_normal;
-                m.material.uniforms.normalMap.value.wrapS = THREE.RepeatWrapping;
-                m.material.uniforms.normalMap.value.wrapT = THREE.RepeatWrapping;
-                m.material.uniforms.uSpeed.value = this.options.speed;
-                m.material.uniforms.uCubemap.value = cubemap;
-                m.material.needsUpdate = true;
-                this._waterGroup.add(m);
-
-                this.test = [];
-                this._prevMarker = null;
-
-                for (var i = this._markerGroup.children.length - 1; i >= 0; i--) {
-                    this._markerGroup.remove(this._markerGroup.children[i]);
-                }
-                for (var _i = this._splineGroup.children.length - 1; _i >= 0; _i--) {
-                    this._splineGroup.remove(this._splineGroup.children[_i]);
-                }
-            }
+            this._triggering = false;
         }
     }, {
         key: 'useAxisChanged',
         value: function useAxisChanged(data) {
 
-            //data.controller.sizeMesh.scale.x * 1.0;
-            var val = data.controller.sizeMesh.scale.x;
             var scale = this._wireframe.scale;
+            var val = data.controller.sizeMesh.scale.x * 0.5;
+
             this._wireframe.scale.set(val, scale.y, scale.z);
         }
     }, {
-        key: 'release',
-        value: function release() {}
+        key: 'onEnter',
+        value: function onEnter() {
+
+            this._selected = true;
+            this._wireframe.visible = true;
+        }
+    }, {
+        key: 'onExit',
+        value: function onExit() {
+
+            this._selected = false;
+            this._wireframe.visible = false;
+        }
+    }, {
+        key: '_createPath',
+        value: function _createPath() {
+
+            if (this._points.length === 0) return;
+
+            // Creates the path geometry from the positions.
+            var geometry = (0, _pathDraw2.default)(this._points, {
+                uvFactor: 0.5,
+                scale: this._wireframe.scale.x
+            });
+
+            // Creates the mesh associated to the path.
+            var material = WATER_MATERIAL.clone();
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.frustumCulled = false;
+            mesh.drawMode = THREE.TrianglesDrawMode;
+
+            var cubemap = _assetManager.AssetManager.assets.texture.cubemap.cubemap;
+            mesh.material.uniforms.normalMap.value = _assetManager.AssetManager.assets.texture.tool.water_normal;
+            mesh.material.uniforms.normalMap.value.wrapS = THREE.RepeatWrapping;
+            mesh.material.uniforms.normalMap.value.wrapT = THREE.RepeatWrapping;
+            mesh.material.uniforms.uSpeed.value = this.options.speed;
+            mesh.material.uniforms.uCubemap.value = cubemap;
+            mesh.material.needsUpdate = true;
+
+            for (var i = this._markerGroup.children.length - 1; i >= 0; i--) {
+                this._markerGroup.remove(this._markerGroup.children[i]);
+            }
+            for (var _i = this._splineGroup.children.length - 1; _i >= 0; _i--) {
+                this._splineGroup.remove(this._splineGroup.children[_i]);
+            }
+
+            this._waterGroup.add(mesh);
+
+            // Reinit attributes for next drawing.
+            this._points.length = 0;
+            this._prevMarker = null;
+        }
     }]);
 
     return WaterTool;
@@ -53410,7 +53737,7 @@ exports.default = WaterTool;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53450,87 +53777,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * ArtFlow application
- * https://github.com/artflow-vr/artflow
- *
- * MIT License
- *
- * Copyright (c) 2017 artflow
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
-module.exports = {
-    vertex: ['attribute float size;', 'attribute vec2 idx;', 'varying vec2 a_idx;', 'uniform sampler2D tPositions;', 'uniform float pointMaxSize;', 'uniform float brushSize;', 'uniform float particlesTexWidth;', 'void main() {', '	vec4 position_v = texture2D( tPositions, vec2(idx.x / particlesTexWidth, idx.y / particlesTexWidth));', '	vec3 position_offset = position_v.xyz;', '	gl_PointSize = position_v.a * pointMaxSize;', '	position_offset = (position_offset - 0.5) * brushSize;', '	gl_Position = projectionMatrix * modelViewMatrix * vec4( ( position + position_offset ), 1.0 );', '	a_idx = idx;', '}'].join('\n'),
-
-    fragment: ['uniform sampler2D tSprite;', 'varying vec2 a_idx;', 'uniform sampler2D tPositions;', 'void main() {', '	vec4 tex = texture2D( tSprite, gl_PointCoord );', '	gl_FragColor = vec4( tex );', '}'].join('\n')
-};
-
-/***/ }),
 /* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * ArtFlow application
- * https://github.com/artflow-vr/artflow
- *
- * MIT License
- *
- * Copyright (c) 2017 artflow
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
-module.exports = {
-    vertex: ['attribute float size;', 'attribute vec2 idx;', 'varying vec2 a_idx;', 'uniform sampler2D tPositions;', 'uniform float pointMaxSize;', 'uniform float brushSize;', 'uniform float particlesTexWidth;', 'void main() {', '	vec4 position_v = texture2D( tPositions, vec2(idx.x / particlesTexWidth, idx.y / particlesTexWidth));', '	vec3 position_offset = position_v.xyz;', '	gl_PointSize = position_v.a * pointMaxSize;', '	position_offset = (position_offset - 0.5) * brushSize;', '	gl_Position = projectionMatrix * modelViewMatrix * vec4( ( position + position_offset ), 1.0 );', '	a_idx = idx;', '}'].join('\n'),
-
-    fragment: ['uniform sampler2D tSprite;', 'varying vec2 a_idx;', 'uniform sampler2D tPositions;', 'void main() {', '	vec4 tex = texture2D( tSprite, gl_PointCoord );', '	gl_FragColor = vec4( tex ) + vec4( texture2D( tPositions, a_idx ).xyz, 0.0 );', '}'].join('\n')
-};
-
-/***/ }),
-/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53575,7 +53822,7 @@ module.exports = {
     */
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53591,7 +53838,9 @@ module.exports = {
 
     vertex: _baseShader2.default.vertex,
 
-    fragment: ['uniform sampler2D tPositionsMap;', 'uniform sampler2D tVelocitiesMap;', 'uniform sampler2D tInitialVelocitiesMap;', 'uniform sampler2D tInitialPositionsMap;', 'uniform float lifespanEntropy;', 'uniform float normVelocity;', 'uniform float dt;', 'varying vec2 a_uv;', 'void main() {', '   vec4 position = texture2D( tPositionsMap, a_uv );', '   vec4 initialPosition = texture2D( tInitialPositionsMap, a_uv );', '   vec4 velocity = texture2D( tVelocitiesMap, a_uv );', '   vec4 velocity_centered = velocity - vec4(0.5, 0.5, 0.5, 0.0);', '   vec4 position_updated =  vec4((position + velocity_centered * dt * normVelocity).xyz, position.a - lifespanEntropy);', '   if ( position_updated.w <= 0.0 )', '       position_updated = initialPosition;', '	gl_FragColor =  position_updated;', '}'].join('\n')
+    fragment: ['uniform sampler2D tPositionsMap;', 'uniform sampler2D tVelocitiesMap;', 'uniform sampler2D tInitialVelocitiesMap;', 'uniform sampler2D tInitialPositionsMap;', 'uniform float lifespanEntropy;', 'uniform float normVelocity;', 'uniform float dt;', 'varying vec2 a_uv;', 'void main() {', '   vec4 position = texture2D( tPositionsMap, a_uv );', '   vec4 initialPosition = texture2D( tInitialPositionsMap, a_uv );', '   vec4 velocity = texture2D( tVelocitiesMap, a_uv );', '   vec4 velocity_centered = velocity - vec4(0.5, 0.5, 0.5, 0.0);', '   vec4 position_updated =  vec4((position + velocity_centered * dt * normVelocity).xyz, position.a - lifespanEntropy);',
+    //'   vec4 position_updated =  vec4((position + vec4(0.5, 0.0, 0.0, 0.0) * dt * normVelocity).xyz, position.a - lifespanEntropy);',
+    '   if ( position_updated.w <= 0.0 )', '       position_updated = initialPosition;', '	gl_FragColor =  position_updated;', '}'].join('\n')
 }; /**
     * ArtFlow application
     * https://github.com/artflow-vr/artflow
@@ -53620,7 +53869,7 @@ module.exports = {
     */
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53665,7 +53914,7 @@ module.exports = {
     */
 
 /***/ }),
-/* 55 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53734,7 +53983,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 56 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53779,7 +54028,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53797,7 +54046,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 58 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53813,7 +54062,8 @@ var DEFAULT_OPT = {
     uvFactor: 1.0,
     tangentMean: true,
     smoothNormal: true,
-    initLock: new THREE.Vector3(-1, 0, 0)
+    initLock: new THREE.Vector3(-1, 0, 0),
+    scale: 0.2
 }; /**
    * ArtFlow application
    * https://github.com/artflow-vr/artflow
@@ -53841,14 +54091,14 @@ var DEFAULT_OPT = {
    * SOFTWARE.
    */
 
-var createLockPoints = function createLockPoints(point, initQuat, outAxisLock, outA, outB) {
+var createLockPoints = function createLockPoints(point, initQuat, outAxisLock, outA, outB, scale) {
 
     outAxisLock.x = initQuat.x;
     outAxisLock.y = initQuat.y;
     outAxisLock.z = initQuat.z;
 
     outAxisLock.applyQuaternion(point.orientation);
-    outAxisLock.multiplyScalar(0.1);
+    outAxisLock.multiplyScalar(scale * 0.5);
 
     outA.set(point.coords.x, point.coords.y, point.coords.z);
     outB.set(point.coords.x, point.coords.y, point.coords.z);
@@ -53974,7 +54224,7 @@ exports.default = function (points, options) {
         var pointB = points[i + 1];
 
         // Initializes the quaternion to the inital value.
-        createLockPoints(pointA, opt.initLock, axisLock, vectorA, vectorB);
+        createLockPoints(pointA, opt.initLock, axisLock, vectorA, vectorB, opt.scale);
 
         // We are building a quad having this layout:
         //  (0.0, 0.0) B2--B (1.0, 0.0)
@@ -53996,7 +54246,7 @@ exports.default = function (points, options) {
         attrib.uv[uvCount++] = 1.0;
         attrib.uv[uvCount++] = prevUv;
 
-        createLockPoints(pointB, opt.initLock, axisLock, vectorA, vectorB2);
+        createLockPoints(pointB, opt.initLock, axisLock, vectorA, vectorB2, opt.scale);
 
         // Push A2 vertex
         attrib.position[vCount++] = vectorA.x;
@@ -54054,7 +54304,7 @@ exports.default = function (points, options) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 59 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54065,7 +54315,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.WebVR = undefined;
 
-var _webvr = __webpack_require__(60);
+var _webvr = __webpack_require__(59);
 
 var _webvr2 = _interopRequireDefault(_webvr);
 
@@ -54099,7 +54349,7 @@ exports.WebVR = _webvr2.default; /**
                                  */
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54261,7 +54511,7 @@ exports.default = new WebVR();
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54299,18 +54549,13 @@ THREE.ImageUtils.generateDataTexture = function (width, height, color) {
 
 THREE.ImageUtils.generateRandomDataTexture = function (width, height) {
 
-    var size = width * height;
+    var size = width * height * 4;
     //let data = new Float32Array( 4 * size );
-    var data = new Float32Array(4 * size);
+    var data = new Float32Array(size);
 
     for (var i = 0; i < size; i++) {
-        data[i * 4] = Math.random();
-        data[i * 4 + 1] = Math.random();
-        data[i * 4 + 2] = Math.random();
-        data[i * 4 + 3] = Math.random();
-    }
-
-    //let texture = new THREE.DataTexture( data, width, height, THREE.RGBAFormat, THREE.FloatType );
+        data[i] = Math.random();
+    } //let texture = new THREE.DataTexture( data, width, height, THREE.RGBAFormat, THREE.FloatType );
     var texture = new THREE.DataTexture(data, width, height, THREE.RGBAFormat, THREE.FloatType);
     texture.needsUpdate = true;
 
@@ -54319,18 +54564,13 @@ THREE.ImageUtils.generateRandomDataTexture = function (width, height) {
 
 THREE.ImageUtils.copyDataTexture = function (source, width, height) {
 
-    var size = width * height;
+    var size = width * height * 4;
     //let data = new Float32Array( 4 * size );
-    var data = new Float32Array(4 * size);
+    var data = new Float32Array(size);
 
     for (var i = 0; i < size; i++) {
         data[i] = source.image.data[i];
-        data[i + 1] = source.image.data[i + 1];
-        data[i + 2] = source.image.data[i + 2];
-        data[i + 3] = source.image.data[i + 3];
-    }
-
-    //let texture = new THREE.DataTexture( data, width, height, THREE.RGBAFormat, THREE.FloatType );
+    } //let texture = new THREE.DataTexture( data, width, height, THREE.RGBAFormat, THREE.FloatType );
     var texture = new THREE.DataTexture(data, width, height, THREE.RGBAFormat, THREE.FloatType);
     texture.needsUpdate = true;
 
@@ -54339,7 +54579,7 @@ THREE.ImageUtils.copyDataTexture = function (source, width, height) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 62 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54853,7 +55093,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 63 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55512,7 +55752,7 @@ THREE.OBJLoader = function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 64 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(THREE) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function(){return function(n){function e(i){if(t[i])return t[i].exports;var r=t[i]={i:i,l:!1,exports:{}};return n[i].call(r.exports,r,r.exports,e),r.l=!0,r.exports}var t={};return e.m=n,e.c=t,e.i=function(n){return n},e.d=function(n,t,i){e.o(n,t)||Object.defineProperty(n,t,{configurable:!1,enumerable:!0,get:i})},e.n=function(n){var t=n&&n.__esModule?function(){return n.default}:function(){return n};return e.d(t,"a",t),t},e.o=function(n,e){return Object.prototype.hasOwnProperty.call(n,e)},e.p="/build/",e(e.s=23)}([function(n,e,t){"use strict";function i(n,e){if(!(n instanceof e))throw new TypeError("Cannot call a class as a function")}function r(n,e){if(!n)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?n:e}function o(n,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);n.prototype=Object.create(e&&e.prototype,{constructor:{value:n,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(n,e):n.__proto__=e)}Object.defineProperty(e,"__esModule",{value:!0});var s=function(){function n(n,e){for(var t=0;t<e.length;t++){var i=e[t];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(n,i.key,i)}}return function(e,t,i){return t&&n(e.prototype,t),i&&n(e,i),e}}(),a=function n(e,t,i){null===e&&(e=Function.prototype);var r=Object.getOwnPropertyDescriptor(e,t);if(void 0===r){var o=Object.getPrototypeOf(e);return null===o?void 0:n(o,t,i)}if("value"in r)return r.value;var s=r.get;if(void 0!==s)return s.call(i)},f=t(5),c=function(n){return n&&n.__esModule?n:{default:n}}(f),d=t(1),u=function(n){if(n&&n.__esModule)return n;var e={};if(null!=n)for(var t in n)Object.prototype.hasOwnProperty.call(n,t)&&(e[t]=n[t]);return e.default=n,e}(d),g=function(n){function e(n,t,o){if(i(this,e),void 0===t||null===t){throw Error("ElementView: ctor(): provided mesh is null or undefined.")}if(!(t instanceof THREE.Object3D)){throw Error("ElementView: ctor(): provided mesh is not of type THREE.Mesh.")}var s=r(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,n,o));return s.mesh=t,s.mesh.position.z=.001,s.group.add(s.mesh),s.pressed=!1,s.listenTo=null,s._initialColor=new THREE.Color,s._onHoverEnter=function(n){s._initialColor.copy(n.mesh.material.color),n.mesh.material.color.setHex(u.HIGHLIGHT)},s._onHoverExit=function(n){n.mesh.material.color.copy(s._initialColor)},s}return o(e,n),s(e,[{key:"listen",value:function(n,e){return this.listenTo={object:n,propID:e},this}},{key:"refresh",value:function(n,t){a(e.prototype.__proto__||Object.getPrototypeOf(e.prototype),"refresh",this).call(this,n,t);var i=this._dimensions,r=i.padding,o=i.width,s=i.height,f=o-(r.left+r.right),c=s-(r.top+r.bottom),d=0,u=0;"text"!==this.type?(this.mesh.scale.x=f,this.mesh.scale.y=c,d=.5*o+(r.left-r.right),u=.5*-s+(r.bottom-r.top)):(this.mesh.scale.multiplyScalar(c),d=f,u=.5*c),this.mesh.position.x=d,this.mesh.position.y=u}},{key:"_intersect",value:function(n,e){!e.pressed&&this.pressed&&(this.pressed=!1,this._onChange&&this._onChange(this,{pressed:this.pressed,info:this._lastIntersect}));var t=this._checkHover(n,this.mesh,this._onHoverEnter,this._onHoverExit);return t?(e.pressed&&!this.pressed&&(this.pressed=!0,this._onChange&&this._onChange(this,{pressed:this.pressed,info:t})),t):null}},{key:"_forceExit",value:function(){this.pressed=!1}}]),e}(c.default);e.default=g},function(n,e,t){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=(e.WHITE=16777215,e.DEFAULT=2899536),r=(e.HIGHLIGHT=3447003,e.WHITE_LIGHT=15528177);e.BACK_CHECKBOX=i,e.MARK_CHECKBOX=r,e.BACK_SLIDER=i,e.HANDLER_SLIDER=i},function(n,e,t){"use strict";Object.defineProperty(e,"__esModule",{value:!0});e.PLANE_GEOM=new THREE.PlaneGeometry(1,1),e.BOX_GEOM=new THREE.BoxGeometry(1,1,1)},function(n,e,t){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.createMaterial=e.MaterialFactory=void 0;var i=t(1),r=function(n){if(n&&n.__esModule)return n;var e={};if(null!=n)for(var t in n)Object.prototype.hasOwnProperty.call(n,t)&&(e[t]=n[t]);return e.default=n,e}(i),o={MAT_USELESS:new THREE.MeshBasicMaterial({color:r.WHITE,visible:!1}),MAT_DEFAULT:new THREE.MeshBasicMaterial({color:r.WHITE,transparent:!0,opacity:1}),IMAGE_DEFAULT:new THREE.MeshBasicMaterial({color:r.WHITE,alphaTest:.01,transparent:!1}),BACK_DEFAULT:new THREE.MeshBasicMaterial({color:r.WHITE,depthWrite:!1,transparent:!0})},s=function(n){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:o.MAT_DEFAULT;if(n instanceof THREE.Material)return n.clone();if(n.constructor===THREE.Texture){var t=e.clone();return t.map=n,t}if(!isNaN(n)){var i=e.clone();return i.color.setHex(n),i}var r="the provided image is neither a THREE.Texture, ";throw r+="nor a THREE.Material object, nor an hexadecimal color.",Error("createMaterial(): "+r)};e.MaterialFactory=o,e.createMaterial=s},function(n,e,t){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(n){return typeof n}:function(n){return n&&"function"==typeof Symbol&&n.constructor===Symbol&&n!==Symbol.prototype?"symbol":typeof n},r=function(n,e,t){var i=n[0],r=n[1];if(t<i||t>r){var o="Element property "+e+" should be in the range ";return o+="["+i+", "+r+"]",console.error(o),!1}return!0},o=function(n,e,t){if(!n.includes(t)){var i="Element property "+e+" should have one of the ";return i+="following values: "+n.toString(),console.error(i),!1}return!0},s=function(n,e,t){if(!t)return!0;var r=!0,o=!1,s=void 0;try{for(var a,f=n[Symbol.iterator]();!(r=(a=f.next()).done);r=!0){var c=a.value;if("number"===c&&!isNaN(t)||"string"===c&&(void 0===t?"undefined":i(t))===c||t instanceof c)return!0}}catch(n){o=!0,s=n}finally{try{!r&&f.return&&f.return()}finally{if(o)throw s}}var d="Element property "+e+" does not have the good type ";return console.error(d),!1},a=function(n,e,t){return!!(0,e[t].function)(e[t].data,t,n[t])},f={}.constructor,c=function n(e,t,i){for(var r in e){if(t[r])e[r]&&e[r].constructor===f?(i[r]||(i[r]={}),n(e[r],t[r],i[r])):a(e,t,r)&&(i[r]=e[r]);else{var o="property "+r+" is not recognized. Please take a ";o+="look at the documentation to see the complete set.",console.warn("check(): "+o)}}},d=function n(e,t){for(var i in e){var r=e[i];!t[i]&&r&&r.constructor===f&&(t[i]={}),r&&r.constructor===f?n(r,t[i]):t[i]||(t[i]=e[i])}};e.IS_IN_RANGE=r,e.IS_IN_LIST=o,e.IS_INSTANCE_OF=s,e.checkAndClone=c,e.setUndefinedProps=d},function(n,e,t){"use strict";function i(n,e){if(!(n instanceof e))throw new TypeError("Cannot call a class as a function")}Object.defineProperty(e,"__esModule",{value:!0});var r=function(){function n(n,e){for(var t=0;t<e.length;t++){var i=e[t];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(n,i.key,i)}}return function(e,t,i){return t&&n(e.prototype,t),i&&n(e,i),e}}(),o=t(2),s=t(3),a=t(4),f={width:{data:[0,1],function:a.IS_IN_RANGE},height:{data:[0,1],function:a.IS_IN_RANGE},aspectRatio:{data:[0,100],function:a.IS_IN_RANGE},depth:{data:[0,1],function:a.IS_IN_RANGE},padding:{top:{data:[0,.49],function:a.IS_IN_RANGE},bottom:{data:[0,.49],function:a.IS_IN_RANGE},left:{data:[0,.49],function:a.IS_IN_RANGE},right:{data:[0,.49],function:a.IS_IN_RANGE}},margin:{top:{data:[0,.49],function:a.IS_IN_RANGE},bottom:{data:[0,.49],function:a.IS_IN_RANGE},left:{data:[0,.49],function:a.IS_IN_RANGE},right:{data:[0,.49],function:a.IS_IN_RANGE}},position:{data:["left","right","center"],function:a.IS_IN_LIST},align:{data:["top","bottom","center"],function:a.IS_IN_LIST},background:{data:[THREE.Material,THREE.Texture,"number"],function:a.IS_INSTANCE_OF}},c={background:"_updateBackground"},d=function(){function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:null,t=arguments[1];i(this,n),this.type="element",this.data=e?Object.assign({},e):{},this.group=new THREE.Group,this.group.position.z=.001,this.group.userData.element=this,this.parent=null,this.hover=!1,this.visible=!0,this._dimensions={margin:{},padding:{}},this._parentDimensions=null,this._background=new THREE.Mesh(o.PLANE_GEOM,s.MaterialFactory.MAT_USELESS),this._background.position.z=-.001,this.group.add(this._background),this._onHoverEnter=null,this._onHoverExit=null,this._onChange=null,this._lastIntersect=null,this.style={},t&&this.set(t),this._setStyleForUndefined({depth:0,padding:{top:0,bottom:0,left:0,right:0},margin:{top:0,bottom:0,left:0,right:0},position:"center",align:"top",background:null},this.style),this.userData={}}return r(n,[{key:"onHoverEnter",value:function(n){return this._onHoverEnter=n,this}},{key:"onHoverExit",value:function(n){return this._onHoverExit=n,this}},{key:"onChange",value:function(n){return this._onChange=n,this}},{key:"set",value:function(n){(0,a.checkAndClone)(n,f,this.style);for(var e in n)c[e]&&this[c[e]](n[e])}},{key:"setVisible",value:function(n){this.group.traverse(function(e){e instanceof THREE.Object3D&&(e.visible=n)}),this.visible=n}},{key:"_checkHover",value:function(n,e,t,i){if(!this.visible)return null;var r=n.intersectObject(e,!1);return 0===r.length?(this.hover&&(this.hover=!1,i&&i(this,{info:this._lastIntersect})),null):(this._lastIntersect=r[0],this.hover||(t&&t(this,{info:this._lastIntersect}),this.hover=!0),this._lastIntersect)}},{key:"refresh",value:function(n,e){var t=n||this._parentDimensions.width,i=e||this._parentDimensions.height,r=this.style,o=this._dimensions;if(r.aspectRatio&&!r.width&&!r.height){r.width=1,r.height=1;var s="aspectRatio provided, but missing";s=" width or height properties.",console.warn("Element.refresh(): "+s)}o.width=null,o.height=null,r.aspectRatio&&(r.width?o.height=r.aspectRatio*r.width*t:o.width=r.aspectRatio*r.height*i),o.width=o.width||(r.width||1)*t,o.height=o.height||(r.height||1)*i,o.halfW=o.width/2,o.halfH=o.height/2;var a=o.margin;a.top=this.style.margin.top*i,a.bottom=this.style.margin.bottom*i,a.left=this.style.margin.left*t,a.right=this.style.margin.right*t;var f=o.padding;f.top=this.style.padding.top*i,f.bottom=this.style.padding.bottom*i,f.left=this.style.padding.left*t,f.right=this.style.padding.right*t;var c=this._background;c.position.x=o.halfW,c.position.y=-o.halfH,c.scale.x=o.width,c.scale.y=o.height}},{key:"_clone",value:function(n){n.onChange(this._onChange),n.onHoverEnter(this._onHoverEnter),n.onHoverExit(this._onHoverExit)}},{key:"_updateBackground",value:function(n){if(!n)return this._background.material=s.MaterialFactory.BACK_DEFAULT.clone(),void(this._background.material.visible=!1);var e=(0,s.createMaterial)(n,s.MaterialFactory.BACK_DEFAULT);this._background.material=e,this._background.visible=!0}},{key:"_setStyleForUndefined",value:function(n,e){for(var t in n){var i=n[t];if(null!==i&&void 0!==i&&"object"==typeof i){if(!i){e[t]=null;continue}t in e||(e[t]={}),this._setStyleForUndefined(i,e[t])}else t in e||(e[t]=n[t])}}}]),n}();e.default=d},function(n,e,t){"use strict";function i(n,e){if(!(n instanceof e))throw new TypeError("Cannot call a class as a function")}function r(n,e){if(!n)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?n:e}function o(n,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);n.prototype=Object.create(e&&e.prototype,{constructor:{value:n,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(n,e):n.__proto__=e)}Object.defineProperty(e,"__esModule",{value:!0});var s=function(){function n(n,e){for(var t=0;t<e.length;t++){var i=e[t];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(n,i.key,i)}}return function(e,t,i){return t&&n(e.prototype,t),i&&n(e,i),e}}(),a=t(5),f=function(n){return n&&n.__esModule?n:{default:n}}(a),c=function(n){function e(n,t){i(this,e);var o=r(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,n,t));return o._elements=[],o._onHoverExitWrapper=function(){o._onHoverExit&&o._onHoverExit(o),o._forceExit()},o}return o(e,n),s(e,[{key:"add",value:function(n){if(void 0===n||null===n){throw Error("AbstractLayout: add(): provided argument is null or undefined.")}if(arguments.length>0){var e=!0,t=!1,i=void 0;try{for(var r,o=arguments[Symbol.iterator]();!(e=(r=o.next()).done);e=!0){var s=r.value;this._addItem(s)}}catch(n){t=!0,i=n}finally{try{!e&&o.return&&o.return()}finally{if(t)throw i}}}else if(n.constructor===Array){var a=!0,f=!1,c=void 0;try{for(var d,u=n[Symbol.iterator]();!(a=(d=u.next()).done);a=!0){var g=d.value;this._addItem(g)}}catch(n){f=!0,c=n}finally{try{!a&&u.return&&u.return()}finally{if(f)throw c}}}else this._addItem(n)}},{key:"clone",value:function(){var n=new this.constructor(this.data,this.style),e=!0,t=!1,i=void 0;try{for(var r,o=this._elements[Symbol.iterator]();!(e=(r=o.next()).done);e=!0){var s=r.value;n.add(s.clone())}}catch(n){t=!0,i=n}finally{try{!e&&o.return&&o.return()}finally{if(t)throw i}}return n}},{key:"_addItem",value:function(n){if(!(n instanceof f.default)){throw Error("AbstractLayout: addView(): provided element is not an instance of Element")}this._elements.push(n),n._parentDimensions=this._dimensions,n.parent=this,this.group.add(n.group)}},{key:"_forceExit",value:function(){if(this.hover){var n=!0,e=!1,t=void 0;try{for(var i,r=this._elements[Symbol.iterator]();!(n=(i=r.next()).done);n=!0){var o=i.value;o._forceExit&&(o._forceExit(),o._onHoverExit&&o._onHoverExit(o,{info:null})),o.hover=!1}}catch(n){e=!0,t=n}finally{try{!n&&r.return&&r.return()}finally{if(e)throw t}}this.hover=!1}}},{key:"_intersect",value:function(n,e){var t=this._checkHover(n,this._background,this._onHoverEnter,this._onHoverExitWrapper);if(!t)return null;var i=!0,r=!1,o=void 0;try{for(var s,a=this._elements[Symbol.iterator]();!(i=(s=a.next()).done);i=!0){var f=s.value;f._intersect(n,e)||f._forceExit()}}catch(n){r=!0,o=n}finally{try{!i&&a.return&&a.return()}finally{if(r)throw o}}return t}}]),e}(f.default);e.default=c},function(n,e,t){"use strict";function i(n,e){if(!(n instanceof e))throw new TypeError("Cannot call a class as a function")}function r(n,e){if(!n)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?n:e}function o(n,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);n.prototype=Object.create(e&&e.prototype,{constructor:{value:n,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(n,e):n.__proto__=e)}Object.defineProperty(e,"__esModule",{value:!0});var s=t(6),a=function(n){return n&&n.__esModule?n:{default:n}}(s),f=function(n){function e(n,t){return i(this,e),r(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,n,t))}return o(e,n),e}(a.default);e.default=f},function(n,e){n.exports=function(n){switch(n){case"int8":return Int8Array;case"int16":return Int16Array;case"int32":return Int32Array;case"uint8":return Uint8Array;case"uint16":return Uint16Array;case"uint32":return Uint32Array;case"float32":return Float32Array;case"float64":return Float64Array;case"array":return Array;case"uint8_clamped":return Uint8ClampedArray}}},function(n,e,t){"use strict";function i(n){if(null===n||void 0===n)throw new TypeError("Object.assign cannot be called with null or undefined");return Object(n)}/*
@@ -55531,7 +55771,7 @@ n.exports=function(n){return null!=n&&(t(n)||i(n)||!!n._isBuffer)}},function(n,e
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 65 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -55580,7 +55820,7 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 65;
+webpackContext.id = 64;
 
 /***/ })
 /******/ ]);
