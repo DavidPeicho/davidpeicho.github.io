@@ -60,7 +60,7 @@ var Artflow =
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "a265d72b6b12b1017b4b"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "52aa1f3c8b3286ae268c"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -47434,11 +47434,9 @@ var BrushHelper = function () {
 
         // We can choose how the UVs should be computed.
         if (!uvMode) {
-            if (this.options.enablePressure) {
-                this._computeUV = BrushHelper.UV_MODE.handPressure;
-                this._computeThickness = this._computeThicknessWithPressure;
-            } else this._computeUV = BrushHelper.UV_MODE.hand;
+            this._computeUV = BrushHelper.UV_MODE.hand;
         } else this._computeUV = uvMode;
+
         this._computeUV = this._computeUV.bind(this);
 
         this._verticesCount = 0;
