@@ -56,7 +56,6 @@
       <a class='{segment === "projects" ? "selected" : ""}' href='projects'>projects
       </a>
     </li>
-		<li><a class='{segment === 'test' ? 'test' : ""}' href='test'>test</a></li>
 
 		<!-- for the blog link, we're using rel=prefetch so that Sapper prefetches
 		     the blog data when we hover over the link or tap it on a touchscreen -->

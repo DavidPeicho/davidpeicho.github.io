@@ -3,6 +3,9 @@
 </svelte:head>
 
 <script context='module'>
+
+  import Card from '@components/card';
+
 	export function preload({ params, query }) {
     return this.fetch('projects.json')
       .then(r => r.json())
@@ -14,7 +17,17 @@
 
 <script> export let projects; console.log(projects[1].thumbnail); </script>
 
-<h1> {projects[0].title} </h1>
+<div>
+  { #each projects as project, i }
+    <Card
+      description={project.description}
+      image={project.thumbnail}
+      title={project.title}
+      direction={i % 2 === 0 ? 'left' : 'right'}
+    />
+  { /each }
+</div>
 
 <style>
+
 </style>

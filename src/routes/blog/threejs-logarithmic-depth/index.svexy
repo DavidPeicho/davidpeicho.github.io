@@ -1,13 +1,7 @@
-# Hello Everyone
-
-```js
-  let segments;
-```
-
 ```js module
 
   import thumbnail from './thumbnail.png';
-	import Nav from '../../../components/Nav.svelte';
+	import Img from '@components/image';
 
   export const Metadata = {
     thumbnail,
@@ -18,6 +12,6 @@
   };
 ```
 
-<img src={ thumbnail } />
+# Hello Everyone
 
-<Nav segments/>
+<Img src={thumbnail} />

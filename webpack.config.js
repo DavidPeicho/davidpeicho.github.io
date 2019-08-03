@@ -8,7 +8,13 @@ const mdsvex = require('mdsvex').mdsvex;
 const mode = process.env.NODE_ENV;
 const dev = mode === 'development';
 
-const alias = { svelte: path.resolve('node_modules', 'svelte') };
+const alias = {
+  svelte: path.resolve('node_modules', 'svelte'),
+  '@components': path.resolve('src', 'components'),
+  '$constants': path.resolve('src', 'constants.js'),
+  '$config': path.resolve('src', 'config.js')
+};
+
 const extensions = ['.mjs', '.js', '.json', '.svelte', '.svexy', '.html'];
 const mainFields = ['svelte', 'module', 'browser', 'main'];
 
