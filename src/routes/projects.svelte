@@ -15,8 +15,6 @@
 <script> export let projects; console.log(projects[1].thumbnail); </script>
 
 <h1> {projects[0].title} </h1>
-<img src={projects[1].thumbnail} />
-<img src={'great-success.png'} />
 
 <style>
 </style>

@@ -30,7 +30,18 @@ module.exports = {
 							hotReload: false // pending https://github.com/sveltejs/svelte/issues/2377
 						}
 					}
-				}
+        },
+        {
+          test: /\.(png|jpg)$/,
+          use: {
+            loader: 'url-loader',
+            options: {
+              outputPath: '../../../static/images',
+              publicPath: 'images',
+              limit: 1000
+            }
+          }
+        }
 			]
 		},
 		mode,
@@ -53,17 +64,6 @@ module.exports = {
 		externals: Object.keys(pkg.dependencies).concat('encoding'),
 		module: {
 			rules: [
-        {
-          test: /\.(png|jpg)$/,
-          use: {
-            loader: 'url-loader',
-            options: {
-              outputPath: '../../../static/images',
-              publicPath: 'images',
-              limit: 1000
-            }
-          }
-        },
 				{
 					test: /\.(svelte|svexy|html)$/,
 					use: {
@@ -75,6 +75,17 @@ module.exports = {
 							dev
 						}
 					}
+        },
+        {
+          test: /\.(png|jpg)$/,
+          use: {
+            loader: 'url-loader',
+            options: {
+              outputPath: '../../../static/images',
+              publicPath: 'images',
+              limit: 1000
+            }
+          }
         }
 			]
 		},
