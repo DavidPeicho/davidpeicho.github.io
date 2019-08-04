@@ -12,10 +12,11 @@
       .then(projects => {
 			  return { projects };
 		});
-	}
+  }
+
 </script>
 
-<script> export let projects; console.log(projects[1].thumbnail); </script>
+<script> export let projects; </script>
 
 <div>
   { #each projects as project, i }

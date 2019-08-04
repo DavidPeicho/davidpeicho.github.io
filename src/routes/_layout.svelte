@@ -1,7 +1,13 @@
-<script>
-	import Nav from '../components/Nav.svelte';
+<script module>
+  export let toto;
+</script>
 
-	export let segment;
+<script>
+  import { onMount } from 'svelte';
+	import Nav from '@components/nav';
+
+  export let segment;
+  export let toto;
 </script>
 
 <style>
@@ -13,7 +19,12 @@
 	}
 </style>
 
+<svelte:head>
+</svelte:head>
+
 <Nav {segment}/>
+
+<h1>{ toto }</h1>
 
 <main>
 	<slot></slot>
