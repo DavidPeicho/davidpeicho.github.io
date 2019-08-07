@@ -11,6 +11,7 @@ const dev = mode === 'development';
 const alias = {
   svelte: path.resolve('node_modules', 'svelte'),
   '@components': path.resolve('src', 'components'),
+  '@layouts': path.resolve('src', 'layouts'),
   '$constants': path.resolve('src', 'constants.js'),
   '$config': path.resolve('src', 'config.js')
 };

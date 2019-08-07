@@ -1,14 +1,17 @@
 ```js module
   import thumbnail from './thumbnail.png';
 	import Img from '@components/image';
+	import Meta from '@components/meta';
 
   export const Metadata = {
     thumbnail,
     title: 'Three.js Logarithmic Depth Buffer storage',
-    date: '21 March 2019',
+    date: '20 March 2019',
     seoDescription: 'My SEO desciption sir'
   };
 ```
+
+<Meta data={Metadata} />
 
 # Hello Everyone
 

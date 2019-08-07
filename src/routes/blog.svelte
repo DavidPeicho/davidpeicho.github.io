@@ -1,17 +1,15 @@
 <script context="module">
 	export function preload({ params, query }) {
 		return this.fetch('blog.json').then(r => r.json()).then(posts => {
-			return { posts, toto: 'toto', props: { toto: 'toto' } };
+			return { posts, segment: '' };
 		});
 	}
 </script>
 
 <script>
   export let posts;
-  export let toto;
-  export let props = {
-    toto: 'lol'
-  };
+  export let segment;
+  console.log(segment);
 </script>
 
 <style>
