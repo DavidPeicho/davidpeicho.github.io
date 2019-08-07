@@ -1,12 +1,22 @@
+<script context='module'>
+  import { CARD_MIN_HEIGHT } from '$constants';
+</script>
+
 <script>
 
-  import { CARD_MIN_HEIGHT } from '$constants';
+  /**
+   * Props
+   */
 
+  /** Description of the card. */
   export let description = '';
+  /** Title of the card. */
   export let title = '';
+  /** Image. This takes 50% of the card. Thus, it **must** be provided. */
   export let image = null;
-
+  /** Array of string representing tags. */
   export let tags = [];
+  /** `right` to have the text on the right, `left` otherwise. */
   export let direction = 'right';
 
   function styleImage() {

@@ -19,8 +19,13 @@
 
 <Meta data={metadata} />
 
-<h1>THATS  BEAUTIFUL DAVID</h1>
+<div class='post-content'>
+  <slot></slot>
+</div>
 
-<slot></slot>
-
-<p>{ metadata.next ? metadata.next.title : '' }</p>
+<style>
+  .content {
+    max-width: 42rem;
+    margin: auto;
+  }
+</style>
