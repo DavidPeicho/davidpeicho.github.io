@@ -23,8 +23,11 @@
     <Card
       description={project.description}
       image={project.thumbnail}
+      url={project.url}
+      videoLink={project.videoLink}
       title={project.title}
       direction={i % 2 === 0 ? 'left' : 'right'}
+      tags={project.tags}
     />
   { /each }
 </div>

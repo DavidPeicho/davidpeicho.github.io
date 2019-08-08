@@ -9,33 +9,67 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-	margin: 0 0 0.5em 0;
-  line-height: 1.2;
+	margin: 0 0 0.5rem 0;
+  line-height: 1.75rem;
   margin-top: 3.5rem;
   margin-bottom: 1.75rem;
   color: #425664;
 }
 
-h1 { font-size: 2em; }
+h1 {
+  font-size: 3rem;
+  line-height: 3rem;
+  font-weight: 800;
+}
 
 h2 {
-  font-size: 1.5em;
+  font-size: 2.0rem;
+  line-height: 2rem;
+  font-weight: 800;
 }
 
 h3 {
-  font-size: 1.25em;
+  font-size: 1.5em;
+  line-height: 1.5rem;
+  font-weight: 800;
 }
 
 h4 {
-  font-size: 1.0em;
+  font-size: 1.125rem;
+  font-weight: 900;
+  line-height: 1.222rem;
+  letter-spacing: 0.140625rem;
 }
 
 h5 {
-  font-size: 0.85em;
+  font-size: 1.0rem;
+  font-weight: 900;
+  line-height: 1.1rem;
+}
+
+h6 {
+  font-size: 0.85rem;
+  font-weight: 900;
+  line-height: 1.1rem;
+  font-style: italic;
+}
+
+p {
+  font-size: 1.115rem;
 }
 
 a {
-	color: inherit;
+  color: #333;
+}
+
+a:hover {
+  color: #007acc;
+  letter-spacing: 0;
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
 }
 
 code {
@@ -43,18 +77,21 @@ code {
 	font-size: calc(1em - 2px);
 	color: #555;
 	background-color: #f0f0f0;
-	padding: 0.2em 0.4em;
+	padding: 0.2rem 0.4rem;
 	border-radius: 2px;
 }
 
 .post-content {
   max-width: 40rem;
   margin: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
 ul {
   margin: 0;
   padding: 0;
+  margin-bottom: 1.75rem;
 }
 
 ol {
@@ -62,12 +99,19 @@ ol {
   padding: 0;
 }
 
-li { margin-bottom: calc(1.75rem / 2); }
+li {
+  font-size: 1.115rem;
+  margin-bottom: calc(1.75rem / 2);
+}
 
 li > ul {
   margin-left: 1.75rem;
   margin-bottom: calc(1.75rem / 2);
   margin-top: calc(1.75rem / 2);
+}
+
+li *:last-child {
+  margin-bottom: 0;
 }
 
 ul ul {
@@ -83,15 +127,44 @@ blockquote {
   padding-top: 0;
   padding-left: 1.42188rem;
   padding-right: 0;
-  font-size: 1.20112rem;
-  line-height: 1.75rem;
+  font-size: 1.5rem;
+  line-height: 1.85rem;
   color: #303030bb;
   font-style: italic;
-  border-left: 0.32813rem solid #425664;
+  border-left: 0.32813em solid #425664;
 }
 
-@media (min-width: 400px) {
-	body {
-		font-size: 16px;
-	}
+blockquote > p {
+  font-size: 1.35rem;
+}
+
+@media (max-width: 900px) {
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.625rem;
+    line-height: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.375rem;
+    line-height: 1.25rem;
+  }
+
+  h4 {
+    line-height: 1.18rem;
+  }
+
+  blockquote {
+    font-size: 1.35rem;
+    line-height: 1.65rem;
+  }
+
+  blockquote p {
+    font-size: 1.25rem;
+  }
+
 }
