@@ -34,9 +34,11 @@
   /** If `true`, the link should be open in a new tab. */
   export let isExternal = true;
 
+  export let style = '';
+
 </script>
 
-<div class='button' style={getStyle()}>
+<div class='button' style={getStyle() + style}>
   <a className='button' href={url} target={getTarget(isExternal)}>
     { text }
   </a>
@@ -50,9 +52,13 @@
     padding: .75rem 1.5rem;
     line-height: normal;
     border-radius: 0.25rem;
-    color: #fff;
     border: 2px solid;
     transition: all .2s ease;
+  }
+
+  .button a {
+    color: #fff;
+    text-decoration: none;
   }
 
   .button:hover {

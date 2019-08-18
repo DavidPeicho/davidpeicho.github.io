@@ -16,7 +16,7 @@
 
   function left(dir) { return dir !== 'right'; }
 
-  function isLinkExternal(url) { return url && url.startsWith('/'); }
+  function isLinkExternal(url) { return url && !url.startsWith('/'); }
 </script>
 
 <script>
@@ -25,7 +25,11 @@
    * PROPS
    */
 
-  /** Description of the card. */
+  /**
+   * Description of the card.
+   *
+   * @type {string}
+   */
   export let description = '';
 
   /** Title of the card. */
@@ -47,11 +51,11 @@
   export let videoLink = null;
 
   const buttons = [];
-  if (url) {
-    buttons.push({ url, text: 'More', external: isLinkExternal(url) });
-  }
   if (videoLink) {
     buttons.push({ url: videoLink, text: 'Video', external: true });
+  }
+  if (url) {
+    buttons.push({ url, text: 'More', external: isLinkExternal(url) });
   }
 
 </script>
@@ -60,11 +64,17 @@
   <div class='image' style={styleImage(image)}/>
   <div class='content'>
     <div class='text'>
-      <h2>{title}</h2>
+      <h2>
+        <a
+          target={isLinkExternal(url) ? '_blank' : ''}
+          href={url}>
+          {title}
+        </a>
+      </h2>
 
       <div>
         { #each tags as tag }
-          <Tag {tag}/>
+          <Tag {tag} style={'margin-right: 0.25rem;'} />
         { /each }
       </div>
 
@@ -72,7 +82,12 @@
 
       <div>
         { #each buttons as button }
-          <Button url={button.url} text={button.text} isExternal={button.external}/>
+          <Button
+            url={button.url}
+            text={button.text}
+            isExternal={button.external}
+            style={'margin-right: 0.5rem;'}
+          />
         { /each }
       </div>
 
@@ -110,7 +125,21 @@
   .text h2 {
     font-size: 2.75rem;
     line-height: 2.75rem;
-    margin-bottom: 1rem;
+    margin: 0 0 1rem 0;
   }
+
+  .text p {
+    margin-top: 2rem;
+  }
+
+  h2 > a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  h2 > a:hover {
+    text-decoration-line: underline;
+  }
+
 
 </style>

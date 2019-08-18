@@ -1,6 +1,5 @@
 ```js module
   import thumbnail from './thumbnail.png';
-	import Img from '@components/image';
 
   export const Metadata = {
     thumbnail,

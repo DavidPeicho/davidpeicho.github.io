@@ -9,9 +9,7 @@
 	export function preload({ params, query }) {
     return this.fetch('projects.json')
       .then(r => r.json())
-      .then(projects => {
-			  return { projects };
-		});
+      .then(projects => { return { projects }; });
   }
 
 </script>

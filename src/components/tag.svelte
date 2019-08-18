@@ -7,7 +7,7 @@
    *
    * This method is a `trick` used to edit CSS using variables.
    */
-  function getStyle() { return `background-color: ${Colors.Third}`; }
+  function getStyle() { return `background-color: ${Colors.Third};`; }
 
 </script>
 
@@ -20,9 +20,12 @@
   /** String tag to display. */
   export let tag;
 
+  /** String tag to display. */
+  export let style = '';
+
 </script>
 
-<small class='tag' style={getStyle()}>
+<small class='tag' style={getStyle() + style}>
   { '#' + tag }
 </small>
 

@@ -4,7 +4,7 @@ const postsCtx = require.context('./routes/blog', true, /\.(svexy|js|svelte)$/);
 const projectsCtx = require.context('./projects', true, /\.(svexy|js|svelte)$/);
 
 export const PostsList = processImport(postsCtx);
-export const PostsMap = PostsList.reduce((acc, it) => (acc[it.href] = it, acc), {});
+export const PostsMap = PostsList.reduce((acc, it) => (acc[it.url] = it, acc), {});
 
 export const ProjectsList = processImport(projectsCtx);
 
@@ -15,7 +15,7 @@ function processImport(ctx) {
     if (!id || id === '.' || id === '..') { return null; }
     const module = ctx(path);
     const meta = Object.assign(
-      { href: `/blog/${id}` }, module.Metadata || {}
+      { url: `/blog/${id}` }, module.Metadata || {}
     );
     return meta;
   })

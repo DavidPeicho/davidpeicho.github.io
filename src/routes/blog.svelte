@@ -13,12 +13,15 @@
 </script>
 
 <div>
-	{#each posts as post, i}
+  { #each posts as post, i }
     <Card
       description={post.description}
       image={post.thumbnail}
+      url={post.url}
+      videoLink={post.videoLink}
       title={post.title}
       direction={i % 2 === 0 ? 'left' : 'right'}
+      tags={post.tags}
     />
-	{/each}
+  { /each }
 </div>
