@@ -34,6 +34,17 @@
   <slot></slot>
 </div>
 
+{ #if metadata.previous || metadata.next }
+<div class='links'>
+  { #if metadata.previous }
+    <a href={metadata.previous.url}>{metadata.previous.title}</a>
+  { /if }
+  { #if metadata.next }
+    <a href={metadata.next.url}>{metadata.next.title}</a>
+  { /if }
+</div>
+{ /if }
+
 <style>
   .content {
     position: relative;
@@ -69,6 +80,12 @@
 		bottom: -1px;
 		display: block;
 		background-color: #F07E74;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 
 </style>

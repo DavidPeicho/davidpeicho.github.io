@@ -32,10 +32,10 @@ function processImport(ctx) {
     elt.previous = null;
     elt.next = null;
     if (i > 0) {
-      elt.previous = { title: list[i - 1].title, href: list[i - 1].href };
+      elt.previous = { title: list[i - 1].title, url: list[i - 1].url };
     }
     if (i < list.length - 1) {
-      elt.next = { title: list[i + 1].title, href: list[i + 1].href };
+      elt.next = { title: list[i + 1].title, url: list[i + 1].url };
     }
   });
 
