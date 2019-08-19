@@ -1,14 +1,16 @@
-import { PostsMap } from '../server-utils';
+import { PostsMap } from '../../server-utils';
 
 export function get(req, res) {
-  if (!req.query || !req.query.path) {
+  const slug = req.params.slug;
+  if (!slug) {
     res.writeHead(404, {
       'Content-Type': 'application/json'
     });
     res.end('');
     return;
   }
-  const metadata = PostsMap[req.query.path];
+
+  const metadata = PostsMap[slug];
 
   res.writeHead(200, {
 		'Content-Type': 'application/json'

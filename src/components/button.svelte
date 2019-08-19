@@ -1,5 +1,4 @@
 <script context='module'>
-
   import { Colors } from '$constants';
 
   /**
@@ -15,7 +14,10 @@
   }
 
   /** Returns the target of a `<a>` element according to a boolean. */
-  function getTarget(external) { return external ? '_blank' : ''; }
+  function getTarget(url) {
+    const external = url && !url.startsWith('/');
+    return external ? '_blank' : '';
+  }
 
 </script>
 
@@ -39,7 +41,7 @@
 </script>
 
 <div class='button' style={getStyle() + style}>
-  <a className='button' href={url} target={getTarget(isExternal)}>
+  <a className='button' href={url} target={getTarget(url)}>
     { text }
   </a>
 </div>

@@ -1,7 +1,7 @@
 <script context="module">
-	export async function preload(data) {
+	export function preload(data) {
     return (
-      this.fetch(`metadata.json?path=${data.path}`)
+      this.fetch(`${data.path}.json`)
         .then(metadata => metadata.json()).then(metadata => {
           return { metadata };
         })
@@ -15,6 +15,7 @@
 </script>
 
 <script>
+  import Button from '@components/button';
   import Nav from '@components/nav';
   import Meta from '@components/meta';
   import ImageHeader from '@components/image-header';
@@ -32,18 +33,18 @@
 
 <div class='content'>
   <slot></slot>
-</div>
-
 { #if metadata.previous || metadata.next }
 <div class='links'>
   { #if metadata.previous }
-    <a href={metadata.previous.url}>{metadata.previous.title}</a>
+    <Button url={metadata.previous.url} text={'← ' + metadata.previous.title} />
   { /if }
   { #if metadata.next }
-    <a href={metadata.next.url}>{metadata.next.title}</a>
+    <Button url={metadata.next.url} text={metadata.next.title + ' →'} />
   { /if }
 </div>
 { /if }
+</div>
+
 
 <style>
   .content {
