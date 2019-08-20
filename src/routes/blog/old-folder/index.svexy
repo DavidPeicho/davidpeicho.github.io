@@ -5,14 +5,14 @@
 
   export const Metadata = {
     thumbnail,
-    title: 'Three.js Logarithmic Depth Buffer storage COPPY PUTAIN',
-    date: '20 March 2019',
-    seoDescription: 'My SEO desciption sir'
+    title: 'Old Article',
+    date: '20 March 2000',
+    seoDescription: 'My Old test'
   };
 ```
 
 <Meta data={Metadata} />
 
-# Hello Everyone
+# Old Article
 
-<Img src={thumbnail} />
+this is old.

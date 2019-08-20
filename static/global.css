@@ -82,10 +82,28 @@ code {
 }
 
 .post-content {
+  position: relative;
   max-width: 40rem;
   margin: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+}
+
+.post-content::before {
+  position: relative;
+  top: 0;
+  left: 50%;
+  height: 3px;
+  width: 50%;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  transform: translateX(-50%);
+  content: '';
+  bottom: -1px;
+  display: block;
+  background-color: #F07E74;
+}
+
+.post-content a {
+  color: #007acc;
 }
 
 ul {

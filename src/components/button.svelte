@@ -27,11 +27,13 @@
    * PROPS
    */
 
+  export let attributes = {};
+
   /** String tag to display. */
   export let text;
 
   /** String representing the URL to redirect to. */
-  export let url;
+  export let url = '';
 
   /** If `true`, the link should be open in a new tab. */
   export let isExternal = true;
@@ -40,8 +42,16 @@
 
 </script>
 
-<div class='button' style={getStyle() + style}>
-  <a className='button' href={url} target={getTarget(url)}>
+<div
+  {...attributes}
+  class='button'
+  style={getStyle() + style}
+>
+  <a
+    className='button'
+    href={url}
+    target={getTarget(url)}
+  >
     { text }
   </a>
 </div>
