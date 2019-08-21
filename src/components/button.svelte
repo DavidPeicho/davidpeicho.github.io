@@ -75,7 +75,7 @@
 
   .button:hover {
     background: #ffffff;
-    color: #F07E74;
+    color: #ef495c;
   }
 
 </style>

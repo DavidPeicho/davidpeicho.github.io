@@ -22,7 +22,6 @@
     position: relative;
     width: 100%;
     height: 500px;
-    max-width: 58rem;
     margin: auto;
   }
 

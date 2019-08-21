@@ -45,13 +45,16 @@
 
 <Meta data={metadata} />
 
-<ImageHeader image={metadata.thumbnail}>
-  <h1 style={getTitleStyle()}>{metadata.title}</h1>
-  <PostInfo readingTime={metadata.readingTime || 10} />
-</ImageHeader>
+<div class='post-content' style='margin-top: 1rem;'>
 
-<div class='post-content'>
+  <ImageHeader image={metadata.thumbnail}>
+    <h1 style={getTitleStyle()}>{metadata.title}</h1>
+  </ImageHeader>
+
+  <PostInfo readingTime={metadata.readingTime || 10} />
+
   <slot></slot>
+
   <div class='separator' />
   <ul class='links'>
     { #each links as link, i }
@@ -82,7 +85,7 @@
     content: '';
 		bottom: -1px;
 		display: block;
-		background-color: #F07E74;
+		background-color: #ef495c;
   }
 
   .links {
@@ -96,8 +99,8 @@
   .link {
     font-size: 1.15rem;
     cursor: pointer;
-    color: #F07E74;
-    box-shadow: 0 1px 0 0 #F07E74;
+    color: #ef495c;
+    box-shadow: 0 1px 0 0 #ef495c;
     text-decoration: none;
   }
 

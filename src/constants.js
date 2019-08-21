@@ -11,6 +11,6 @@ export const CARD_MIN_HEIGHT = 60;
 export const Colors = {
   Text: '#303030', // Gray
   Primary: '#425664', // Dark Blue
-  Secondary: '#F07E74', // Red
+  Secondary: '#ef495c', // Red
   Third: '#a8d0e6' // Light Blue
 };

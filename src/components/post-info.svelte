@@ -30,35 +30,47 @@
   export let readingTime = 15;
 
   const infos = [
-    { icon: '', text: formatDate(date) },
+    { icon: 'far fa-calendar-times', text: formatDate(date) },
     { icon: '', text: `${readingTime} min read` }
   ]
 </script>
 
 <div class='container'>
   { #each infos as info }
-    <div class='info-row'>{info.text}</div>
+    <div class='row'>
+      <i class="fa fa-car"></i>
+      <span class='text'>{info.text}</span>
+    </div>
   { /each }
 </div>
 
 <style>
   .container {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
     margin-bottom: 1rem;
-    padding: 0.5rem;
-    text-align: left;
-    border-radius: 0.25rem;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-around;
+    border-radius: 0.05rem;
     color: white;
-    background-color: #F07E74;
+    background-color: #ef495c;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.4);
     text-transform: initial;
   }
 
-  .info-row {
+  .row {
+    display: inline-block;
+    padding: 10px;
+  }
+
+  .row .text {
     position: 'relative';
     margin: 'auto';
   }
+
+  .row .icon-test {
+    vertical-align: middle;
+    font-size: 40px;
+  }
+
 </style>
