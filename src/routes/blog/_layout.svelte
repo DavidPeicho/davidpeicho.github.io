@@ -1,4 +1,7 @@
 <script context="module">
+
+  import Tag from '@components/tag';
+
 	export function preload(data) {
     return (
       this.fetch(`${data.path}.json`)
@@ -48,10 +51,15 @@
 <div class='post-content' style='margin-top: 1rem;'>
 
   <ImageHeader image={metadata.thumbnail}>
-    <h1 style={getTitleStyle()}>{metadata.title}</h1>
+    <h1 class='title' style={getTitleStyle()}>{metadata.title}</h1>
+    <div class='tags-container'>
+      { #each (metadata.tags || []) as tag }
+        <Tag style='margin: 0 0.25rem 0 0.25rem;' tag={tag} />
+      { /each }
+    </div>
   </ImageHeader>
 
-  <PostInfo readingTime={metadata.readingTime || 10} tags={metadata.tags} />
+  <PostInfo readingTime={metadata.readingTime || 10} />
 
   <slot></slot>
 
@@ -86,6 +94,21 @@
 		bottom: -1px;
 		display: block;
 		background-color: #ef495c;
+  }
+
+  .title {
+    padding: 0 1rem 0 1rem;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 2px 2px rgba(0, 0, 0, 0.4);
+  }
+
+  .tags-container {
+    position: absolute;
+    bottom: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   .links {

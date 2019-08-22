@@ -21,3 +21,10 @@ export const TagToColor = {
   vr: '#f5b82a',
   ai: '#9b59b6'
 };
+
+export const TagToIcon = {
+  graphics: 'fa-cubes',
+  games: 'fa-gamepad',
+  vr: 'fa-vr-cardboard',
+  ai: 'fa-brain'
+}

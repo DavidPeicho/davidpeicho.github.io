@@ -30,7 +30,6 @@
 <script>
   export let date = new Date();
   export let readingTime = 15;
-  export let tags = [];
 
   const infos = [
     { icon: 'fa-calendar', text: formatDate(date) },
@@ -44,12 +43,6 @@
       <i class={'far ' + info.icon}></i>
       <span class='text'>{info.text}</span>
     </div>
-  { /each }
-</div>
-
-<div>
-  { #each tags as tag }
-    <Tag tag={tag} />
   { /each }
 </div>
 

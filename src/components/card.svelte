@@ -1,5 +1,5 @@
 <script context='module'>
-  import { CARD_MIN_HEIGHT } from '$constants';
+  import { Colors, TagToIcon, TagToColor, CARD_MIN_HEIGHT } from '$constants';
   import Button from '@components/button';
   import Tag from '@components/tag';
 
@@ -12,6 +12,15 @@
       flex-direction: ${ left(direction) ? 'row' : 'row-reverse' };
       min-height: ${ CARD_MIN_HEIGHT + 'vh' };
     `;
+  }
+
+  function getIconStyle(tag) {
+    const color = TagToColor[tag] || Colors.Third;
+    return `color: ${color}`;
+  }
+
+  function getIconClass(tag) {
+    return 'fas fa-7x ' + TagToIcon[tag];
   }
 
   function left(dir) { return dir !== 'right'; }
@@ -92,6 +101,13 @@
       </div>
 
     </div>
+
+    { #if tags.length > 0 }
+      <div class='icon'>
+        <i class={getIconClass(tags[0])} style={getIconStyle(tags[0])}></i>
+      </div>
+    { /if }
+
   </div>
 </div>
 
@@ -130,6 +146,14 @@
 
   .text p {
     margin-top: 2rem;
+  }
+
+  .container .icon {
+    position: absolute;
+    font-size: 100%;
+    right: 1rem;
+    bottom: 1rem;
+    justify-content: center;
   }
 
   h2 > a {
