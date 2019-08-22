@@ -6,6 +6,10 @@ export const Metadata = {
   url: 'https://github.com/DavidPeicho/cuda-pathtracer',
   thumbnail,
   title: 'CUDA Pathtracer',
-  description: 'Pathtracer written in CUDA. Voila Voila.',
+  description: `
+    Simple Pathtracer written in CUDA. It supports Texturing, Normal Mapping,
+    IBL, and Depth Of Field.
+    It's a quick project to try out CUDA.
+  `,
   date: 2018,
 };

@@ -1,5 +1,7 @@
 <script context='module'>
 
+  import Tag from '@components/tag';
+
   const MONTHS = [
     'January',
     'February',
@@ -28,19 +30,26 @@
 <script>
   export let date = new Date();
   export let readingTime = 15;
+  export let tags = [];
 
   const infos = [
-    { icon: 'far fa-calendar-times', text: formatDate(date) },
-    { icon: '', text: `${readingTime} min read` }
+    { icon: 'fa-calendar', text: formatDate(date) },
+    { icon: 'fa-clock', text: `${readingTime} min read` }
   ]
 </script>
 
 <div class='container'>
   { #each infos as info }
     <div class='row'>
-      <i class="fa fa-car"></i>
+      <i class={'far ' + info.icon}></i>
       <span class='text'>{info.text}</span>
     </div>
+  { /each }
+</div>
+
+<div>
+  { #each tags as tag }
+    <Tag tag={tag} />
   { /each }
 </div>
 

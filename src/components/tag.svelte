@@ -1,13 +1,18 @@
 <script context='module'>
 
-  import { Colors } from '$constants';
+  import { Colors, TagToColor } from '$constants';
+  import { Tags } from '$config';
+
 
   /**
    * Returns an extra style for a Tag component.
    *
    * This method is a `trick` used to edit CSS using variables.
    */
-  function getStyle() { return `background-color: ${Colors.Third};`; }
+  function getStyle(tag) {
+    let color = TagToColor[tag] || TagToColor[Tags.ComputerGraphics];
+    return `background-color: ${color};`;
+  }
 
 </script>
 
@@ -20,23 +25,24 @@
   /** String tag to display. */
   export let tag;
 
-  /** String tag to display. */
+  /** Extra style to apply to the DOM element. */
   export let style = '';
 
 </script>
 
-<small class='tag' style={getStyle() + style}>
+<small class='tag' style={getStyle(tag) + style}>
   { '#' + tag }
 </small>
 
 <style>
 
   .tag {
-    padding: 0.5rem 1rem 0.5rem 1rem;
+    padding: 0.35rem 0.75rem 0.35rem 0.75rem;
     color: white;
     border-radius: 1.5rem;
     font-weight: 700;
     font-size: 1.0rem;
+    text-shadow: 1px 1px rgba(0, 0 , 0, 0.3);
   }
 
 </style>

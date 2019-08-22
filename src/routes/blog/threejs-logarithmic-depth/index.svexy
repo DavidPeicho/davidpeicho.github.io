@@ -1,8 +1,10 @@
 ```js module
   import thumbnail from './thumbnail.png';
+  import { Tags } from '$config';
 
   export const Metadata = {
     thumbnail,
+    tags: [ Tags.VR, Tags.ComputerGraphics ],
     title: 'Three.js Logarithmic Depth Buffer storage',
     date: '21 March 2019',
     seoDescription: 'My SEO desciption sir'

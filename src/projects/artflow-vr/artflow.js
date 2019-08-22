@@ -7,6 +7,11 @@ export const Metadata = {
   thumbnail,
   title: 'ArtFlow VR',
   date: 2018,
+  description: `
+    ArtFlow is a WebVR experience in which users can draw and build a world
+    in the same way they would do it in Tilt Brush or Quill.
+    ArtFlow was made to finalize my Master's Degree at EPITA.
+  `,
   priority: 1,
   videoLink: 'https://www.youtube.com/watch?v=QtjKiANf6GY'
 };

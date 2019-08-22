@@ -51,7 +51,7 @@
     <h1 style={getTitleStyle()}>{metadata.title}</h1>
   </ImageHeader>
 
-  <PostInfo readingTime={metadata.readingTime || 10} />
+  <PostInfo readingTime={metadata.readingTime || 10} tags={metadata.tags} />
 
   <slot></slot>
 

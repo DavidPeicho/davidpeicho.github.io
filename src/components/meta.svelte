@@ -23,7 +23,7 @@
   <meta property="og:title" content="{metadata.title}">
   <meta property="og:description" content="{metadata.description}">
   {#if metadata.thumb}
-  <meta property="og:image" content="{metadata.thumb}">
+    <meta property="og:image" content="{metadata.thumb}">
   {/if}
 
   <!-- Twitter -->

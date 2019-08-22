@@ -12,5 +12,12 @@ export const Colors = {
   Text: '#303030', // Gray
   Primary: '#425664', // Dark Blue
   Secondary: '#ef495c', // Red
-  Third: '#a8d0e6' // Light Blue
+  Third: '#007acc' // Light Blue
+};
+
+export const TagToColor = {
+  graphics: '#3498db',
+  games: '#9bca2f',
+  vr: '#f5b82a',
+  ai: '#9b59b6'
 };
