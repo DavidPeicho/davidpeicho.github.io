@@ -34,9 +34,8 @@
 
   let links = buildLinks(metadata);
 
-  async function fetchMetadata(e) {
-    const t = e.target;
-    const url = t.attributes['metadata-url'].value
+  async function fetchMetadata(e, link) {
+    const url = link.url;
     const res = await fetch(`${url}.json`);
     const data = await res.json();
     metadata = data;
@@ -68,11 +67,12 @@
     { #each links as link, i }
       { #if link }
         <li
-          class='link'
+          class={'link ' + (i === 0 ? 'left' : 'right')}
           metadata-url={link.url}
-          on:click={fetchMetadata}
+          on:click={(e) => fetchMetadata(e, link)}
         >
-          { i === 0 ? '← ' + link.title : link.title + ' →' }
+          <p>{i === 0 ? '← Previous' : 'Next →'}</p>
+          <p class='text'>{`"${link.title}"`}</p>
         </li>
       { :else }
         <li />
@@ -82,6 +82,13 @@
 </div>
 
 <style>
+
+  .post-content h1 {
+    width: 100%;
+    text-align: center;
+    margin: auto;
+  }
+
   .separator {
     position: relative;
     left: 50%;
@@ -119,16 +126,25 @@
     padding: 0px;
   }
 
-  .link {
+  .links .left { text-align: left; }
+
+  .links .right { text-align: right; }
+
+  .links p { margin: 0; }
+
+  .links .link {
+    flex-grow: 1;
     font-size: 1.15rem;
     cursor: pointer;
-    color: #ef495c;
-    box-shadow: 0 1px 0 0 #ef495c;
+    color: #425664;
     text-decoration: none;
   }
 
-  .link:hover {
-    box-shadow: 0 0 0 0 black;
+  .link:hover { box-shadow: 1px 0 1px 0 rgba(0, 0, 0, 0.15); }
+
+  .link .text {
+    color: #ef495c;
+    font-style: italic;
   }
 
 </style>
