@@ -83,12 +83,6 @@
 
 <style>
 
-  .post-content h1 {
-    width: 100%;
-    text-align: center;
-    margin: auto;
-  }
-
   .separator {
     position: relative;
     left: 50%;
@@ -104,7 +98,9 @@
   }
 
   .title {
+    width: 100%;
     padding: 0 1rem 0 1rem;
+    margin: auto;
     text-align: center;
     text-transform: uppercase;
     text-shadow: 2px 2px rgba(0, 0, 0, 0.4);

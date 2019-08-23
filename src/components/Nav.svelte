@@ -4,7 +4,7 @@
 
 <style>
 	nav {
-		border-bottom: 1px solid rgba(255,62,0,0.1);
+		border-bottom: 1px solid #ef495c59;
 		font-weight: 300;
     padding: 0 1em;
     text-align: center;
@@ -23,6 +23,7 @@
 	}
 
 	li {
+    margin: 0;
 		display: block;
 		float: left;
 	}
@@ -39,7 +40,7 @@
 		height: 2px;
 		background-color: #ef495c;
 		display: block;
-		bottom: -1px;
+		bottom: 10px;
 	}
 
 	a {
