@@ -73,13 +73,13 @@
   <div class='image' style={styleImage(image)}/>
   <div class='content'>
     <div class='text'>
-      <h2>
+      <h1>
         <a
           target={isLinkExternal(url) ? '_blank' : ''}
           href={url}>
           {title}
         </a>
-      </h2>
+      </h1>
 
       <div>
         { #each tags as tag }
@@ -89,7 +89,7 @@
 
       <p>{description}</p>
 
-      <div>
+      <div class='buttons-container'>
         { #each buttons as button }
           <Button
             url={button.url}
@@ -113,14 +113,26 @@
 
 <style>
 
+  h1 > a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  h1 > a:hover {
+    text-decoration-line: underline;
+  }
+
   .container {
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     background-color: #f1f0f0;
   }
 
   .image {
+    min-width: 30rem;
+    min-height: 30rem;
     flex: 1 1 0;
     background-size: cover;
     background-repeat: no-repeat;
@@ -129,23 +141,23 @@
 
   .container .content {
     position: relative;
+    min-width: 30rem;
     flex: 1 1 0;
   }
 
   .content .text {
     position: relative;
-    max-width: 27.8125rem;
+    max-width: 30rem;
     padding: 5rem 5rem 5rem 6rem;
   }
 
-  .text h2 {
-    font-size: 2.75rem;
-    line-height: 2.75rem;
+  .text h1 {
     margin: 0 0 1rem 0;
   }
 
   .text p {
     margin-top: 2rem;
+    line-height: 1.875rem;
   }
 
   .container .icon {
@@ -156,14 +168,27 @@
     justify-content: center;
   }
 
-  h2 > a {
-    color: inherit;
-    text-decoration: none;
+  .container .buttons-container {
+    margin: 2.625rem 0 0;
   }
 
-  h2 > a:hover {
-    text-decoration-line: underline;
-  }
+  @media (max-width: 750px) {
 
+    .image {
+      max-width: initial;
+    }
+
+    .content .text {
+      max-width: initial;
+      padding: 6rem 2rem 2rem 2rem;
+    }
+
+    .container .icon {
+      top: 1rem;
+      bottom: initial;
+      font-size: 65%;
+    }
+
+  }
 
 </style>

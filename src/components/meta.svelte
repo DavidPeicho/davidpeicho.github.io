@@ -34,5 +34,9 @@
   {#if metadata.thumb}
     <meta property="twitter:image" content="{metadata.thumb}">
   {/if}
+
+  <meta name="viewport" content="initial-scale=1.0, width=device-width, maximum-scale=1" />
+  <meta charSet="utf-8" />
+
 </svelte:head>
 
