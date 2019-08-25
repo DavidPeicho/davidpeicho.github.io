@@ -47,10 +47,10 @@
 
 <Meta data={metadata} />
 
-<div class='post-content' style='margin-top: 1rem;'>
+<div class='post-content'>
 
-  <ImageHeader image={metadata.thumbnail}>
-    <h1 class='title' style={getTitleStyle()}>{metadata.title}</h1>
+  <ImageHeader image={metadata.thumbnail} opacity={0.5}>
+    <h1 class='title textshadow' style={getTitleStyle()}>{metadata.title}</h1>
     <div class='tags-container'>
       { #each (metadata.tags || []) as tag }
         <Tag style='margin: 0 0.25rem 0 0.25rem;' tag={tag} />
@@ -99,11 +99,9 @@
 
   .title {
     width: 100%;
-    padding: 0 1rem 0 1rem;
     margin: auto;
     text-align: center;
     text-transform: uppercase;
-    text-shadow: 2px 2px rgba(0, 0, 0, 0.4);
   }
 
   .tags-container {

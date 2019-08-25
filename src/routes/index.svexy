@@ -1,0 +1,53 @@
+---
+layout: '@layouts/about.svelte'
+resume:
+  - company: Siemens Healthineers
+    date: 2019
+    title: Research Scientist
+  - company: Siemens Healthineers
+    date: 2018
+    title: Software Engineer Intern
+  - company: Sketchfab
+    date: 2016
+    title: Software Engineer Intern
+  - company: Aerys
+    date: 2014
+    title: Software Engineer Intern
+---
+
+```js module
+	import picture from './me.jpg';
+	import ImageHeader from '@components/image-header';
+```
+
+<h1 class='putain'>Test</h1>
+
+## Nice to see you there!
+
+I am David, a Research Scientist within the Visualization Team at
+Siemens Healthineers. My current position consists of pushing 3D Medical Visualization
+capabilities in the Web, mostly using WebGL.
+
+Since 2018, I am in charge of a building a WebGL framework achieving Real-Time
+or close to Real-Time medical visualization.
+
+I graduated from [EPITA (Ecole des Ingénieurs en Intelligence Informatique)](https://www.epita.fr/en) in 2019,
+where I obtained a Master's degree in Computer Science, speciality Artificial Intelligence.
+
+### What I like to play with
+
+#### Languages
+
+* JavaScript
+* C++
+* C, Python, Java. Less often though!
+
+#### Framework & Engines
+
+* Three.js
+* Unreal Engine 4
+
+#### Specifications
+
+* WebGL;
+* OpenGL.
