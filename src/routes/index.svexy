@@ -2,25 +2,31 @@
 layout: '@layouts/about.svelte'
 resume:
   - company: Siemens Healthineers
+    location: London, UK
     date: 2019
     title: Research Scientist
+    logo: images/brand/siemens-healthineers-logo.png
   - company: Siemens Healthineers
+    location: Princeton, NJ, USA
     date: 2018
     title: Software Engineer Intern
+    logo: images/brand/siemens-healthineers-logo.png
   - company: Sketchfab
+    location: Paris, France
     date: 2016
     title: Software Engineer Intern
+    logo: images/brand/sketchfab-logo.png
   - company: Aerys
+    location: Paris, France
     date: 2014
     title: Software Engineer Intern
+    logo: images/brand/aerys-logo.png
 ---
 
 ```js module
 	import picture from './me.jpg';
 	import ImageHeader from '@components/image-header';
 ```
-
-<h1 class='putain'>Test</h1>
 
 ## Nice to see you there!
 

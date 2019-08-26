@@ -12,8 +12,10 @@ const alias = {
   svelte: path.resolve('node_modules', 'svelte'),
   '@components': path.resolve('src', 'components'),
   '@layouts': path.resolve('src', 'layouts'),
+  '@utils': path.resolve('src', 'utils'),
   '$constants': path.resolve('src', 'constants.js'),
-  '$config': path.resolve('src', 'config.js')
+  '$config': path.resolve('src', 'config.js'),
+  '$blog': path.resolve('src', 'blog.js')
 };
 
 const extensions = ['.mjs', '.js', '.json', '.svelte', '.svexy', '.html'];

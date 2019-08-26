@@ -56,8 +56,14 @@
 
 <nav>
 	<ul>
-		<li><a class={isSelected(segment, '')} href='.'>about</a></li>
-		<li><a rel=prefetch class={isSelected(segment, 'projects')} href='projects'>projects</a></li>
-		<li><a rel=prefetch class='{isSelected(segment, 'blog')}' href='blog'>blog</a></li>
+		<li>
+      <a class={isSelected(segment, '')} href='.'>about</a>
+    </li>
+		<li>
+      <a rel=prefetch class={isSelected(segment, 'projects')} href='projects'>projects</a>
+    </li>
+		<li>
+      <a rel=prefetch class='{isSelected(segment, 'blog')}' href='blog'>blog</a>
+    </li>
 	</ul>
 </nav>
