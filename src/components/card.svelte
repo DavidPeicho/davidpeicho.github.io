@@ -1,6 +1,7 @@
 <script context='module'>
   import { Colors, TagToIcon, TagToColor, CARD_MIN_HEIGHT } from '$constants';
   import Button from '@components/button';
+  import Icon from '@components/icon';
   import Tag from '@components/tag';
 
   function styleImage(img) {
@@ -17,10 +18,6 @@
   function getIconStyle(tag) {
     const color = TagToColor[tag] || Colors.Third;
     return `color: ${color}`;
-  }
-
-  function getIconClass(tag) {
-    return 'fas fa-7x ' + TagToIcon[tag];
   }
 
   function left(dir) { return dir !== 'right'; }
@@ -102,9 +99,15 @@
 
     </div>
 
-    { #if tags.length > 0 }
+    <!-- Displays a big colorful icon to easily see what type of post it is. -->
+    { #if tags.length > 0 && TagToIcon[tags[0]] }
       <div class='icon'>
-        <i class={getIconClass(tags[0])} style={getIconStyle(tags[0])}></i>
+        <Icon
+          width=null
+          height=null
+          {...TagToIcon[tags[0]]}
+          style={getIconStyle(tags[0])}
+        />
       </div>
     { /if }
 
@@ -118,9 +121,7 @@
     text-decoration: none;
   }
 
-  h1 > a:hover {
-    text-decoration-line: underline;
-  }
+  h1 > a:hover { text-decoration-line: underline; }
 
   .container {
     width: 100%;
@@ -162,9 +163,10 @@
 
   .container .icon {
     position: absolute;
-    font-size: 100%;
     right: 1rem;
     bottom: 1rem;
+    width: 8rem;
+    height: 8rem;
     justify-content: center;
   }
 
@@ -186,7 +188,8 @@
     .container .icon {
       top: 1rem;
       bottom: initial;
-      font-size: 65%;
+      width: 5rem;
+      height: 5rem;
     }
 
   }

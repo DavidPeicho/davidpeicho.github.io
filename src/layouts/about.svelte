@@ -88,7 +88,7 @@
     <h3 class='softtextshadow'>@ Siemens Healthineers</h3>
     <!-- Current Location. -->
     <div class='location'>
-      <Icon width=25 height=25 path={SVGMapMarker} />
+      <Icon width=25 height=25 {...SVGMapMarker} />
       <span>{Blog.location}</span>
     </div>
   </div>
@@ -98,7 +98,7 @@
 <div class='post-content'>
   <div class='social'>
     { #each socials as social }
-      <a href={social.url} target='_blank'><Icon path={social.icon} /></a>
+      <a href={social.url} target='_blank'><Icon {...social.icon} /></a>
     { /each }
   </div>
   <slot />
@@ -120,7 +120,7 @@
           <!-- Author can provide a location for each experience. -->
           { #if company.location }
             <div style='margin-top: 0.75rem;'>
-              <Icon width=15 height=15 path={SVGMapMarker} />
+              <Icon width=15 height=15 {...SVGMapMarker} />
               <span>{company.location}</span>
             </div>
           { /if }
@@ -189,7 +189,7 @@
     width: 100%;
     max-width: 500px;
     margin: auto;
-    margin-top: 1rem;
+    margin-top: 3rem;
     flex-direction: column;
   }
 
@@ -197,7 +197,7 @@
     display: flex;
     flex-direction: row;
     flex-grow: 1;
-    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 
   .entry .element {

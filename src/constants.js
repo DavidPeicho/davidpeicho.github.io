@@ -1,3 +1,10 @@
+import {
+  SVGBrain,
+  SVGCubes,
+  SVGGamepad,
+  SVGVRHeadset
+} from '@utils/icons';
+
 /* ////////////////////////////////////////////////////////////////////////////
                                 CARD COMPONENT
 //////////////////////////////////////////////////////////////////////////// */
@@ -10,7 +17,7 @@ export const CARD_MIN_HEIGHT = 60;
 
 export const Colors = {
   Text: '#303030', // Gray
-  Primary: '#425664', // Dark Blue
+  Primary: '#353e44', // Dark Blue-Grayish
   Secondary: '#ef495c', // Red
   Third: '#007acc' // Light Blue
 };
@@ -23,8 +30,8 @@ export const TagToColor = {
 };
 
 export const TagToIcon = {
-  graphics: 'fa-cubes',
-  games: 'fa-gamepad',
-  vr: 'fa-vr-cardboard',
-  ai: 'fa-brain'
-}
+  graphics: SVGCubes,
+  games: SVGGamepad,
+  vr: SVGVRHeadset,
+  ai: SVGBrain
+};

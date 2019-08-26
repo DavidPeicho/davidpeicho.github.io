@@ -16,7 +16,7 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.75rem;
   margin-top: 3.5rem;
   margin-bottom: 1.75rem;
-  color: #425664;
+  color: #353e44;
 }
 
 h1 {
@@ -79,10 +79,6 @@ a:visited {
 code {
 	font-family: menlo, inconsolata, monospace;
 	font-size: calc(1em - 2px);
-	color: #555;
-	background-color: #f0f0f0;
-	padding: 0.2rem 0.4rem;
-	border-radius: 2px;
 }
 
 ul {
@@ -99,6 +95,7 @@ ol {
 li {
   font-size: 1.115rem;
   margin-bottom: calc(1.75rem / 2);
+  margin-left: 0.5rem;
 }
 
 li > ul {
@@ -128,13 +125,21 @@ blockquote {
   line-height: 1.85rem;
   color: #303030bb;
   font-style: italic;
-  border-left: 0.32813em solid #425664;
+  border-left: 0.25em solid #ef495c;
 }
 
 blockquote > p {
   font-size: 1.35rem;
 }
 
+.hljs { border-radius: 0.15rem; }
+
+/* Color of H1, H2, H3, ...  */
+.title-color { color: #353e44; }
+
+.extra-color { color: #ef495c; }
+
+/* Centered content.  */
 .post-content {
   position: relative;
   max-width: 48rem;
