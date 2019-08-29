@@ -14,6 +14,7 @@ const alias = {
   svelte: path.resolve('node_modules', 'svelte'),
   '@components': path.resolve('src', 'components'),
   '@layouts': path.resolve('src', 'layouts'),
+  '@routes': path.resolve('src', 'routes'),
   '@utils': path.resolve('src', 'utils'),
   '$constants': path.resolve('src', 'constants.js'),
   '$config': path.resolve('src', 'config.js'),

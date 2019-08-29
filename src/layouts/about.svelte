@@ -1,5 +1,7 @@
 <script context="module">
 
+  import { onMount, getContext } from 'svelte';
+
   import { User } from '$blog';
 
   import Icon from '@components/icon';
@@ -8,6 +10,8 @@
   import {
     SVGGithub, SVGLinkedin, SVGTwitter, SVGMapMarker
   } from '@utils/icons';
+
+  import { MetadataContextKey } from '@routes/_layout';
 
   /**
    * @typedef {Object} Social
@@ -48,6 +52,11 @@
     return social;
   }
 
+  export const Metadata = {
+    title: `${User.name}`,
+    seoDescription: `Blog of ${User.name}`
+  };
+
 </script>
 
 <script>
@@ -62,6 +71,11 @@
   export let resume = [];
 
   const socials = createSocialLinks();
+
+  onMount(() => {
+    const setMetadata = getContext(MetadataContextKey);
+    if (setMetadata) { setMetadata(Metadata); }
+  });
 
 </script>
 

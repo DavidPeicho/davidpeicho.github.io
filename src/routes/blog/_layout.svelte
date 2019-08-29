@@ -1,6 +1,10 @@
 <script context="module">
 
+  import { onMount, getContext } from 'svelte';
+
   import Tag from '@components/tag';
+
+  import { MetadataContextKey } from '@routes/_layout';
 
 	export function preload(data) {
     return (
@@ -22,6 +26,7 @@
 </script>
 
 <script>
+
   import { goto } from '@sapper/app'
   import Button from '@components/button';
   import Nav from '@components/nav';
@@ -43,9 +48,14 @@
     goto(url);
   }
 
-</script>
+  function setMetadata() {
+    const metadataSetter = getContext(MetadataContextKey);
+    if (metadataSetter) { metadataSetter(metadata); }
+  }
 
-<Meta data={metadata} />
+  onMount(() => { setMetadata(); });
+
+</script>
 
 <div class='post-content'>
 
