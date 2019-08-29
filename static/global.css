@@ -98,6 +98,11 @@ li {
   margin-left: 0.5rem;
 }
 
+li:hover {
+  border: none;
+  text-decoration: none;
+}
+
 li > ul {
   margin-left: 1.75rem;
   margin-bottom: calc(1.75rem / 2);
@@ -132,6 +137,7 @@ blockquote > p {
   font-size: 1.35rem;
 }
 
+/*   */
 .hljs { border-radius: 0.15rem; }
 
 /* Color of H1, H2, H3, ...  */

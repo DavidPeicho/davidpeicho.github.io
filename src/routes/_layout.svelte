@@ -1,8 +1,26 @@
-<script>
-	import Nav from '@components/nav';
+<script context='module'>
 
-  export let segment;
+  import Nav from '@components/nav';
+
 </script>
+
+<script>
+
+  /**
+   * Current route segment the user is at. e.g: `about`, or `projects`.
+   *
+   * @type {string}
+   */
+  export let segment;
+
+</script>
+
+<!-- Displays the nav bar on top. -->
+<Nav {segment}/>
+
+<main>
+	<slot {segment}></slot>
+</main>
 
 <style>
 	main {
@@ -12,12 +30,3 @@
 		box-sizing: border-box;
 	}
 </style>
-
-<svelte:head>
-</svelte:head>
-
-<Nav {segment}/>
-
-<main>
-	<slot {segment}></slot>
-</main>

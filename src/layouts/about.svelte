@@ -1,20 +1,32 @@
 <script context="module">
 
-  import ImageHeader from '@components/image-header';
+  import { User } from '$blog';
+
   import Icon from '@components/icon';
+  import ExperienceTimeline from '@components/experience-timeline';
+  import ImageHeader from '@components/image-header';
   import {
     SVGGithub, SVGLinkedin, SVGTwitter, SVGMapMarker
   } from '@utils/icons';
 
-  import { Colors } from '$constants';
-  import Blog from '$blog';
+  /**
+   * @typedef {Object} Social
+   * @property {string} url - URL to the social website
+   * @property {string} icon - SVG path of the icon
+   */
 
+  /**
+   * Creates an array of data for social links (twitter, linkedin, etc...).
+   * This will be later used to display an clickable icon to those links.
+   *
+   * @return {Social[]} The array containing all social links to display
+   */
   function createSocialLinks() {
+    if (!User.social) { return []; }
     const social = [];
-    if (!Blog.social) { return social; }
-    const github = Blog.social.github;
-    const linkedin = Blog.social.linkedin;
-    const twitter = Blog.social.twitter;
+    const github = User.social.github;
+    const linkedin = User.social.linkedin;
+    const twitter = User.social.twitter;
     if (github) {
       social.push({
         url: `https://github.com/${github}`,
@@ -36,37 +48,9 @@
     return social;
   }
 
-  function getJobEntryStyle(i) {
-    return i % 2 === 0 ? 'flex-direction: row' : 'flex-direction: row-reverse;';
-  }
-
-  function getJobElementStyle(i) {
-    const color = Colors.Secondary;
-    if (i % 2 !== 0) {
-      return `
-        text-align: right;
-        border-right: 2px solid ${color};
-      `;
-    }
-    return `border-left: 2px solid ${color};`;
-  }
-
-  function getLogoStyle(i) {
-    return `text-align: ${i % 2 ? 'left' : 'right'};`
-  }
-
 </script>
 
 <script>
-
-  /**
-   * Company resume.
-   *
-   * @typedef {Object} Company
-   * @property {string} company - Name of the company
-   * @property {string} date - Years active in the company
-   * @property {string} title - Work title in the company
-   */
 
   /** PROPS */
 
@@ -78,10 +62,11 @@
   export let resume = [];
 
   const socials = createSocialLinks();
+
 </script>
 
+<!-- Blog author information: name, title, company, etc.. -->
 <ImageHeader image='images/me.jpg' opacity={0.8}>
-  <!-- Blog author information: name, title, company, etc.. -->
   <div class='header'>
     <h1 class='textshadow'>David Peicho</h1>
     <h2 class='textshadow'>Research Scientist</h2>
@@ -89,7 +74,7 @@
     <!-- Current Location. -->
     <div class='location'>
       <Icon width=25 height=25 {...SVGMapMarker} />
-      <span>{Blog.location}</span>
+      <span>{User.location}</span>
     </div>
   </div>
 </ImageHeader>
@@ -107,27 +92,7 @@
 <!-- Displays a list of places you have worked at. -->
 <div class='experience'>
   <h2 class='post-content'>Experience</h2>
-  <div class='job-timeline'>
-    { #each resume as company, i }
-      <div class='entry' style={getJobEntryStyle(i)}>
-        <div class='element' style={getLogoStyle(i)}>
-          <img src={company.logo} alt={company.company + ' logo'} />
-        </div>
-        <div class='element text' style={getJobElementStyle(i)}>
-          <p class='bold'>{company.date}</p>
-          <p class='bold'>{company.company}</p>
-          <p class='light'>{company.title}</p>
-          <!-- Author can provide a location for each experience. -->
-          { #if company.location }
-            <div style='margin-top: 0.75rem;'>
-              <Icon width=15 height=15 {...SVGMapMarker} />
-              <span>{company.location}</span>
-            </div>
-          { /if }
-        </div>
-      </div>
-    { /each }
-  </div>
+    <ExperienceTimeline {resume} />
 </div>
 
 <style>
@@ -177,45 +142,12 @@
 
   .experience {
     width: 100%;
-    background-color: #f1f0f0;
   }
 
   .experience h2 {
     padding-top: 3.5rem;
+    margin-bottom: 2.5rem;
   }
-
-  .job-timeline {
-    display: flex;
-    width: 100%;
-    max-width: 500px;
-    margin: auto;
-    margin-top: 3rem;
-    flex-direction: column;
-  }
-
-  .job-timeline .entry {
-    display: flex;
-    flex-direction: row;
-    flex-grow: 1;
-    margin-bottom: 2rem;
-  }
-
-  .entry .element {
-    flex-grow: 1;
-    margin: auto;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-  }
-
-  .entry img { max-height: 100px; }
-
-  .entry .text { text-align: left; }
-
-  .text p { margin: 0; }
-
-  .text .bold { font-weight: 700; }
-
-  .text .light { font-weight: 300; }
 
   @media (max-width: 1100px) {
 

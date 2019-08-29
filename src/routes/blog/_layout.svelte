@@ -66,13 +66,11 @@
   <ul class='links'>
     { #each links as link, i }
       { #if link }
-        <li
-          class={'link ' + (i === 0 ? 'left' : 'right')}
-          metadata-url={link.url}
-          on:click={(e) => fetchMetadata(e, link)}
-        >
-          <p>{i === 0 ? '← Previous' : 'Next →'}</p>
-          <p class='text'>{`"${link.title}"`}</p>
+        <li class={'link ' + (i === 0 ? 'left' : 'right')}>
+          <span class='other' on:click={(e) => fetchMetadata(e, link)}>
+            {i === 0 ? '← Previous' : 'Next →'}
+          </span>
+          <p class='other-title'>{`"${link.title}"`}</p>
         </li>
       { :else }
         <li />
@@ -130,15 +128,14 @@
     flex-grow: 1;
     font-size: 1.15rem;
     cursor: pointer;
-    color: #425664;
     text-decoration: none;
   }
 
-  .link:hover { box-shadow: 1px 0 1px 0 rgba(0, 0, 0, 0.15); }
-
-  .link .text {
+  .link .other-title {
     color: #ef495c;
     font-style: italic;
   }
+
+  .link .other:hover { box-shadow: 0 1px 0 0 #303030; }
 
 </style>
