@@ -7,9 +7,8 @@
   import Icon from '@components/icon';
   import ExperienceTimeline from '@components/experience-timeline';
   import ImageHeader from '@components/image-header';
-  import {
-    SVGGithub, SVGLinkedin, SVGTwitter, SVGMapMarker
-  } from '@utils/icons';
+
+  import { SVGGithub, SVGLinkedin, SVGTwitter, SVGMapMarker } from '@utils/icons';
 
   import { MetadataContextKey } from '@routes/_layout';
 
@@ -104,7 +103,7 @@
 </div>
 
 <!-- Displays a list of places you have worked at. -->
-<div class='experience'>
+<div class='centered'>
   <h2 class='post-content'>Experience</h2>
     <ExperienceTimeline {resume} />
 </div>
@@ -154,13 +153,8 @@
     color: #ef495c;
   }
 
-  .experience {
+  .centered {
     width: 100%;
-  }
-
-  .experience h2 {
-    padding-top: 3.5rem;
-    margin-bottom: 2.5rem;
   }
 
   @media (max-width: 1100px) {

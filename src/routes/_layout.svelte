@@ -3,6 +3,7 @@
   import { setContext } from 'svelte';
 
   import { Site } from '$blog';
+  import Footer from '@components/footer';
   import Meta from '@components/meta';
   import Nav from '@components/nav';
 
@@ -43,6 +44,8 @@
 <main>
 	<slot {segment}></slot>
 </main>
+
+<Footer />
 
 <style>
 	main {
