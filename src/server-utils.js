@@ -24,18 +24,20 @@ function processImport(ctx) {
   list.sort((a, b) => {
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);
-    return dateA - dateB;
+    return dateB - dateA;
   });
 
   // Builds link to next / previous.
+  // List is sorted by date first, so the `previous` element is actually the
+  // next in the list.
   list.forEach((elt, i) => {
     elt.previous = null;
     elt.next = null;
     if (i > 0) {
-      elt.previous = { title: list[i - 1].title, url: list[i - 1].url };
+      elt.next = { title: list[i - 1].title, url: list[i - 1].url };
     }
     if (i < list.length - 1) {
-      elt.next = { title: list[i + 1].title, url: list[i + 1].url };
+      elt.previous = { title: list[i + 1].title, url: list[i + 1].url };
     }
   });
 

@@ -1,17 +1,4 @@
 <script context='module'>
-  import { Colors } from '$constants';
-
-  /**
-   * Returns an extra style for a Button component.
-   *
-   * This method is a `trick` used to edit CSS using variables.
-   */
-  function getStyle() {
-    return `
-      border-color: ${ Colors.Secondary };
-      background: ${ Colors.Secondary };
-    `;
-  }
 
   /** Returns the target of a `<a>` element according to a boolean. */
   function getTarget(url) {
@@ -23,30 +10,41 @@
 
 <script>
 
-  /**
-   * PROPS
-   */
+  /** PROPS */
 
   export let attributes = {};
 
-  /** String tag to display. */
+  /**
+   * String tag to display.
+   *
+   * @type {string}
+   */
   export let text;
 
-  /** String representing the URL to redirect to. */
+  /**
+   * String representing the URL to redirect to.
+   *
+   * @type {string}
+   */
   export let url = '';
 
-  /** If `true`, the link should be open in a new tab. */
+  /**
+   * If `true`, the link should be open in a new tab.
+   *
+   * @type {boolean}
+   */
   export let isExternal = true;
 
+  /**
+   * Extra style to apply to the DOM element.
+   *
+   * @type {string}
+   */
   export let style = '';
 
 </script>
 
-<div
-  {...attributes}
-  class='button'
-  style={getStyle() + style}
->
+<div {...attributes} class='button' style={style} >
   <a
     className='button'
     href={url}
@@ -64,17 +62,19 @@
     padding: .75rem 1.5rem;
     line-height: normal;
     border-radius: 0.25rem;
-    border: 2px solid;
+    background-color: #ef495c;
     transition: all .2s ease;
+    color: #fff;
+    border: 2px solid #ef495c;
   }
 
   .button a {
-    color: #fff;
     text-decoration: none;
+    color: inherit;
   }
 
   .button:hover {
-    background: #ffffff;
+    background-color: #ffffff;
     color: #ef495c;
   }
 

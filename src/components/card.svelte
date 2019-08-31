@@ -79,6 +79,21 @@
   export let videoLink = null;
 
   /**
+   * The date associated to this card. Could be a date of creation, or a date
+   * of post. It's up to the content you are displaying.
+   *
+   * @type {string|null}
+   */
+  export let date = null;
+
+  /**
+   * Time to read / go through the content pointed by this card.
+   *
+   * @type {number|null}
+   */
+  export let readingTime = null;
+
+  /**
    * If `true`, displays reading time and date of creation.
    *
    * @type {boolean}
@@ -109,8 +124,8 @@
 
       { #if displayInfo }
         <PostInfo
-          date='18 October, 2019'
-          readingTime={10}
+          {date}
+          {readingTime}
           style='justify-content: space-between; margin: 0 0 1rem 0;'
         />
       { /if }
@@ -176,6 +191,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
+    background-color: rgb(29, 38, 43, 0.5);
   }
 
   .container .content {
@@ -186,7 +202,7 @@
   .content .text {
     position: relative;
     max-width: 30rem;
-    padding: 5rem 5rem 5rem 6rem;
+    padding: 5rem 6rem 5rem 5rem;
   }
 
   .text h1 {

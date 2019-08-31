@@ -27,7 +27,9 @@
         url: metadata.url,
         videoLink: metadata.videoLink,
         title: metadata.title,
-        tags: metadata.tags || []
+        tags: metadata.tags || [],
+        date: metadata.date || new Date(),
+        readingTime: metadata.readingTime
       };
     });
   }
