@@ -17,18 +17,17 @@
       const social = User.social || {};
 
       if (User.email) {
-        list.push({
-          icon: SVGEmail, url: ('mailto:' + User.email), text: User.email,
-          target: ''
-        });
+        const url = ('mailto:' + User.email);
+        list.push({ id: 'email', icon: SVGEmail, url, text: User.email, target: '' });
       }
 
       // Pushes all social contact links.
       for (const name in social) {
-        const data = SocialToData[name];
+        const id = name.toLowerCase();
+        const data = SocialToData[id];
         if (data) {
-          const url = `${data.baseURL}/${social[name]}`;
-          list.push({ icon: data.icon, url, text: social[name] });
+          const url = `${data.baseURL}/${social[id]}`;
+          list.push({ id, icon: data.icon, url, text: social[id] });
         }
       }
 
@@ -39,7 +38,7 @@
 
 <script>
 
-  let contactList = createSocialLinks();
+  let contactList = createSocialLinks().filter((s) => s.id !== 'github');
 
 </script>
 
@@ -74,7 +73,7 @@
 
   .footer .contact {
     max-width: 600px;
-    padding: 3rem 0 3rem 0;
+    padding: 1.5rem 0 1.5rem 0;
     margin: auto;
     display: flex;
     flex-direction: row;
@@ -82,17 +81,16 @@
     align-items: center;
   }
 
-  .contact h1 {
-    margin: 0;
-  }
+  .contact h1 { margin: 0; }
 
   .contact .contact-entry {
     margin: 0.75rem 0 0 0;
+    transition: color .3s ease,color .3s ease;
   }
 
   .contact-entry:hover {
     cursor: pointer;
-    color: blue;
+    color: #ef495c;
   }
 
   .contact-entry a {
@@ -100,11 +98,15 @@
     margin-left: 0.5rem;
   }
 
+  .contact-entry a:hover {
+    color: initial;
+  }
+
   @media (max-width: 600px) {
 
-    .contact {
-      flex-direction: column;
-    }
+    .footer .contact { flex-direction: column; }
+
+    .contact h1 { margin-bottom: 1.5rem; }
 
   }
 

@@ -38,14 +38,12 @@
 <!-- Blog Meta. Really important for SEO. -->
 <Meta data={metadata} />
 
-<!-- Displays the nav bar on top. -->
-<Nav {segment}/>
-
 <main>
+  <!-- Displays the nav bar on top. -->
+  <Nav {segment}/>
 	<slot {segment}></slot>
+  <Footer />
 </main>
-
-<Footer />
 
 <style>
 	main {

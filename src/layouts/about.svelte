@@ -79,7 +79,7 @@
 </script>
 
 <!-- Blog author information: name, title, company, etc.. -->
-<ImageHeader image='images/me.jpg' opacity={0.8}>
+<ImageHeader image='images/me.jpg' opacity={0.8} style={'height: 60vh;'}>
   <div class='header'>
     <h1 class='textshadow'>David Peicho</h1>
     <h2 class='textshadow'>Research Scientist</h2>
@@ -119,6 +119,7 @@
   .header h1, .header h2 {
     color: white;
     margin: 0;
+    font-family: Open sans, sans-serif;
   }
 
   .header h2 {

@@ -1,8 +1,12 @@
-html { font-size: 16px; }
+html {
+  font-size: 16px;
+  width: 100%;
+  height: 100%;
+}
 
 body {
-  position: relative;
-  width: 100%;
+  position: absolute;
+  width: 100vw;
   height: 100%;
   line-height: 1.5;
   margin: 0;
@@ -200,8 +204,8 @@ blockquote > p {
   }
 
   .post-content {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 
 }

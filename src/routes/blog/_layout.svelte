@@ -59,14 +59,16 @@
 
 <div class='post-content'>
 
-  <ImageHeader image={metadata.thumbnail} opacity={0.5}>
-    <h1 class='title textshadow' style={getTitleStyle()}>{metadata.title}</h1>
-    <div class='tags-container'>
-      { #each (metadata.tags || []) as tag }
-        <Tag style='margin: 0 0.25rem 0 0.25rem;' tag={tag} />
-      { /each }
-    </div>
-  </ImageHeader>
+  <div class='header'>
+    <ImageHeader image={metadata.thumbnail} opacity={0.5}>
+      <h1 class='title textshadow' style={getTitleStyle()}>{metadata.title}</h1>
+      <div class='tags-container'>
+        { #each (metadata.tags || []) as tag }
+          <Tag style='margin: 0 0.25rem 0 0.25rem;' tag={tag} />
+        { /each }
+      </div>
+    </ImageHeader>
+  </div>
 
   <PostInfo readingTime={metadata.readingTime || 10} />
 
@@ -90,6 +92,8 @@
 </div>
 
 <style>
+
+  .header { height: 60vh; }
 
   .separator {
     position: relative;
@@ -147,5 +151,11 @@
   }
 
   .link .other:hover { box-shadow: 0 1px 0 0 #303030; }
+
+  @media (max-width: 900px) {
+
+    .header { height: 48vh; }
+
+  }
 
 </style>

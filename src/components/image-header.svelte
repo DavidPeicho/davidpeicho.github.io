@@ -13,9 +13,11 @@
   export let image = null;
 
   export let opacity = 0.7;
+
+  export let style = '';
 </script>
 
-<div class='container'>
+<div class='container' style={style}>
   <div class='image' style={getImageStyle(image)}></div>
   <div class='overlay' style={getBackgroundStyle(opacity)}>
     <div class='content'><slot></slot></div>
@@ -27,7 +29,7 @@
   .container {
     position: relative;
     width: 100%;
-    height: 500px;
+    height: 100%;
     margin: auto;
   }
 

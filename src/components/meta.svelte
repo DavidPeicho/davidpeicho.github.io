@@ -28,7 +28,7 @@
     <meta property="twitter:image" content="{data.thumb}">
   {/if}
 
-  <meta name="viewport" content="initial-scale=1.0, width=device-width, maximum-scale=1" />
+  <meta name="viewport" content="width=device-width">
   <meta charSet="utf-8" />
 
 </svelte:head>

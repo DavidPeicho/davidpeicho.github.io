@@ -8,11 +8,8 @@
     return `background-image: url('${img || ''}');`;
   }
 
-  function styleContainer(direction) {
-    return `
-      flex-direction: ${ left(direction) ? 'row' : 'row-reverse' };
-      min-height: ${ CARD_MIN_HEIGHT + 'vh' };
-    `;
+  function getContainerClass(direction) {
+    return left(direction) ? '' : 'reverse';
   }
 
   function getIconStyle(tag) {
@@ -66,7 +63,7 @@
 
 </script>
 
-<div class='container' style={styleContainer(direction)}>
+<div class={'container ' + getContainerClass(direction)}>
   <div class='image' style={styleImage(image)}/>
   <div class='content'>
     <div class='text'>
@@ -125,14 +122,15 @@
 
   .container {
     width: 100%;
+    min-height: 40vh;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    background-color: #f1f0f0;
   }
 
+  .reverse { flex-direction: row-reverse; }
+
   .image {
-    min-width: 30rem;
     min-height: 30rem;
     flex: 1 1 0;
     background-size: cover;
@@ -142,7 +140,6 @@
 
   .container .content {
     position: relative;
-    min-width: 30rem;
     flex: 1 1 0;
   }
 
@@ -174,22 +171,31 @@
     margin: 2.625rem 0 0;
   }
 
+  @media (max-width: 1000px) {
+
+    .container {
+      flex-direction: column;
+    }
+
+  }
+
   @media (max-width: 750px) {
 
     .image {
       max-width: initial;
+      min-height: 32vh;
     }
 
     .content .text {
       max-width: initial;
-      padding: 6rem 2rem 2rem 2rem;
+      padding: 4rem 2rem 2rem 2rem;
     }
 
     .container .icon {
-      top: 1rem;
+      top: 0.75rem;
       bottom: initial;
-      width: 5rem;
-      height: 5rem;
+      width: 3rem;
+      height: 3rem;
     }
 
   }
