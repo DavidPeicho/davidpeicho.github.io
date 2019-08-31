@@ -21,6 +21,8 @@
 
 <script>
 
+  export let segment;
+
   export let projects;
 
   onMount(() => {

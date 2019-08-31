@@ -24,9 +24,7 @@
 
 <script>
 
-  /**
-   * PROPS
-   */
+  /** PROPS */
 
   /**
    * Description of the card.
@@ -35,22 +33,46 @@
    */
   export let description = '';
 
-  /** Title of the card. */
+  /**
+   * Title of the card.
+   *
+   * @type {string}
+   */
   export let title = '';
 
-  /** Image. This takes 50% of the card. Thus, it **must** be provided. */
+  /**
+   * Image. This takes 50% of the card. Thus, it **must** be provided.
+   *
+   * @type {string}
+   */
   export let image = null;
 
-  /** Array of string representing tags. */
+  /**
+   * Array of string representing tags.
+   *
+   * @type {string[]}
+   */
   export let tags = [];
 
-  /** `right` to have the text on the right, `left` otherwise. */
+  /**
+   * `right` to have the text on the right, `left` otherwise.
+   *
+   * @type {string}
+   */
   export let direction = 'right';
 
-  /** String representing the URL this card should redirect to. */
+  /**
+   * String representing the URL this card should redirect to.
+   *
+   * @type {string}
+   */
   export let url = null;
 
-  /** String representing the URL to an external video link. */
+  /**
+   * String representing the URL to an external video link.
+   *
+   * @type {string}
+   */
   export let videoLink = null;
 
   const buttons = [];
@@ -100,8 +122,8 @@
     { #if tags.length > 0 && TagToIcon[tags[0]] }
       <div class='icon'>
         <Icon
-          width=null
-          height=null
+          width={null}
+          height={null}
           {...TagToIcon[tags[0]]}
           style={getIconStyle(tags[0])}
         />

@@ -37,23 +37,24 @@
   export let metadata;
   export let segment;
 
+  const metadataSetter = getContext(MetadataContextKey);
   let links = buildLinks(metadata);
 
   async function fetchMetadata(e, link) {
     const url = link.url;
     const res = await fetch(`${url}.json`);
     const data = await res.json();
+    goto(url);
     metadata = data;
     links = buildLinks(metadata);
-    goto(url);
+    setMetadata();
   }
 
   function setMetadata() {
-    const metadataSetter = getContext(MetadataContextKey);
     if (metadataSetter) { metadataSetter(metadata); }
   }
 
-  onMount(() => { setMetadata(); });
+  onMount(() => setMetadata());
 
 </script>
 
