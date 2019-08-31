@@ -58,3 +58,9 @@
 >
   <path fill='currentColor' d={path} class=''></path>
 </svg>
+
+<style>
+
+  svg { vertical-align: middle; }
+
+</style>

@@ -1,9 +1,9 @@
 ```js module
-  import thumbnail from './thumbnail.png';
+  import image from './thumbnail.png';
   import { Tags } from '$config';
 
   export const Metadata = {
-    thumbnail,
+    image,
     tags: [ Tags.VR, Tags.ComputerGraphics ],
     title: 'Three.js Logarithmic Depth Buffer storage',
     date: '21 March 2019',

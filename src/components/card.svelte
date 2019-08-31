@@ -2,7 +2,10 @@
   import { Colors, TagToIcon, TagToColor, CARD_MIN_HEIGHT } from '$constants';
   import Button from '@components/button';
   import Icon from '@components/icon';
+  import PostInfo from '@components/post-info';
   import Tag from '@components/tag';
+
+  import { createInfo } from '@components/post-info';
 
   function styleImage(img) {
     return `background-image: url('${img || ''}');`;
@@ -75,6 +78,13 @@
    */
   export let videoLink = null;
 
+  /**
+   * If `true`, displays reading time and date of creation.
+   *
+   * @type {boolean}
+   */
+  export let displayInfo = true;
+
   const buttons = [];
   if (videoLink) {
     buttons.push({ url: videoLink, text: 'Video', external: true });
@@ -96,6 +106,14 @@
           {title}
         </a>
       </h1>
+
+      { #if displayInfo }
+        <PostInfo
+          date='18 October, 2019'
+          readingTime={10}
+          style='justify-content: space-between; margin: 0 0 1rem 0;'
+        />
+      { /if }
 
       <div>
         { #each tags as tag }
@@ -195,13 +213,20 @@
 
   @media (max-width: 1000px) {
 
-    .container {
-      flex-direction: column;
+    .container .icon {
+      top: 0.75rem;
+      bottom: initial;
+      width: 3rem;
+      height: 3rem;
     }
 
   }
 
-  @media (max-width: 750px) {
+  @media (max-width: 800px) {
+
+    .container {
+      flex-direction: column;
+    }
 
     .image {
       max-width: initial;
@@ -211,13 +236,6 @@
     .content .text {
       max-width: initial;
       padding: 4rem 2rem 2rem 2rem;
-    }
-
-    .container .icon {
-      top: 0.75rem;
-      bottom: initial;
-      width: 3rem;
-      height: 3rem;
     }
 
   }

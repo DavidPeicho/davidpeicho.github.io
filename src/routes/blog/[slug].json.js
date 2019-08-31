@@ -3,9 +3,7 @@ import { PostsMap } from '../../server-utils';
 export function get(req, res) {
   const slug = req.params.slug;
   if (!slug) {
-    res.writeHead(404, {
-      'Content-Type': 'application/json'
-    });
+    res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end('');
     return;
   }

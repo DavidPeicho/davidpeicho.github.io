@@ -49,7 +49,6 @@
       { #each contactList as contact, i }
         <div class='contact-entry' style={i === 0 ? 'margin: 0 0 0 0;' : ''}>
           <Icon
-            style='vertical-align: middle;'
             width={25} height={25}
             {...contact.icon}
           />

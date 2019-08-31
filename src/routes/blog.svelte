@@ -10,7 +10,7 @@
 
 	export function preload({ params, query }) {
 		return this.fetch('blog.json').then(r => r.json()).then(posts => {
-			return { posts };
+			return { posts: processList(posts) };
 		});
   }
 
@@ -18,6 +18,19 @@
     title: `${User.name} - Blog Posts`,
     seoDescription: `List articles relative to Computer Graphics and / or Game Development, written by ${User.name}`
   };
+
+  export function processList(list) {
+    return list.map((metadata) => {
+      return {
+        description: metadata.description,
+        image: metadata.image,
+        url: metadata.url,
+        videoLink: metadata.videoLink,
+        title: metadata.title,
+        tags: metadata.tags || []
+      };
+    });
+  }
 
 </script>
 
@@ -37,13 +50,9 @@
 <div>
   { #each posts as post, i }
     <Card
-      description={post.description}
-      image={post.thumbnail}
-      url={post.url}
-      videoLink={post.videoLink}
-      title={post.title}
+      {...post}
       direction={i % 2 === 0 ? 'left' : 'right'}
-      tags={post.tags}
+      displayInfo={true}
     />
   { /each }
 </div>

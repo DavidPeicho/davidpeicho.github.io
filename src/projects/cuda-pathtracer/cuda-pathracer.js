@@ -1,10 +1,10 @@
 import { Tags } from '$config';
-import thumbnail from './thumbnail.jpg';
+import image from './thumbnail.jpg';
 
 export const Metadata = {
   tags: [ Tags.ComputerGraphics ],
   url: 'https://github.com/DavidPeicho/cuda-pathtracer',
-  thumbnail,
+  image,
   title: 'CUDA Pathtracer',
   description: `
     Simple Pathtracer written in CUDA. It supports Texturing, Normal Mapping,

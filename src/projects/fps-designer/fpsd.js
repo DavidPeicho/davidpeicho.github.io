@@ -1,10 +1,10 @@
 import { Tags } from '../../config';
-import thumbnail from './fpsd-thumbnail.jpg';
+import image from './fpsd-thumbnail.jpg';
 
 export const Metadata = {
   tags: [ Tags.Games, Tags.ComputerGraphics ],
   url: 'https://github.com/FPSDesigner/FPSDesigner',
-  thumbnail,
+  image,
   title: 'FPSDesigner',
   description: `
     FPSDesigner is a Windows application making building FPS games easier.

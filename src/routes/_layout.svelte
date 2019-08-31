@@ -39,17 +39,18 @@
 <Meta data={metadata} />
 
 <main>
-  <!-- Displays the nav bar on top. -->
   <Nav {segment}/>
 	<slot {segment}></slot>
   <Footer />
 </main>
 
 <style>
+
 	main {
 		position: relative;
 		background-color: white;
 		margin: 0 auto;
 		box-sizing: border-box;
-	}
+  }
+
 </style>

@@ -71,7 +71,9 @@
     </ImageHeader>
   </div>
 
-  <PostInfo readingTime={metadata.readingTime || 10} />
+  <div class='info'>
+    <PostInfo readingTime={metadata.readingTime || 10} />
+  </div>
 
   <slot></slot>
 
@@ -123,6 +125,18 @@
     width: 100%;
     display: flex;
     justify-content: center;
+  }
+
+  .info {
+    position: relative;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    padding: 0.5rem 0 0.5rem 0;
+    border-radius: 0.05rem;
+    color: white;
+    background-color: #ef495c;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.4);
+    text-transform: initial;
   }
 
   .links {

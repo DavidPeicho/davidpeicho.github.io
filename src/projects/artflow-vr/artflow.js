@@ -1,10 +1,10 @@
 import { Tags } from '$config';
-import thumbnail from './thumbnail.jpg';
+import image from './thumbnail.jpg';
 
 export const Metadata = {
   tags: [ Tags.VR, Tags.ComputerGraphics ],
   url: 'https://github.com/artflow-vr/artflow',
-  thumbnail,
+  image,
   title: 'ArtFlow VR',
   date: 2018,
   description: `
