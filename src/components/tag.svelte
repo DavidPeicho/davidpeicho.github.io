@@ -3,7 +3,6 @@
   import { Colors, TagToColor } from '$constants';
   import { Tags } from '$config';
 
-
   /**
    * Returns an extra style for a Tag component.
    *
@@ -19,8 +18,11 @@
 <script>
 
   /**
-   * PROPS
+   * This component represents a tag. The color is automatically selected using
+   * a static LUT saved in the `$constants` file.
    */
+
+  /** PROPS */
 
   /** String tag to display. */
   export let tag;

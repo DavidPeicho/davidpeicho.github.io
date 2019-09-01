@@ -10,6 +10,11 @@
 
 <script>
 
+  /**
+   * This component is a simple red button matching the template of this site.
+   * This button always link to a URL.
+   */
+
   /** PROPS */
 
   export let attributes = {};
@@ -29,13 +34,6 @@
   export let url = '';
 
   /**
-   * If `true`, the link should be open in a new tab.
-   *
-   * @type {boolean}
-   */
-  export let isExternal = true;
-
-  /**
    * Extra style to apply to the DOM element.
    *
    * @type {string}
@@ -44,15 +42,15 @@
 
 </script>
 
-<div {...attributes} class='button' style={style} >
-  <a
-    className='button'
-    href={url}
-    target={getTarget(url)}
-  >
-    { text }
-  </a>
-</div>
+<a
+  {...attributes}
+  class='button'
+  href={url}
+  target={getTarget(url)}
+  style={style}
+>
+  { text }
+</a>
 
 <style>
 
@@ -66,11 +64,7 @@
     transition: all .2s ease;
     color: #fff;
     border: 2px solid #ef495c;
-  }
-
-  .button a {
     text-decoration: none;
-    color: inherit;
   }
 
   .button:hover {

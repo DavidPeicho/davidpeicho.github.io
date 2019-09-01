@@ -1,4 +1,5 @@
 <script context='module'>
+
   function getImageStyle(image) {
     return `background: url(${image})`;
   }
@@ -10,11 +11,33 @@
 </script>
 
 <script>
+
+  /**
+   * This component displays a image as a header. It's in general used to start
+   * a blog post or the about page.
+   */
+
+  /**
+   * Image. Thus, it **must** be provided.
+   *
+   * @type {string}
+   */
   export let image = null;
 
+  /**
+   * Opacity of the overlay above the image.
+   *
+   * @type {[number = 0.7]}
+   */
   export let opacity = 0.7;
 
+  /**
+   * Extra style to apply to the DOM element.
+   *
+   * @type {string}
+   */
   export let style = '';
+
 </script>
 
 <div class='container' style={style}>

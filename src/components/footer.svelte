@@ -1,43 +1,76 @@
 <script context='module'>
 
-    import { User } from '$blog';
+  /**
+   * @typedef {Object} SocialLink
+   * @property {string} id - The type of link. Should be either `email`,
+   *   `linkedin`, `twitter`, or `github`
+   * @property {IconProps} icon - An icon associated to the link
+   * @property {string} url - Url the link redirects to
+   * @property {string} text - Text associated to the link. Could be empty,
+   *   depending where the link is used.
+   * @property {string} target - If specified, the target is used on the <a>
+   *   HTML tag
+   */
 
-    import Icon from '@components/icon';
+  import { User } from '$blog';
 
-    import { SVGEmail, SVGGithub, SVGLinkedin, SVGTwitter } from '@utils/icons';
+  import Icon from '@components/icon';
 
-    const SocialToData = {
-      github: { baseURL: 'https://github.com', icon: SVGGithub },
-      twitter: { baseURL: 'https://twitter.com', icon: SVGTwitter },
-      linkedin: { baseURL: 'https://www.linkedin.com/in', icon: SVGLinkedin }
-    };
+  import { SVGEmail, SVGGithub, SVGLinkedin, SVGTwitter } from '@utils/icons';
 
-    export function createSocialLinks() {
-      const list = [];
-      const social = User.social || {};
+  const SocialToData = {
+    github: { baseURL: 'https://github.com', icon: SVGGithub },
+    twitter: { baseURL: 'https://twitter.com', icon: SVGTwitter },
+    linkedin: { baseURL: 'https://www.linkedin.com/in', icon: SVGLinkedin }
+  };
 
-      if (User.email) {
-        const url = ('mailto:' + User.email);
-        list.push({ id: 'email', icon: SVGEmail, url, text: User.email, target: '' });
+  /**
+   * Creates a list of social links from the blog configuration.
+   *
+   * @return {SocialLink[]} An array of social links. This is used to easily
+   *   display the links by using a Svelte loop
+   */
+  export function createSocialLinks() {
+    const list = [];
+    const social = User.social || {};
+
+    if (User.email) {
+      const url = ('mailto:' + User.email);
+      list.push({ id: 'email', icon: SVGEmail, url, text: User.email, target: '' });
+    }
+
+    // Pushes all social contact links.
+    for (const name in social) {
+      const id = name.toLowerCase();
+      const data = SocialToData[id];
+      if (data) {
+        const url = `${data.baseURL}/${social[id]}`;
+        list.push({ id, icon: data.icon, url, text: social[id] });
       }
+    }
 
-      // Pushes all social contact links.
-      for (const name in social) {
-        const id = name.toLowerCase();
-        const data = SocialToData[id];
-        if (data) {
-          const url = `${data.baseURL}/${social[id]}`;
-          list.push({ id, icon: data.icon, url, text: social[id] });
-        }
-      }
-
-      return list;
+    return list;
   }
 
 </script>
 
 <script>
 
+  /**
+   * This component is the footer of the blog.
+   *
+   * It's suppose to be used as a Singleton.
+   */
+
+  /**
+   * List of social link to display.
+   * Change the file pointed by `$blog` to add your own links.
+   *
+   * The Github logo is removed by default, as it shouldn't be displayed in the
+   * 'Contact' section (at least it doesn't make sense for me).
+   *
+   * @type {SocialLink[]}
+   */
   let contactList = createSocialLinks().filter((s) => s.id !== 'github');
 
 </script>

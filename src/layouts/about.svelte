@@ -7,6 +7,7 @@
   import Icon from '@components/icon';
   import ExperienceTimeline from '@components/experience-timeline';
   import ImageHeader from '@components/image-header';
+  import Meta from '@components/meta';
 
   import { SVGGithub, SVGLinkedin, SVGTwitter, SVGMapMarker } from '@utils/icons';
 
@@ -53,7 +54,8 @@
 
   export const Metadata = {
     title: `${User.name}`,
-    seoDescription: `Blog of ${User.name}`
+    seoDescription: `Blog of ${User.name}`,
+    url: ''
   };
 
 </script>
@@ -71,12 +73,10 @@
 
   const socials = createSocialLinks();
 
-  onMount(() => {
-    const setMetadata = getContext(MetadataContextKey);
-    if (setMetadata) { setMetadata(Metadata); }
-  });
-
 </script>
+
+<!-- Blog Meta. Really important for SEO. -->
+<Meta data={Metadata} />
 
 <!-- Blog author information: name, title, company, etc.. -->
 <ImageHeader image='images/me.jpg' opacity={0.8} style={'height: 60vh;'}>

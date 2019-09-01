@@ -1,4 +1,5 @@
 <script context='module'>
+
   import { Colors, TagToIcon, TagToColor, CARD_MIN_HEIGHT } from '$constants';
   import Button from '@components/button';
   import Icon from '@components/icon';
@@ -23,9 +24,17 @@
   function left(dir) { return dir !== 'right'; }
 
   function isLinkExternal(url) { return url && !url.startsWith('/'); }
+
 </script>
 
 <script>
+
+  /**
+   * This component is a card of either the Projects or the Blog page.
+   *
+   * This component includes many other components. This card component is
+   * suppose to be used to build a list of elements.
+   */
 
   /** PROPS */
 

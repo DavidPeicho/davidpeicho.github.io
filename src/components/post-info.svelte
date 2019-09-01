@@ -21,13 +21,20 @@
   ];
 
   function formatDate(dateRaw) {
-    const date = new Date(dateRaw);
+    const date = dateRaw ? new Date(dateRaw) : new Date();
     const m = MONTHS[date.getMonth()];
     const d = date.getDate();
     const y = date.getFullYear();
     return `${m} ${d}, ${y}`;
   }
 
+  /**
+   * Create a list of info [date, readingTime] with icon and text per entry.
+   *
+   * This is used to simplify the Svelte loop.
+   *
+   * @return {Object[]} Array of entry (text + icon)
+   */
   export function createInfo({ date, readingTime }) {
     const info = [];
     if (date) {
@@ -47,9 +54,32 @@
 
 <script>
 
-  export let date = new Date();
-  export let readingTime = 15;
+  /**
+   * This component displays information about a post / project.
+   * It's made to display a date and a reading time, nothing else.
+   */
 
+  /**
+   * The date to display. If not provided, it will take `now` as a date.
+   *
+   * In general, you should format your string as follow: `21 March 2019`.
+   *
+   * @type {string}
+   */
+  export let date = null;
+
+  /**
+   * The blog post reading time. Defaults to `10`.
+   *
+   * @type {number}
+   */
+  export let readingTime = 10;
+
+  /**
+   * Extra style to apply to the DOM element.
+   *
+   * @type {string}
+   */
   export let style = '';
 
   const infos = createInfo({ date, readingTime });

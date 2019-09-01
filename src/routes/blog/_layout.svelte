@@ -1,10 +1,8 @@
 <script context="module">
 
-  import { onMount, getContext } from 'svelte';
+  import { getContext } from 'svelte';
 
   import Tag from '@components/tag';
-
-  import { MetadataContextKey } from '@routes/_layout';
 
 	export function preload(data) {
     return (
@@ -37,7 +35,6 @@
   export let metadata;
   export let segment;
 
-  const metadataSetter = getContext(MetadataContextKey);
   let links = buildLinks(metadata);
 
   async function fetchMetadata(e, link) {
@@ -47,16 +44,12 @@
     goto(url);
     metadata = data;
     links = buildLinks(metadata);
-    setMetadata();
   }
-
-  function setMetadata() {
-    if (metadataSetter) { metadataSetter(metadata); }
-  }
-
-  onMount(() => setMetadata());
 
 </script>
+
+<!-- Blog Meta. Really important for SEO. -->
+<Meta data={metadata} />
 
 <div class='post-content'>
 

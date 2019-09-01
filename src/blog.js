@@ -42,5 +42,7 @@ export const User = {
 export const Site = {
   name: 'David Peicho',
   description: 'Blog about computer graphics, rendering, game developmnent, or just computer science!',
+  keywords: 'computergraphics, rendering, 3d',
+  baseURL: 'davidpeicho.github.io',
   googleAnalytics: 'UA-142103532-1'
 };

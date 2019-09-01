@@ -5,6 +5,7 @@
   import { User } from '$blog';
 
   import Card from '@components/card';
+  import Meta from '@components/meta';
 
   import { processList } from '@routes/blog';
   import { MetadataContextKey } from '@routes/_layout';
@@ -17,7 +18,8 @@
 
   export const Metadata = {
     title: `${User.name} - Projects`,
-    seoDescription: `List of Computer Graphics, and Game Development projects of ${User.name}`
+    seoDescription: `List of Computer Graphics, and Game Development projects of ${User.name}`,
+    url: '/projects'
   };
 
 </script>
@@ -28,12 +30,10 @@
 
   export let projects;
 
-  onMount(() => {
-    const setMetadata = getContext(MetadataContextKey);
-    if (setMetadata) { setMetadata(Metadata); }
-  });
-
 </script>
+
+<!-- Blog Meta. Really important for SEO. -->
+<Meta data={Metadata} />
 
 <div>
   { #each projects as project, i }

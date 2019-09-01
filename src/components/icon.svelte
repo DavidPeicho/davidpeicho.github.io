@@ -1,8 +1,17 @@
 <script>
 
   /**
-   * PROPS
+   * This component displays a SVG icon from its path (curve).
+   *
+   * This is faster to load comparing to FontAwesome and you can include only
+   * the icons you need.
+   *
+   * Obviously, creating the icon is a painful process, where you need to copy
+   * them somewhere and paste them in the source. It was fine for me because I
+   * don't need more than 5-6 icons.
    */
+
+  /** PROPS */
 
   /**
    * SVG Path.
