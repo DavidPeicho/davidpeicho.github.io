@@ -8,6 +8,11 @@ export const PostsMap = PostsList.reduce((acc, it) => (acc[it.id] = it, acc), {}
 
 export const ProjectsList = processImport(projectsCtx);
 
+/**
+ * Imports all metadata from a given Webpack Context.
+ *
+ * @param {*} ctx - Webpack context.
+ */
 function processImport(ctx) {
   const keys = ctx.keys();
   const list = keys.map((path) => {
