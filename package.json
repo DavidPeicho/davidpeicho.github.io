@@ -3,9 +3,9 @@
   "description": "contains few of my projects and some article I wrote",
   "version": "0.0.1",
   "scripts": {
-    "dev": "sapper dev --ext '.svelte .html .svexy'",
-    "build": "sapper build --ext '.svelte .html .svexy'",
-    "export": "sapper export --ext '.svelte .html .svexy'",
+    "dev": "sapper dev --ext '.svelte .md'",
+    "build": "sapper build --ext '.svelte .md'",
+    "export": "sapper export --ext '.svelte .md'",
     "start": "node __sapper__/build"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "sapper": "^0.27.8",
     "svelte": "^3.9.1",
     "svelte-loader": "^2.9.0",
-    "webpack": "^4.7.0"
+    "webpack": "^4.7.0",
+    "webpack-merge": "^4.2.2"
   }
 }

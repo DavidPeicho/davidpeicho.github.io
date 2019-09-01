@@ -1,7 +1,7 @@
 import { dirname, sep } from 'path';
 
-const postsCtx = require.context('./routes/blog', true, /\.(svexy|js|svelte)$/);
-const projectsCtx = require.context('./projects', true, /\.(svexy|js|svelte)$/);
+const postsCtx = require.context('./routes/blog', true, /\.(md|js|svelte)$/);
+const projectsCtx = require.context('./projects', true, /\.(md|js|svelte)$/);
 
 export const PostsList = processImport(postsCtx);
 export const PostsMap = PostsList.reduce((acc, it) => (acc[it.id] = it, acc), {});

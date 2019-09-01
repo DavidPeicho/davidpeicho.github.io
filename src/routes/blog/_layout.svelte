@@ -114,6 +114,7 @@
 
   .tags-container {
     position: absolute;
+    left: 0;
     bottom: 1rem;
     width: 100%;
     display: flex;
