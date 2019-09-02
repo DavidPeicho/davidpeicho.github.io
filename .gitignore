@@ -5,4 +5,14 @@ yarn-error.log
 /cypress/screenshots/
 /__sapper__/
 
+# Ignores every 'asset' file from the route folder, including textual assets,
+# i.e '.md' files.
+src/routes/*.png
+src/routes/*.jpg
+src/routes/*.jpeg
+src/routes/*.md
+
 /static/images
+
+
+

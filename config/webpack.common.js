@@ -84,13 +84,15 @@ const BaseConfig = {
   },
 
   plugins: [
+
     new CopyPlugin([
       {
-        from: path.resolve(CONTENT_PATH, 'blog'),
-        to: path.resolve(SRC_PATH, 'routes', 'blog'),
+        from: path.resolve(CONTENT_PATH),
+        to: path.resolve(SRC_PATH),
         toType: 'dir'
       }
     ])
+
   ]
 
 };
