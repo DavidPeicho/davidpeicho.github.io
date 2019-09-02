@@ -5,6 +5,9 @@ const pkg = require('../package');
 
 const { sveltePreprocess, BaseConfig, __DEV__ } = require('./webpack.common');
 
+/**
+ * Webpack server configuration.
+ */
 module.exports = webpackMerge(BaseConfig, {
 
   entry: sapperConfig.server.entry(),
@@ -16,6 +19,7 @@ module.exports = webpackMerge(BaseConfig, {
 
   module: {
     rules: [ {
+      // We need the Svelte Loader to preprocess any `.svelte` file.
       test: /\.(svelte|md|html)$/,
       use: {
         loader: 'svelte-loader',

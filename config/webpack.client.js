@@ -4,13 +4,18 @@ const { DefinePlugin } = require('webpack');
 
 const { sveltePreprocess, BaseConfig, __DEV__ } = require('./webpack.common');
 
+/**
+ * Webpack client configuration.
+ */
 module.exports = webpackMerge(BaseConfig, {
 
   entry: sapperConfig.client.entry(),
+
   output: sapperConfig.client.output(),
 
   module: {
     rules: [ {
+      // We need the Svelte Loader to preprocess any `.svelte` file.
       test: /\.(svelte|md|html)$/,
       use: {
         loader: 'svelte-loader',
@@ -18,7 +23,8 @@ module.exports = webpackMerge(BaseConfig, {
           dev: __DEV__,
           preprocess: sveltePreprocess(),
           hydratable: true,
-          hotReload: false // pending https://github.com/sveltejs/svelte/issues/2377
+          // pending https://github.com/sveltejs/svelte/issues/2377
+          hotReload: false
         }
       }
     } ]

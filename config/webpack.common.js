@@ -1,9 +1,23 @@
 const mdsvex = require('mdsvex').mdsvex;
 const path = require('path');
 
-const WEBPACK_MODE = process.env.NODE_ENV;
+const WEBPACK_MODE = process.env.NODE_ENV || 'development';
 const __DEV__ = WEBPACK_MODE === 'development';
 
+/**
+ * Webpack aliases for faster require.
+ *
+ * This configuration is really important, as it allows you to write Svelte
+ * Components everywhere without needing to know the relative path to shared
+ * resources (other components).
+ *
+ * If you were to generate Svelte / JavaScript files, this would be a great
+ * help.
+ *
+ * Othwerwise, it's just helpful if you want to shorten your path length.
+ *
+ * @type {Object}
+ */
 const Aliases = {
   svelte: path.resolve('node_modules', 'svelte'),
   '@components': path.resolve('src', 'components'),
@@ -14,9 +28,26 @@ const Aliases = {
   '$config': path.resolve('src', 'config.js'),
   '$blog': path.resolve('src', 'blog.js')
 };
+
+/**
+ * Extensions that Webpack should resolve.
+ *
+ * @type {string[]}
+ */
 const Extensions = [ '.mjs', '.js', '.json', '.svelte', '.md', '.html' ];
+
+/**
+ * Fields to require from in a `package.json` dependency.
+ *
+ * @type {string[]}
+ */
 const MainFields = [ 'svelte', 'module', 'browser', 'main' ];
 
+/**
+ * Base Webpack configuration.
+ *
+ * The client and the server will use this as a sharable config.
+ */
 const BaseConfig = {
 
   mode: WEBPACK_MODE,
@@ -28,8 +59,12 @@ const BaseConfig = {
   },
 
   module: {
+
     rules: [
       {
+        // We use this loader to import images in the code, just lile any other
+        // code resource. The image will be moved to the static folder and a
+        // URL will be generated.
         test: /\.(png|jpg)$/,
         use: {
           loader: 'url-loader',
@@ -40,6 +75,7 @@ const BaseConfig = {
           }
         }
       }
+
     ]
   },
 
@@ -58,6 +94,15 @@ function highlight(str, lang) {
   return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
 }
 
+/**
+ * Svelte Preprocessor.
+ *
+ * This function applies the MDSvex preprocessor in order to transpiles
+ * markdown files into Svelte components.
+ *
+ * See https://github.com/pngwn/MDsveX for more information.
+ *
+ */
 function sveltePreprocess() {
   return mdsvex({
     extension: '.md',
