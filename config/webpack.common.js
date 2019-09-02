@@ -1,8 +1,12 @@
-const mdsvex = require('mdsvex').mdsvex;
+const CopyPlugin = require('copy-webpack-plugin');
+const { mdsvex } = require('mdsvex');
 const path = require('path');
 
 const WEBPACK_MODE = process.env.NODE_ENV || 'development';
 const __DEV__ = WEBPACK_MODE === 'development';
+
+const CONTENT_PATH = path.resolve(__dirname, '..', 'content');
+const SRC_PATH = path.resolve(__dirname, '..', 'src');
 
 /**
  * Webpack aliases for faster require.
@@ -79,7 +83,15 @@ const BaseConfig = {
     ]
   },
 
-  plugins: []
+  plugins: [
+    new CopyPlugin([
+      {
+        from: path.resolve(CONTENT_PATH, 'blog'),
+        to: path.resolve(SRC_PATH, 'routes', 'blog'),
+        toType: 'dir'
+      }
+    ])
+  ]
 
 };
 
