@@ -24,13 +24,12 @@ const SRC_PATH = path.resolve(__dirname, '..', 'src');
  */
 const Aliases = {
   svelte: path.resolve('node_modules', 'svelte'),
+  '@content': path.resolve('content'),
   '@components': path.resolve('src', 'components'),
   '@layouts': path.resolve('src', 'layouts'),
   '@routes': path.resolve('src', 'routes'),
   '@utils': path.resolve('src', 'utils'),
-  '$constants': path.resolve('src', 'constants.js'),
-  '$config': path.resolve('src', 'config.js'),
-  '$blog': path.resolve('src', 'blog.js')
+  '$blog': path.resolve('blog.js')
 };
 
 /**
@@ -87,8 +86,8 @@ const BaseConfig = {
 
     new CopyPlugin([
       {
-        from: path.resolve(CONTENT_PATH),
-        to: path.resolve(SRC_PATH),
+        from: path.resolve(CONTENT_PATH, 'routes'),
+        to: path.resolve(SRC_PATH, 'routes'),
         toType: 'dir'
       }
     ])

@@ -1,7 +1,6 @@
 <script context='module'>
 
-  import { Colors, TagToColor } from '$constants';
-  import { Tags } from '$config';
+  import { Tags } from '$blog';
 
   /**
    * Returns an extra style for a Tag component.
@@ -9,8 +8,8 @@
    * This method is a `trick` used to edit CSS using variables.
    */
   function getStyle(tag) {
-    let color = TagToColor[tag] || TagToColor[Tags.ComputerGraphics];
-    return `background-color: ${color};`;
+    const info = Tags[tag];
+    return `background-color: ${info.color};`;
   }
 
 </script>
@@ -19,21 +18,25 @@
 
   /**
    * This component represents a tag. The color is automatically selected using
-   * a static LUT saved in the `$constants` file.
+   * a static LUT saved in the `$blog` file.
    */
 
   /** PROPS */
 
-  /** String tag to display. */
+  /** Id of the tag to display. */
   export let tag;
 
   /** Extra style to apply to the DOM element. */
   export let style = '';
 
+  if (!Tags[tag]) {
+    throw new TypeError('Tag.svelte: unsupported tag.');
+  }
+
 </script>
 
 <small class='tag' style={getStyle(tag) + style}>
-  { '#' + tag }
+  { '#' + Tags[tag].text }
 </small>
 
 <style>

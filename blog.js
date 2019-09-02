@@ -1,9 +1,9 @@
-/**
- * @typedef {Object} Social
- * @property {string}linkedin - Your LinkedIn user id. Used mainly in `about`
- * @property {string}github - Your Github user id. Used mainly in `about`
- * @property {string}twitter - Your Twitter user id. Used mainly in `about`
- */
+import {
+  SVGBrain,
+  SVGCubes,
+  SVGGamepad,
+  SVGVRHeadset
+} from '@utils/icons';
 
 /**
  * Contains your personal information.
@@ -46,3 +46,37 @@ export const Site = {
   baseURL: 'davidpeicho.github.io',
   googleAnalytics: 'UA-142103532-1'
 };
+
+/**
+ * All tags supported by the blog.
+ *
+ * @type {Object.<string, Tag>}
+ */
+export const Tags = {
+  ComputerGraphics: { text: 'Graphics', color: '#3498db', icon: SVGCubes },
+  Games: { text: 'Games', color: '#9bca2f', icon: SVGGamepad },
+  VR: { text: 'VR', color: '#f5b82a', icon: SVGVRHeadset },
+  AI: { text: 'AI', color: '#9b59b6', icon: SVGBrain }
+};
+
+export const Colors = {
+  Text: '#303030', // Gray
+  Primary: '#353e44', // Dark Blue-Grayish
+  Secondary: '#ef495c', // Red
+  Third: '#007acc' // Light Blue
+};
+
+/**
+ * @typedef {Object} Social
+ * @property {string} linkedin - Your LinkedIn user id. Used mainly in `about`
+ * @property {string} github - Your Github user id. Used mainly in `about`
+ * @property {string} twitter - Your Twitter user id. Used mainly in `about`
+ */
+
+ /**
+ * @typedef {Object} Tag
+ * @property {string} color - Hexadecimal color of the tag
+ * @property {{import('./src/utils/icons').IconProps}} icon - Icon of the tag.
+ *   This is an object with the SVG path as well as the SVG viewbox.
+ * @property {string} text - Text to display with the tag. e.g: 'games'
+ */

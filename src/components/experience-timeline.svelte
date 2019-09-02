@@ -1,7 +1,5 @@
 <script context='module'>
 
-  import { Colors } from '$constants';
-
   import Icon from '@components/icon';
   import { SVGMapMarker } from '@utils/icons';
 
@@ -23,14 +21,13 @@
    * @return {string} The inlined style
    */
   function getJobElementStyle(i) {
-    const color = Colors.Secondary;
     if (i % 2 !== 0) {
-      return `
+      return ` 
         text-align: right;
-        border-right: 2px solid ${color};
+        border-right: 2px solid #ef495c;
       `;
     }
-    return `border-left: 2px solid ${color};`;
+    return `border-left: 2px solid #ef495c;`;
   }
 
   /**

@@ -148,6 +148,12 @@ blockquote > p {
 /*   */
 .hljs { border-radius: 0.15rem; }
 
+.color { color: #353e44 }
+
+.secondary-color { color: #ef495c }
+
+.tertiary-color { color: #007acc }
+
 /* Color of H1, H2, H3, ...  */
 .title-color { color: #353e44; }
 

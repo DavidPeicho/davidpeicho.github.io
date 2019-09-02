@@ -1,6 +1,7 @@
 <script context='module'>
 
-  import { Colors, TagToIcon, TagToColor, CARD_MIN_HEIGHT } from '$constants';
+  import { Tags } from '$blog';
+
   import Button from '@components/button';
   import Icon from '@components/icon';
   import PostInfo from '@components/post-info';
@@ -14,11 +15,6 @@
 
   function getContainerClass(direction) {
     return left(direction) ? '' : 'reverse';
-  }
-
-  function getIconStyle(tag) {
-    const color = TagToColor[tag] || Colors.Third;
-    return `color: ${color}`;
   }
 
   function left(dir) { return dir !== 'right'; }
@@ -60,7 +56,9 @@
   export let image = null;
 
   /**
-   * Array of string representing tags.
+   * Array of objects representing tags.
+   *
+   * This is used to fetch in `Tags` containing extra info.
    *
    * @type {string[]}
    */
@@ -160,14 +158,19 @@
 
     </div>
 
-    <!-- Displays a big colorful icon to easily see what type of post it is. -->
-    { #if tags.length > 0 && TagToIcon[tags[0]] }
+    <!--
+      Displays a big colorful icon to easily see what type of post it is.
+
+      `tags` contains string tag, which are used as lookup in `Tags` for extra
+      information.
+    -->
+    { #if tags.length > 0 && Tags[tags[0]] && Tags[tags[0]].icon }
       <div class='icon'>
         <Icon
           width={null}
           height={null}
-          {...TagToIcon[tags[0]]}
-          style={getIconStyle(tags[0])}
+          {...(Tags[tags[0]].icon)}
+          style={`color: ${Tags[tags[0]].color};`}
         />
       </div>
     { /if }
