@@ -2,6 +2,8 @@ const CopyPlugin = require('copy-webpack-plugin');
 const { mdsvex } = require('mdsvex');
 const path = require('path');
 
+const Config = require('./config');
+
 const WEBPACK_MODE = process.env.NODE_ENV || 'development';
 const __DEV__ = WEBPACK_MODE === 'development';
 
@@ -11,25 +13,16 @@ const SRC_PATH = path.resolve(__dirname, '..', 'src');
 /**
  * Webpack aliases for faster require.
  *
- * This configuration is really important, as it allows you to write Svelte
- * Components everywhere without needing to know the relative path to shared
- * resources (other components).
- *
- * If you were to generate Svelte / JavaScript files, this would be a great
- * help.
- *
- * Othwerwise, it's just helpful if you want to shorten your path length.
- *
  * @type {Object}
  */
 const Aliases = {
   svelte: path.resolve('node_modules', 'svelte'),
-  '@content': path.resolve('content'),
   '@components': path.resolve('src', 'components'),
   '@layouts': path.resolve('src', 'layouts'),
   '@routes': path.resolve('src', 'routes'),
   '@utils': path.resolve('src', 'utils'),
-  '$blog': path.resolve('blog.js')
+  '$blog': path.resolve('blog.js'),
+  '$config': path.resolve('config.js'),
 };
 
 /**
@@ -56,7 +49,7 @@ const BaseConfig = {
   mode: WEBPACK_MODE,
 
   resolve: {
-    alias: Aliases,
+    alias: Object.assign({}, Aliases, Config.UserAliases),
     extensions: Extensions,
     mainFields: MainFields
   },

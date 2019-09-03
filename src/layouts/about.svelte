@@ -62,6 +62,11 @@
 
 <script>
 
+  /**
+   * This layout is used for the About page. It uses the index markdown's
+   * frontmatter to feed some extra layout.
+   */
+
   /** PROPS */
 
   /**

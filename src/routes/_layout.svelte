@@ -13,6 +13,10 @@
 <script>
 
   /**
+   * Main blog layout. Every page gets wrapped by this.
+   */
+
+  /**
    * Current route segment the user is at. e.g: `about`, or `projects`.
    *
    * @type {string}

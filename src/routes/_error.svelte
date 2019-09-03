@@ -1,8 +1,6 @@
 <script>
 	export let status;
 	export let error;
-
-	const dev = process.env.NODE_ENV === 'development';
 </script>
 
 <style>
@@ -35,6 +33,6 @@
 
 <p>{error.message}</p>
 
-{#if dev && error.stack}
+{#if process.env.NODE_ENV === 'development' && error.stack}
 	<pre>{error.stack}</pre>
 {/if}

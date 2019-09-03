@@ -1,4 +1,4 @@
-import { PostsMap } from '../../server-utils';
+import { PostsMap } from '@routes/blog.json';
 
 export function get(req, res) {
   const slug = req.params.slug;

@@ -1,7 +1,7 @@
 const config = require('sapper/config/webpack.js');
 
-const WebpackClientConfig = require('./config/webpack.client');
-const WebpackServerConfig = require('./config/webpack.server');
+const WebpackClientConfig = require('./webpack/webpack.client');
+const WebpackServerConfig = require('./webpack/webpack.server');
 
 module.exports = {
 

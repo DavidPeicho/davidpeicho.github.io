@@ -1,27 +1,18 @@
 import { dirname, sep } from 'path';
 
-const postsCtx = require.context('@content/routes/blog', true, /\.(md|js|svelte)$/);
-const projectsCtx = require.context('@content/projects', true, /\.(md|js|svelte)$/);
-
-export const PostsList = processImport(postsCtx);
-export const PostsMap = PostsList.reduce((acc, it) => (acc[it.id] = it, acc), {});
-
-export const ProjectsList = processImport(projectsCtx);
-
 /**
  * Imports all metadata from a given Webpack Context.
  *
  * @param {*} ctx - Webpack context.
  */
-function processImport(ctx) {
+export function importMetadata(ctx, segment = '') {
   const keys = ctx.keys();
   const list = keys.map((path) => {
     const id = dirname(path).split(sep).pop();
     if (!id || id === '.' || id === '..') { return null; }
     const module = ctx(path);
-    const meta = Object.assign(
-      { id, url: `/blog/${id}` }, module.Metadata || {}
-    );
+    const url = segment !== '' ? `/${segment}/${id}` : `/${id}`;
+    const meta = Object.assign({ id, url }, module.Metadata || {});
     return meta;
   })
   .filter((e) => e !== null);
