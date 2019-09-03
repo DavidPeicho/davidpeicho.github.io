@@ -21,6 +21,19 @@ resume:
     date: 2014
     title: Software Engineer Intern
     logo: images/brand/aerys-logo.png
+teaching:
+  - title: Teaching Assistant
+    course: OCAML, C#, & Algorithms
+    school: EPITA
+    date: 2016
+  - title: Teaching Assistant
+    course: Java, SQL, & Algorithms
+    school: EPITA
+    date: 2017
+  - title: Teaching Assistant
+    course: C, Unix, & POSIX Shell
+    school: EPITA
+    date: 2018
 ---
 
 ```js module
@@ -28,32 +41,25 @@ resume:
 	import ImageHeader from '@components/image-header';
 ```
 
-## Nice to see you there!
+## Hi
 
 I am David, a Research Scientist within the Visualization Team at
-Siemens Healthineers. My current position consists of pushing 3D Medical Visualization
-capabilities in the Web, mostly using WebGL.
+Siemens Healthineers.
 
-Since 2018, I am in charge of a building a WebGL framework achieving Real-Time
+My current position consists of pushing 3D Medical Visualization
+capabilities in the Web, mostly using WebGL. Our goal is to achieve Real-Time
 or close to Real-Time medical visualization.
+
+My main field of interests in Computer Science are:
+* **Computer Graphics**
+* **Game Development**, using low-level graphics API or using Unreal Engine 4
+* **C++** and **JavaScript** programming in general!
 
 I graduated from [EPITA (Ecole des Ingénieurs en Intelligence Informatique)](https://www.epita.fr/en) in 2019,
 where I obtained a Master's degree in Computer Science, speciality Artificial Intelligence.
 
-### What I like to play with
+## Open-Source contributions
 
-#### Languages
-
-* JavaScript
-* C++
-* C, Python, Java. Less often though!
-
-#### Framework & Engines
-
-* Three.js
-* Unreal Engine 4
-
-#### Specifications
-
-* WebGL;
-* OpenGL.
+* [Three.js](https://github.com/mrdoob/three.js/)
+* [OSG.js](https://github.com/cedricpinson/osgjs)
+* [WebGL](https://github.com/KhronosGroup/WebGL)

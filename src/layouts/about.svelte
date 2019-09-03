@@ -2,7 +2,7 @@
 
   import { onMount, getContext } from 'svelte';
 
-  import { User } from '$blog';
+  import { User } from '$config';
 
   import Icon from '@components/icon';
   import ExperienceTimeline from '@components/experience-timeline';
@@ -76,6 +76,8 @@
    */
   export let resume = [];
 
+  export let teaching = [];
+
   const socials = createSocialLinks();
 
 </script>
@@ -108,9 +110,26 @@
 </div>
 
 <!-- Displays a list of places you have worked at. -->
-<div class='centered'>
-  <h2 class='post-content'>Experience</h2>
+<div class='post-content'>
+  <h2>Experience</h2>
     <ExperienceTimeline {resume} />
+</div>
+
+<!-- Displays a list of teaching experience. -->
+<div class='post-content'>
+  <h2>Teaching</h2>
+  <div style='margin: auto; text-align: center;'>
+    { #each teaching as experience }
+      <div style='margin-bottom: 2rem;'>
+        <Icon width=25 height=25 {...SVGMapMarker} />
+        <span style='font-weight: 800;'>
+          {experience.date}, {experience.school},
+        </span>
+        <span>{experience.title}</span><br>
+        <span style='font-style: italic;'>{experience.course}</span>
+      </div>
+    { /each }
+  </div>
 </div>
 
 <style>
@@ -147,6 +166,7 @@
   .social {
     position: fixed;
     display: flex;
+    right: 0;
     flex-direction: column;
     transform: translateX(-250%);
   }
@@ -157,10 +177,6 @@
 
   .social a:hover {
     color: #ef495c;
-  }
-
-  .centered {
-    width: 100%;
   }
 
   @media (max-width: 1100px) {

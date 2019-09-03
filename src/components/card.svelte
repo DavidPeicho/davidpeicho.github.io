@@ -1,6 +1,6 @@
 <script context='module'>
 
-  import { Tags } from '$blog';
+  import { Tags } from '$config';
 
   import Button from '@components/button';
   import Icon from '@components/icon';

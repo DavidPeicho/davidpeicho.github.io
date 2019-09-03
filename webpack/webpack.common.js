@@ -21,7 +21,6 @@ const Aliases = {
   '@layouts': path.resolve('src', 'layouts'),
   '@routes': path.resolve('src', 'routes'),
   '@utils': path.resolve('src', 'utils'),
-  '$blog': path.resolve('blog.js'),
   '$config': path.resolve('config.js'),
 };
 

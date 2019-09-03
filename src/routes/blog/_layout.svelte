@@ -65,7 +65,7 @@
   </div>
 
   <div class='info'>
-    <PostInfo readingTime={metadata.readingTime || 10} />
+    <PostInfo date={metadata.date} readingTime={metadata.readingTime || 10} />
   </div>
 
   <slot></slot>

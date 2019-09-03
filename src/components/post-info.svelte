@@ -82,7 +82,7 @@
    */
   export let style = '';
 
-  const infos = createInfo({ date, readingTime });
+  $: infos = createInfo({ date, readingTime });
 
 </script>
 

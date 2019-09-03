@@ -1,7 +1,5 @@
 ```js module
   import image from './thumbnail.png';
-	import Img from '@components/image';
-	import Meta from '@components/meta';
 
   export const Metadata = {
     image,
@@ -10,7 +8,5 @@
     seoDescription: 'My Test'
   };
 ```
-
-<Meta data={Metadata} />
 
 # Hello Everyone

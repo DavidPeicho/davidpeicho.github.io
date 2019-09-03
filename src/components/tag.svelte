@@ -1,6 +1,6 @@
 <script context='module'>
 
-  import { Tags } from '$blog';
+  import { Tags } from '$config';
 
   /**
    * Returns an extra style for a Tag component.
@@ -18,7 +18,7 @@
 
   /**
    * This component represents a tag. The color is automatically selected using
-   * a static LUT saved in the `$blog` file.
+   * a static LUT saved in the `$config` file.
    */
 
   /** PROPS */

@@ -12,7 +12,7 @@
    *   HTML tag
    */
 
-  import { User } from '$blog';
+  import { User } from '$config';
 
   import Icon from '@components/icon';
 
@@ -64,7 +64,7 @@
 
   /**
    * List of social link to display.
-   * Change the file pointed by `$blog` to add your own links.
+   * Change the file pointed by `$config` to add your own links.
    *
    * The Github logo is removed by default, as it shouldn't be displayed in the
    * 'Contact' section (at least it doesn't make sense for me).

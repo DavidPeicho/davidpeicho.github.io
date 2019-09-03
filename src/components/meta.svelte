@@ -2,7 +2,7 @@
 
   import { onMount } from 'svelte';
 
-  import { Site } from '$blog';
+  import { Site } from '$config';
 
   // Default values for the general site metadata.
   const siteDescription = Site.description || '';

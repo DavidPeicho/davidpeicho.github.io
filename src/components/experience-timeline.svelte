@@ -22,7 +22,7 @@
    */
   function getJobElementStyle(i) {
     if (i % 2 !== 0) {
-      return ` 
+      return `
         text-align: right;
         border-right: 2px solid #ef495c;
       `;
@@ -97,7 +97,7 @@
 
   .job-timeline {
     display: flex;
-    max-width: 32rem;
+    max-width: 40rem;
     margin: auto;
     flex-direction: column;
     padding: 0 0.5rem 0 0.5rem;

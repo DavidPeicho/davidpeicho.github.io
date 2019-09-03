@@ -2,7 +2,7 @@
 
   import { onMount, getContext } from 'svelte';
 
-  import { User } from '$blog';
+  import { User } from '$config';
 
   import Card from '@components/card';
 
