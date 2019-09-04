@@ -1,14 +1,11 @@
 <script context='module'>
 
-  import { onMount, getContext } from 'svelte';
-
   import { User } from '$config';
 
   import Card from '@components/card';
   import Meta from '@components/meta';
 
   import { processList } from '@routes/blog';
-  import { MetadataContextKey } from '@routes/_layout';
 
 	export function preload({ params, query }) {
     return this.fetch('projects.json').then(r => r.json()).then(projects => {
@@ -26,8 +23,18 @@
 
 <script>
 
+  /**
+   * Current route segment the user is at. e.g: `about`, or `projects`.
+   *
+   * @type {string}
+   */
   export let segment;
 
+  /**
+   * List of posts metadata, ordered by date directly on the server.
+   *
+   * @type {Object[]}
+   */
   export let projects;
 
 </script>

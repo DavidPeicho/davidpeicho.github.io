@@ -35,7 +35,7 @@
   export let metadata;
   export let segment;
 
-  let links = buildLinks(metadata);
+  $: links = buildLinks(metadata);
 
   async function fetchMetadata(e, link) {
     const url = link.url;
@@ -43,7 +43,6 @@
     const data = await res.json();
     goto(url);
     metadata = data;
-    links = buildLinks(metadata);
   }
 
 </script>

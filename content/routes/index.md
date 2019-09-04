@@ -44,7 +44,7 @@ teaching:
 ## Hi
 
 I am David, a Research Scientist within the Visualization Team at
-Siemens Healthineers.
+[Siemens Healthineers](https://www.siemens-healthineers.com/).
 
 My current position consists of pushing 3D Medical Visualization
 capabilities in the Web, mostly using WebGL. Our goal is to achieve Real-Time

@@ -1,23 +1,9 @@
 <script context="module">
 
-  import { onMount, getContext } from 'svelte';
-
   import { User } from '$config';
 
   import Card from '@components/card';
-
-  import { MetadataContextKey } from '@routes/_layout';
-
-	export function preload({ params, query }) {
-		return this.fetch('blog.json').then(r => r.json()).then(posts => {
-			return { posts: processList(posts) };
-		});
-  }
-
-  export const Metadata = {
-    title: `${User.name} - Blog Posts`,
-    seoDescription: `List articles relative to Computer Graphics and / or Game Development, written by ${User.name}`
-  };
+  import Meta from '@components/meta';
 
   export function processList(list) {
     return list.map((metadata) => {
@@ -34,20 +20,39 @@
     });
   }
 
+  export function preload({ params, query }) {
+		return this.fetch('blog.json').then(r => r.json()).then(posts => {
+			return { posts: processList(posts) };
+		});
+  }
+
+  export const Metadata = {
+    title: `${User.name} - Blog Posts`,
+    seoDescription: `List articles relative to Computer Graphics and / or Game Development, written by ${User.name}`
+  };
+
 </script>
 
 <script>
 
+  /**
+   * Current route segment the user is at. e.g: `about`, or `projects`.
+   *
+   * @type {string}
+   */
   export let segment;
 
+  /**
+   * List of posts metadata, ordered by date directly on the server.
+   *
+   * @type {Object[]}
+   */
   export let posts;
 
-  onMount(() => {
-    const setMetadata = getContext(MetadataContextKey);
-    if (setMetadata) { setMetadata(Metadata); }
-  });
-
 </script>
+
+<!-- Blog Meta. Really important for SEO. -->
+<Meta data={Metadata} />
 
 <div>
   { #each posts as post, i }

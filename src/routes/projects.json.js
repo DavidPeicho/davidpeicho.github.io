@@ -1,6 +1,12 @@
 import { importMetadata } from '@utils/metadata-processor';
 
-const ctx = require.context('@content/projects', true, /\.(md|js|svelte)$/);
+/**
+ * The `@projects` alias comes from the Webpack configuration.
+ *
+ * NOTE: If you decide to move your blog in your directory tree, think about
+ * updating the Webpack configuration.
+ */
+const ctx = require.context('@projects', true, /\.(md|js|svelte)$/);
 
 export const ProjectsList = importMetadata(ctx);
 const ProjectsListSerialized = JSON.stringify(ProjectsList);

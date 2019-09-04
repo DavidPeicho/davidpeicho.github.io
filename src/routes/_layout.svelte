@@ -1,12 +1,8 @@
 <script context='module'>
 
-  import { setContext } from 'svelte';
-
   import Footer from '@components/footer';
   import Meta from '@components/meta';
   import Nav from '@components/nav';
-
-  export const MetadataContextKey = 'metadata-context-key';
 
 </script>
 

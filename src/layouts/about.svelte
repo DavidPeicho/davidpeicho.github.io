@@ -1,7 +1,5 @@
 <script context="module">
 
-  import { onMount, getContext } from 'svelte';
-
   import { User } from '$config';
 
   import Icon from '@components/icon';
@@ -9,9 +7,13 @@
   import ImageHeader from '@components/image-header';
   import Meta from '@components/meta';
 
-  import { SVGGithub, SVGLinkedin, SVGTwitter, SVGMapMarker } from '@utils/icons';
-
-  import { MetadataContextKey } from '@routes/_layout';
+  import {
+    SVGGithub,
+    SVGGraduationCap,
+    SVGLinkedin,
+    SVGMapMarker,
+    SVGTwitter
+  } from '@utils/icons';
 
   /**
    * @typedef {Object} Social
@@ -78,6 +80,11 @@
 
   export let teaching = [];
 
+  /**
+   * Layout used by this component. This prop is forwared by MDSvex.
+   */
+  export let layout;
+
   const socials = createSocialLinks();
 
 </script>
@@ -110,27 +117,31 @@
 </div>
 
 <!-- Displays a list of places you have worked at. -->
-<div class='post-content'>
-  <h2>Experience</h2>
-    <ExperienceTimeline {resume} />
-</div>
+{ #if resume.length > 0 }
+  <div class='post-content'>
+    <h2>Experience</h2>
+      <ExperienceTimeline {resume} />
+  </div>
+{ /if }
 
 <!-- Displays a list of teaching experience. -->
-<div class='post-content'>
-  <h2>Teaching</h2>
-  <div style='margin: auto; text-align: center;'>
-    { #each teaching as experience }
-      <div style='margin-bottom: 2rem;'>
-        <Icon width=25 height=25 {...SVGMapMarker} />
-        <span style='font-weight: 800;'>
-          {experience.date}, {experience.school},
-        </span>
-        <span>{experience.title}</span><br>
-        <span style='font-style: italic;'>{experience.course}</span>
-      </div>
-    { /each }
+{ #if teaching.length > 0 }
+  <div class='post-content'>
+    <h2>Teaching</h2>
+    <div style='margin: auto; text-align: center;'>
+      { #each teaching as experience }
+        <div style='margin-bottom: 2rem;'>
+          <Icon width=25 height=25 {...SVGGraduationCap} />
+          <span style='font-weight: 800;'>
+            {experience.date}, {experience.school},
+          </span>
+          <span>{experience.title}</span><br>
+          <span style='font-style: italic;'>{experience.course}</span>
+        </div>
+      { /each }
+    </div>
   </div>
-</div>
+{ /if }
 
 <style>
 

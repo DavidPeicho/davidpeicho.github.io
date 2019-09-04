@@ -108,12 +108,8 @@
   export let displayInfo = true;
 
   const buttons = [];
-  if (videoLink) {
-    buttons.push({ url: videoLink, text: 'Video', external: true });
-  }
-  if (url) {
-    buttons.push({ url, text: 'More', external: isLinkExternal(url) });
-  }
+  if (videoLink) { buttons.push({ url: videoLink, text: 'Video' }); }
+  if (url) { buttons.push({ url, text: 'More' }); }
 
 </script>
 
@@ -150,7 +146,6 @@
           <Button
             url={button.url}
             text={button.text}
-            isExternal={button.external}
             style={'margin-right: 0.5rem;'}
           />
         { /each }
@@ -189,7 +184,7 @@
 
   .container {
     width: 100%;
-    min-height: 40vh;
+    min-height: 60vh;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
