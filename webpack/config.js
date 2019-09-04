@@ -16,5 +16,5 @@ const path = require('path');
 module.exports.UserAliases = {
   '@content': path.resolve('content'),
   '@blog': path.resolve('content', 'routes', 'blog'),
-  '@projects': path.resolve('content', 'projectx'),
+  '@projects': path.resolve('content', 'projects'),
 };
