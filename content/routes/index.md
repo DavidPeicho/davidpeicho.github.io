@@ -1,6 +1,6 @@
 ---
 layout: '@layouts/about.svelte'
-resume:
+jobTimeline:
   - company: Siemens Healthineers
     location: London, UK
     date: 2019 - Present
@@ -34,6 +34,7 @@ teaching:
     course: C, Unix, & POSIX Shell
     school: EPITA
     date: 2018
+resume: documents/davidpeicho-resume.pdf
 ---
 
 ```js module

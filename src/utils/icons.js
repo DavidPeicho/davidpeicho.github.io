@@ -93,6 +93,11 @@ export const SVGEmail = {
   viewBox: '0 0 512 512'
 };
 
+export const SVGFile = {
+  path: 'M 369.9 97.9 L 286 14 C 277 5 264.8 -0.1 252.1 -0.1 H 48 C 21.5 0 0 21.5 0 48 v 416 c 0 26.5 21.5 48 48 48 h 288 c 26.5 0 48 -21.5 48 -48 V 131.9 c 0 -12.7 -5.1 -25 -14.1 -34 Z M 332.1 128 H 256 V 51.9 l 76.1 76.1 Z M 48 464 V 48 h 160 v 104 c 0 13.3 10.7 24 24 24 h 104 v 288 H 48 Z',
+  viewBox: '0 0 384 512'
+};
+
 /**
  * Reading glasses, SVG icon props.
  *

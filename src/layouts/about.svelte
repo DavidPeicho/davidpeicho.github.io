@@ -8,6 +8,7 @@
   import Meta from '@components/meta';
 
   import {
+    SVGFile,
     SVGGithub,
     SVGGraduationCap,
     SVGLinkedin,
@@ -76,9 +77,11 @@
    *
    * @type {Company[]}
    */
-  export let resume = [];
+  export let jobTimeline = [];
 
   export let teaching = [];
+
+  export let resume = null;
 
   /**
    * Layout used by this component. This prop is forwared by MDSvex.
@@ -110,25 +113,26 @@
 <div class='post-content'>
   <div class='social'>
     { #each socials as social }
-      <a href={social.url} target='_blank'><Icon {...social.icon} /></a>
+      <a class='fade hover' href={social.url} target='_blank'>
+        <Icon {...social.icon} />
+      </a>
     { /each }
   </div>
   <slot />
 </div>
 
-<!-- Displays a list of places you have worked at. -->
-{ #if resume.length > 0 }
-  <div class='post-content'>
-    <h2>Experience</h2>
-      <ExperienceTimeline {resume} />
-  </div>
-{ /if }
+<div class='post-content'>
 
-<!-- Displays a list of teaching experience. -->
-{ #if teaching.length > 0 }
-  <div class='post-content'>
+  <!-- Displays a list of places you have worked at. -->
+  { #if jobTimeline.length > 0 }
+    <h2>Experience</h2>
+    <ExperienceTimeline resume={jobTimeline} />
+  { /if }
+
+  <!-- Displays a list of teaching experience. -->
+  { #if teaching.length > 0 }
     <h2>Teaching</h2>
-    <div style='margin: auto; text-align: center;'>
+    <div class='center'>
       { #each teaching as experience }
         <div style='margin-bottom: 2rem;'>
           <Icon width=25 height=25 {...SVGGraduationCap} />
@@ -140,8 +144,20 @@
         </div>
       { /each }
     </div>
-  </div>
-{ /if }
+  { /if }
+
+  <!-- Displays a logo to download the user's resume. -->
+  { #if resume !== null }
+    <h2>Resume</h2>
+    <div class='center last-row'>
+      <a href={resume} class='fade hover' download>
+        <Icon width=65 height=100 {...SVGFile} />
+        <p>Download</p>
+      </a>
+    </div>
+  { /if }
+
+</div>
 
 <style>
 
@@ -174,6 +190,10 @@
     margin: 2rem 0 0 0;
   }
 
+  .hover:hover {
+    color: #ef495c;
+  }
+
   .social {
     position: fixed;
     display: flex;
@@ -182,12 +202,18 @@
     transform: translateX(-250%);
   }
 
-  .social a {
-    transition: color .3s ease,color .3s ease;
+  .center {
+    margin: auto;
+    text-align: center;
   }
 
-  .social a:hover {
-    color: #ef495c;
+  .last-row {
+    margin-bottom: 3.5rem;
+  }
+
+  .fade {
+    cursor: pointer;
+    transition: color .3s ease,color .3s ease;
   }
 
   @media (max-width: 1100px) {
