@@ -198,7 +198,7 @@ p.warn::before {
 /* Centered content.  */
 .post-content {
   position: relative;
-  max-width: 48rem;
+  max-width: 40rem;
   margin: auto;
   margin-top: 1rem;
 }

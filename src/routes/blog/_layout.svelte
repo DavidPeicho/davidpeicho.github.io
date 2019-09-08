@@ -53,7 +53,7 @@
 <div class='post-content'>
 
   <div class='header'>
-    <ImageHeader image={metadata.thumbnail} opacity={0.5}>
+    <ImageHeader image={metadata.image} opacity={0.5}>
       <h1 class='title textshadow' style={getTitleStyle()}>{metadata.title}</h1>
       <div class='tags-container'>
         { #each (metadata.tags || []) as tag }
