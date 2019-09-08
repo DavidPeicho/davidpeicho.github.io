@@ -12,4 +12,4 @@ src/routes/**/*.jpg
 src/routes/**/*.jpeg
 src/routes/**/*.md
 
-/static/images
+/static/images/generated

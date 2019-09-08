@@ -65,7 +65,7 @@ const BaseConfig = {
           loader: 'url-loader',
           options: {
             outputPath: '../../../static/images/generated',
-            publicPath: 'images',
+            publicPath: 'images/generated',
             limit: 1000
           }
         }

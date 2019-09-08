@@ -37,11 +37,6 @@ teaching:
 resume: documents/davidpeicho-resume.pdf
 ---
 
-```js module
-	import picture from './me.jpg';
-	import ImageHeader from '@components/image-header';
-```
-
 ## Hi
 
 I am David, a Research Scientist within the Visualization Team at
