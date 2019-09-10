@@ -10,7 +10,7 @@ jobs:
   include:
     - stage: build
       script:
-        - echo toto
+        - yarn run export
     - stage: deploy
       provider: pages
       skip_cleanup: true
