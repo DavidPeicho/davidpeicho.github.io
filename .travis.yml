@@ -1,3 +1,7 @@
+language: node_js
+node_js:
+  - 10
+
 stages:
   - build
   - deploy
@@ -13,5 +17,6 @@ jobs:
       local_dir: __sapper__/export
       github_token: $GITHUB_TOKEN
       keep_history: true
+      if: branch = develop
       on:
         branch: master
