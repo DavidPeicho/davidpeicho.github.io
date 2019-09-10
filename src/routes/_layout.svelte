@@ -2,7 +2,7 @@
 
   import Footer from '@components/footer';
   import Meta from '@components/meta';
-  import Nav from '@components/nav';
+  import Nav from '@components/nav-bar';
 
 </script>
 

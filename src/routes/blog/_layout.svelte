@@ -1,6 +1,11 @@
 <script context="module">
 
-  import { getContext } from 'svelte';
+  import { goto } from '@sapper/app'
+
+  import Button from '@components/button';
+  import Meta from '@components/meta';
+  import ImageHeader from '@components/image-header';
+  import PostInfo from '@components/post-info';
 
   import Tag from '@components/tag';
 
@@ -24,13 +29,6 @@
 </script>
 
 <script>
-
-  import { goto } from '@sapper/app'
-  import Button from '@components/button';
-  import Nav from '@components/nav';
-  import Meta from '@components/meta';
-  import ImageHeader from '@components/image-header';
-  import PostInfo from '@components/post-info';
 
   export let metadata;
   export let segment;
