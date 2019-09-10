@@ -18,12 +18,13 @@ jobs:
     - stage: build
       script:
         - yarn run export
-    - stage: deploy
-      provider: pages
-      skip_cleanup: true
-      local_dir: __sapper__/export
-      github_token: $GITHUB_TOKEN
-      keep_history: true
-      if: branch = develop
-      on:
-        branch: master
+
+deploy
+  provider: pages
+  skip_cleanup: true
+  local_dir: __sapper__/export
+  github_token: $GITHUB_TOKEN
+  keep_history: true
+  if: branch = develop
+  on:
+    branch: master
