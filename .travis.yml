@@ -11,6 +11,7 @@ before_install:
 
 script:
   - yarn run export
+  - ls -la ./src/routes/blog
   - ls -la __sapper__/export
 
 deploy:
