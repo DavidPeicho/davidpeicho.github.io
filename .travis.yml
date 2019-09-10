@@ -19,7 +19,7 @@ jobs:
       script:
         - yarn run export
 
-deploy
+deploy:
   provider: pages
   skip_cleanup: true
   local_dir: __sapper__/export
