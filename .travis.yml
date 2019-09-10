@@ -18,5 +18,6 @@ deploy:
   github_token: $GITHUB_TOKEN
   local_dir: __sapper__/export
   keep_history: true
+  target_branch: master
   on:
     branch: develop
