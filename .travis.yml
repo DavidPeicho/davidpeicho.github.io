@@ -10,7 +10,7 @@ before_install:
   - export PATH="$HOME/.yarn/bin:$PATH"
 
 script:
-  - yarn run build
+  - yarn run export
 
 deploy:
   provider: pages
