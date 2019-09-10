@@ -11,13 +11,14 @@ before_install:
 
 script:
   - yarn run export
+  - ls -la __sapper__/export
 
 deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
-  local_dir: __sapper__/export
-  keep_history: true
+  local_dir: ./__sapper__/export/
+  keep_history: false
   target_branch: master
   on:
     branch: develop
