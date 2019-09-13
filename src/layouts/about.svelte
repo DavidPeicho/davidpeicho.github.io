@@ -98,9 +98,9 @@
 <!-- Blog author information: name, title, company, etc.. -->
 <ImageHeader image='images/me.jpg' opacity={0.8} style={'height: 60vh;'}>
   <div class='header'>
-    <h1 class='textshadow'>David Peicho</h1>
-    <h2 class='textshadow'>Research Scientist</h2>
-    <h3 class='softtextshadow'>@ Siemens Healthineers</h3>
+    <h1 class='textshadow'>{ User.name }</h1>
+    <h2 class='textshadow'>{ User.title }</h2>
+    <h3 class='softtextshadow'>@ { User.company }</h3>
     <!-- Current Location. -->
     <div class='location'>
       <Icon width=25 height=25 {...SVGMapMarker} />
@@ -149,8 +149,8 @@
   <!-- Displays a logo to download the user's resume. -->
   { #if resume !== null }
     <h2>Resume</h2>
-    <div class='center last-row'>
-      <a href={resume} class='fade hover' download>
+    <div class='center hover last-row'>
+      <a href={resume} class='fade' style='color: #333;' download>
         <Icon width=65 height=100 {...SVGFile} />
         <p>Download</p>
       </a>

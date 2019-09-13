@@ -20,6 +20,7 @@ import {
 export const User = {
   name: 'David Peicho',
   title: 'Research Scientist',
+  company: 'Siemens Healthineers',
   email: 'david.peicho@gmail.com',
   location: 'London, UK',
   social: {
