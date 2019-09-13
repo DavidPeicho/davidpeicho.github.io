@@ -20,6 +20,7 @@ import {
 export const User = {
   name: 'David Peicho',
   title: 'Research Scientist',
+  company: 'Siemens Healthineers',
   email: 'david.peicho@gmail.com',
   location: 'London, UK',
   social: {
@@ -31,7 +32,9 @@ export const User = {
 };
 
 /**
- * Contains data for the entire blog.
+ * Contains data for the entire blog. Those options are mostly for SEO.
+ *
+ * NOTE: It's really important that you setup the `baseURL`.
  *
  * @property {string} name - The blog's name.
  * @property {string} description - The blog's description. This will basically
@@ -40,11 +43,24 @@ export const User = {
  * @property {string} googleAnalytics - Your Google Analytics website ID.
  */
 export const Site = {
+
+  /** Title of your blog. <meta title>. */
   name: 'David Peicho',
+
+  /** Description of your blog. <meta description>. */
   description: 'Blog about computer graphics, rendering, game developmnent, or just computer science!',
+
+  /** Blog keywords. <meta keywords>. */
   keywords: 'computergraphics, rendering, 3d',
+
+  /**
+   * The `baseURL` can be pretty important for SEO.
+   */
   baseURL: 'davidpeicho.github.io',
+
+  /** Your Google Analytics token. */
   googleAnalytics: 'UA-142103532-1'
+
 };
 
 /**
