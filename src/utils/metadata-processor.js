@@ -15,7 +15,8 @@ export function importMetadata(ctx, segment = '') {
     const meta = Object.assign({ id, url }, module.Metadata || {});
     return meta;
   })
-  .filter((e) => e !== null);
+  .filter((e) => e !== null)
+  .filter((e) => e.published === undefined || !!e.published);
 
   list.sort((a, b) => {
     const dateA = new Date(a.date);

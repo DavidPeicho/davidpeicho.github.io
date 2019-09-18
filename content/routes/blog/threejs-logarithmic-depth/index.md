@@ -6,7 +6,8 @@
     tags: [ 'VR', 'ComputerGraphics' ],
     title: 'Three.js Logarithmic Depth Buffer storage',
     date: '21 March 2019',
-    seoDescription: 'My SEO desciption sir'
+    seoDescription: 'My SEO desciption sir',
+    published: false
   };
 ```
 

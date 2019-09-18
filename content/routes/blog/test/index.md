@@ -5,7 +5,8 @@
     image,
     title: 'Test',
     date: '20 March 2019',
-    seoDescription: 'My Test'
+    seoDescription: 'My Test',
+    published: false
   };
 ```
 

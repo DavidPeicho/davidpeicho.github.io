@@ -16,7 +16,7 @@ I am the currently working in the Visulization Team, where I maintain our own
 WebGL renderer achieving Real-Time or close to Real-Time Medical Imaging.
 
 If you want to know more about me, what I do, and where I work, you can follow
-[this link](/about).
+[this link](/).
 
 ## Why this blog?
 
