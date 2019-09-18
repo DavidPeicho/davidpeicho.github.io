@@ -15,6 +15,7 @@
         .then(metadata => metadata.json()).then(metadata => {
           return { metadata };
         })
+        .catch((e) => redirect())
     );
   }
 
@@ -24,6 +25,10 @@
 
   function buildLinks(metadata) {
     return [ metadata.previous, metadata.next ];
+  }
+
+  function redirect() {
+    goto('/offline');
   }
 
 </script>
@@ -37,10 +42,14 @@
 
   async function fetchMetadata(e, link) {
     const url = link.url;
-    const res = await fetch(`${url}.json`);
-    const data = await res.json();
-    goto(url);
-    metadata = data;
+    try {
+      const res = await fetch(`${url}.json`);
+      const data = await res.json();
+      goto(url);
+      metadata = data;
+    } catch (e) {
+      redirect();
+    }
   }
 
 </script>

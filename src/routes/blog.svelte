@@ -17,7 +17,7 @@
         date: metadata.date || new Date(),
         readingTime: metadata.readingTime
       };
-    });
+    }).filter((m) => m.published === undefined || !!m.published);
   }
 
   export function preload({ params, query }) {

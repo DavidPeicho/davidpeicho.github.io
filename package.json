@@ -6,7 +6,7 @@
     "dev": "sapper dev --ext '.svelte .md'",
     "test": "echo success",
     "build": "cross-env NODE_ENV=production sapper build --ext '.svelte .md'",
-    "export": "cross-env NODE_ENV=production sapper export --ext '.svelte .md'",
+    "export": "cross-env NODE_ENV=production sapper export --ext '.svelte .md'  --entry '/ /offline'",
     "start": "node __sapper__/build"
   },
   "dependencies": {

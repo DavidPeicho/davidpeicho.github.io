@@ -1,7 +1,10 @@
 <script context='module'>
 
   function getImageStyle(image) {
-    return `background: url(${image})`;
+    if (image) {
+      return `background: url(${image})`;
+    }
+    return '';
   }
 
   function getBackgroundStyle(opacity = 0.2) {
