@@ -1,6 +1,28 @@
+<script context='module'>
+
+  import Offline from './offline';
+
+  function isFetchError(error) {
+    return (
+      error.name === 'ChunkLoadError'
+      || (error.message || '').toLowerCase().match(/failed\s+to\s+fetch/g)
+    );
+  }
+
+  function isOffline(status, error) {
+    return status === 500 && isFetchError(error);
+  }
+
+</script>
+
 <script>
+
 	export let status;
-	export let error;
+  export let error;
+
+  console.log(status);
+  console.log(error);
+
 </script>
 
 <style>
@@ -25,14 +47,14 @@
 	}
 </style>
 
-<svelte:head>
-	<title>{status}</title>
-</svelte:head>
+{ #if isOffline(status, error) }
+  <Offline />
+{ /if }
 
-<h1>{status}</h1>
-
-<p>{error.message}</p>
-
-{#if process.env.NODE_ENV === 'development' && error.stack}
-	<pre>{error.stack}</pre>
-{/if}
+{ #if process.env.NODE_ENV === 'development' }
+  <h1>{status}</h1>
+  <p>{error.message}</p>
+  { #if error.stack }
+	  <pre>{error.stack}</pre>
+  { /if }
+{ /if }
