@@ -1,4 +1,4 @@
-<script context="module">
+<script context='module'>
 
   import { goto } from '@sapper/app'
 

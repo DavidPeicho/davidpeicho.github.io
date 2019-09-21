@@ -31,9 +31,13 @@
 
 	main {
 		position: relative;
-		background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
 		margin: 0 auto;
 		box-sizing: border-box;
+		background-color: white;
   }
 
 </style>
