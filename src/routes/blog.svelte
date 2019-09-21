@@ -28,7 +28,8 @@
 
   export const Metadata = {
     title: `${User.name} - Blog Posts`,
-    seoDescription: `List articles relative to Computer Graphics and / or Game Development, written by ${User.name}`
+    seoDescription: `List articles relative to Computer Graphics and / or Game Development, written by ${User.name}`,
+    url: '/blog'
   };
 
 </script>

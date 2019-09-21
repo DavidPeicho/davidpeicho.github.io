@@ -40,7 +40,7 @@
 
   <!-- Open Graph / Facebook -->
   <meta property='og:type' content='website'>
-  <meta property='og:url' content='https://lacourt.dev/{metadata.slug}'>
+  <meta property='og:url' content={metadata.url}>
   <meta property='og:title' content='{metadata.title}'>
   <meta property='og:description' content='{metadata.seoDescription}'>
   {#if metadata.image !== ''}

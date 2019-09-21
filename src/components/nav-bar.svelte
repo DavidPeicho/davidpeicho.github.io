@@ -34,7 +34,7 @@
 <nav>
 	<ul>
 		<li>
-      <a class={isSelected(segment, '')} href='.'>
+      <a class={isSelected(segment, '')} href='/'>
         about
       </a>
     </li>

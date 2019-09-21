@@ -33,13 +33,6 @@ const offlineRoutesList = createInitialFilesList(OFFLINE_ROUTES_CACHE);
 const offlineRoutesSet = new Set(offlineRoutesList);
 
 self.addEventListener('install', event => {
-  console.log('INSTALL');
-
-  // The entire cache is composed of the main files to fetch (main.js, etc...),
-  // as well as the entire set of static files.
-  console.log(shell);
-  console.log(offlineRoutesList);
-
 	return event.waitUntil(
 		caches
 			.open(CACHE_ID)
@@ -49,7 +42,6 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  console.log('ACTIVATE');
 	return event.waitUntil(
 		caches.keys().then(async keys => {
 			// delete old caches
