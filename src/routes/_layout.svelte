@@ -1,8 +1,22 @@
 <script context='module'>
 
+  import { onMount } from 'svelte';
+
+  import { Site } from '$config';
+
   import Footer from '@components/footer';
   import Meta from '@components/meta';
   import Nav from '@components/nav-bar';
+
+  function addScriptTag(attributes, code = null) {
+    const s = document.createElement('script');
+    const attr = attributes || [];
+    for (const a in attr) {
+      s.setAttribute(a, attr[a] ? attr[a] : null);
+    }
+    if (code) { s.text = code; }
+    document.head.appendChild(s);
+  }
 
 </script>
 
@@ -19,6 +33,22 @@
    */
   export let segment;
 
+  onMount(() => {
+    const id = Site.googleAnalytics;
+    addScriptTag({
+      async: '',
+      src: `https://www.googletagmanager.com/gtag/js?id=${id}`
+    });
+    addScriptTag({},
+      `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '${id}');
+      `
+    );
+  })
+
 </script>
 
 <main>
@@ -31,9 +61,6 @@
 
 	main {
 		position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     min-height: 100vh;
 		margin: 0 auto;
 		box-sizing: border-box;
