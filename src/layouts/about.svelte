@@ -58,7 +58,8 @@
   export const Metadata = {
     title: `${User.name}`,
     seoDescription: `Blog of ${User.name}`,
-    url: ''
+    url: '',
+    image: User.image
   };
 
 </script>
@@ -96,7 +97,7 @@
 <Meta data={Metadata} />
 
 <!-- Blog author information: name, title, company, etc.. -->
-<ImageHeader image='images/me.jpg' opacity={0.8} style={'height: 60vh;'}>
+<ImageHeader image={ User.image } opacity={ 0.8 } style={ 'height: 60vh;' }>
   <div class='header'>
     <h1 class='textshadow'>{ User.name }</h1>
     <h2 class='textshadow'>{ User.title }</h2>

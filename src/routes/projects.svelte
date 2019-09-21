@@ -1,11 +1,12 @@
 <script context='module'>
 
-  import { User } from '$config';
+  import { onMount } from 'svelte';
 
   import Card from '@components/card';
   import Meta from '@components/meta';
-
   import { processList } from '@routes/blog';
+
+  import { User } from '$config';
 
 	export function preload({ params, query }) {
     return this.fetch('projects.json').then(r => r.json()).then(projects => {
@@ -37,10 +38,21 @@
    */
   export let projects;
 
+  let metadata = Object.assign({}, Metadata);
+
+  onMount(() => {
+    if (projects.length > 0) {
+      metadata.image = projects[0].image;
+      metadata = metadata;
+    } else {
+      delete Metadata.image;
+    }
+  })
+
 </script>
 
 <!-- Blog Meta. Really important for SEO. -->
-<Meta data={Metadata} />
+<Meta data={metadata} />
 
 <div>
   { #each projects as project, i }

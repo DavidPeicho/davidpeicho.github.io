@@ -29,6 +29,7 @@ export const User = {
     twitter: 'DavidPeicho',
     twitterCardType: 'summary'
   },
+  image: 'images/me.jpg'
 };
 
 /**
