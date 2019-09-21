@@ -20,12 +20,22 @@
 	export let status;
   export let error;
 
-  console.log(status);
-  console.log(error);
-
 </script>
 
+{ #if isOffline(status, error) }
+  <Offline />
+{ /if }
+
+{ #if process.env.NODE_ENV === 'development' }
+  <h1>{status}</h1>
+  <p>{error.message}</p>
+  { #if error.stack }
+	  <pre>{error.stack}</pre>
+  { /if }
+{ /if }
+
 <style>
+
 	h1, p {
 		margin: 0 auto;
 	}
@@ -45,16 +55,5 @@
 			font-size: 4em;
 		}
 	}
+
 </style>
-
-{ #if isOffline(status, error) }
-  <Offline />
-{ /if }
-
-{ #if process.env.NODE_ENV === 'development' }
-  <h1>{status}</h1>
-  <p>{error.message}</p>
-  { #if error.stack }
-	  <pre>{error.stack}</pre>
-  { /if }
-{ /if }

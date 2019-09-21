@@ -1,57 +1,60 @@
 import { files, shell } from '@sapper/service-worker';
-import pkg from '../package.json';
+
+/* ////////////////////////////////////////////////////////////////////////////
+                                  CONSTANTS
+//////////////////////////////////////////////////////////////////////////// */
 
 const VERSION = '0.1';
-const STATIC_CACHE_ID = `cache-static:${VERSION}`;
+const CACHE_ID = `cache-static:${VERSION}`;
 
-const MAIN_FILES = [ 'main', 'index', 'projects', 'blog', 'offline' ];
+/**
+ * This array is used to know what routes should be fully available or not
+ * when the cache is first created.
+ *
+ * @typedef {Object} Route
+ * @property {string} route - URL to the route to cache. e.g: 'projects'.
+ * @property {boolean} needsFetch - If `true`, a file `[route].json` is cached
+ *   too. This is used for routes that contains initial fetched data.
+ *
+ * @type {Route[]} - List of routes to cache when the cache is first created.
+ */
+const OFFLINE_ROUTES_CACHE = [
+  { route: 'index', needsFetch: false },
+  { route: 'projects', needsFetch: true },
+  { route: 'blog', needsFetch: true },
+  { route: 'offline', needsFetch: false }
+];
 
-const staticFiles = [].concat(files).filter((f) => {
-  return (
-    f.endsWith('.html') || f.endsWith('.js') || f.endsWith('.css')
-    || f.endsWith('.png') || f.endsWith('.jpeg') || f.endsWith('.jpg')
-    || f.endsWith('.pdf')
-  );
-});
+/* ////////////////////////////////////////////////////////////////////////////
+                                  WORKER
+//////////////////////////////////////////////////////////////////////////// */
 
-// Creates an array of files: [
-//   'index.html', 'index.index.js', ...
-// ]
-// This array contains all default pages, without including the blog posts
-// to reduce network requests on startup.
-const mainFiles = MAIN_FILES
-  .map((f) => '/' + f + '.html')
-  .concat(
-    MAIN_FILES
-    .map((f) => shell.find((e) => e.match(new RegExp(`/${f}.?(\\w*).js$`))))
-    .filter((e) => e !== -1)
-  );
-
-// `files` is an array of everything in the `static` directory
-const cached = new Set(staticFiles);
+const offlineRoutesList = createInitialFilesList(OFFLINE_ROUTES_CACHE);
+const offlineRoutesSet = new Set(offlineRoutesList);
 
 self.addEventListener('install', event => {
   console.log('INSTALL');
+
+  // The entire cache is composed of the main files to fetch (main.js, etc...),
+  // as well as the entire set of static files.
   console.log(shell);
-  console.log(mainFiles);
+  console.log(offlineRoutesList);
+
 	return event.waitUntil(
 		caches
-			.open(STATIC_CACHE_ID)
-			.then(cache => cache.addAll(staticFiles))
-			.then(() => {
-				self.skipWaiting();
-			})
+			.open(CACHE_ID)
+			.then(cache => cache.addAll(offlineRoutesList))
+			.then(() => { self.skipWaiting(); })
 	);
 });
 
 self.addEventListener('activate', event => {
   console.log('ACTIVATE');
-
 	return event.waitUntil(
 		caches.keys().then(async keys => {
 			// delete old caches
 			for (const key of keys) {
-				if (key !== STATIC_CACHE_ID) await caches.delete(key);
+				if (key !== CACHE_ID) await caches.delete(key);
 			}
 			self.clients.claim();
 		})
@@ -76,13 +79,13 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  console.log(url.pathname);
-
 	// Always serve static files and bundler-generated assets from cache
-	if (url.host === self.location.host && cached.has(url.pathname)) {
-		event.respondWith(caches.match(event.request));
+	if (url.host === self.location.host && offlineRoutesSet.has(url.pathname)) {
+    event.respondWith(caches.match(event.request));
 		return;
-	}
+  }
+
+  const request = event.request;
 
 	if (event.request.cache === 'only-if-cached') return;
 
@@ -93,16 +96,101 @@ self.addEventListener('fetch', event => {
 		caches
 			.open(`offline:${VERSION}`)
 			.then(async cache => {
-				try {
-					const response = await fetch(event.request);
-					cache.put(event.request, response.clone());
-					return response;
-				} catch(err) {
-					const response = await cache.match(event.request);
-					if (response) return response;
-
-					return caches.match('/offline.html');
-				}
+        if (request.headers.get('Accept').indexOf('text/html') !== -1) {
+          // HTML files: network -> cache -> offline page.
+          return networkFirstPolicy(cache, request);
+        }
+        return cacheFirstPolicy(cache, request);
 			})
 	);
 });
+
+/* ////////////////////////////////////////////////////////////////////////////
+                                  UTILS
+//////////////////////////////////////////////////////////////////////////// */
+
+async function cacheFirstPolicy(cache, request) {
+  const cacheResponse = await cache.match(request);
+  if (cacheResponse) return cacheResponse;
+
+  const response = await fetch(request);
+  cache.put(request, response.clone());
+  return response;
+}
+
+async function networkFirstPolicy(cache, request) {
+  try {
+    const response = await fetch(request);
+    cache.put(request, response.clone());
+    return response;
+  } catch(err) {
+    const response = await cache.match(request);
+    if (response) return response;
+    return caches.match('/offline.html');
+  }
+}
+
+function createInitialFilesList(routesCache) {
+  // Creates a list of static files.
+  const staticFiles =  [ ...files ].filter((f) => {
+    return (
+      f.endsWith('.html') || f.endsWith('.js') || f.endsWith('.css')
+      || f.endsWith('.png') || f.endsWith('.jpeg') || f.endsWith('.jpg')
+      || f.endsWith('.pdf')
+    );
+  });
+
+  // List of HTML files. Every route should have one, except `/`.
+  const htmlFiles = routesCache.map((f) => f.route + '.html');
+
+  // Looks for routes with preloaded data, saved as `.json`.
+  const jsonFiles = [ ...routesCache ]
+    .filter((f) => !!f.needsFetch)
+    .map((f) => f.route + '.json');
+
+  // Looks for javascript files generated by the bundling phase associated to
+  // the given routes.
+  const jsFiles = [ { route: 'main' }, ...routesCache ]
+    .map((f) => findJSFileMatch(f.route, shell))
+    .filter((e) => !!e && e !== -1);
+
+  if (process.env.NODE_ENV === 'development') {
+    // DEV MODE: do not cache `.html` and `.json` as it's first useless, and
+    // second invalid.
+    htmlFiles.length = 0;
+    jsonFiles.length = 0;
+  }
+
+  // Preprends a '/' to every file, for faster cache check later with the URL.
+  // e.g: 'client/main.js' => '/client/main.js'.
+  const all = [
+    ...staticFiles,
+    ...htmlFiles,
+    ...jsFiles,
+    ...jsonFiles
+  ].map((r) => '/' + r);
+
+  // Do not forget the index as an initial route to save.
+  return [ '/', ...all ];
+}
+
+/**
+ *
+ *
+ * NOTE: In sapper, .js files are generally named either:
+ *  `[ROUTE].[ROUTE].js`, or `[ROUTE].{0-9}.js`.
+ *
+ * This is what this function will use to filter.
+ *
+ * @param {*} route
+ * @param {*} arr
+ * @returns
+ */
+function findJSFileMatch(route, arr) {
+  // `[ROUTE].[ROUTE].js` check
+  const regexA = new RegExp(`${route}.${route}.js$`);
+  // `[ROUTE].{0-9}.js` check
+  const regexB = new RegExp(`${route}.\\d+.js$`);
+
+  return shell.find((e) => !!e.match(regexA) || !!e.match(regexB));
+}
