@@ -57,22 +57,23 @@
 <!-- Blog Meta. Really important for SEO. -->
 <Meta data={metadata} />
 
+<!-- Image + Title. -->
+<div class='header header-image'>
+  <ImageHeader image={metadata.image} opacity={0.5}>
+    <h1 class='title textshadow' style={getTitleStyle()}>{metadata.title}</h1>
+    <div class='tags-container'>
+      { #each (metadata.tags || []) as tag }
+        <Tag style='margin: 0 0.25rem 0 0.25rem;' tag={tag} />
+      { /each }
+    </div>
+  </ImageHeader>
+</div>
+<!-- Info bar. -->
+<div class='info header'>
+  <PostInfo date={metadata.date} readingTime={metadata.readingTime || 10} />
+</div>
+
 <div class='post-content'>
-
-  <div class='header'>
-    <ImageHeader image={metadata.image} opacity={0.5}>
-      <h1 class='title textshadow' style={getTitleStyle()}>{metadata.title}</h1>
-      <div class='tags-container'>
-        { #each (metadata.tags || []) as tag }
-          <Tag style='margin: 0 0.25rem 0 0.25rem;' tag={tag} />
-        { /each }
-      </div>
-    </ImageHeader>
-  </div>
-
-  <div class='info'>
-    <PostInfo date={metadata.date} readingTime={metadata.readingTime || 10} />
-  </div>
 
   <slot></slot>
 
@@ -95,7 +96,14 @@
 
 <style>
 
-  .header { height: 60vh; }
+  .header {
+    margin: auto;
+    max-width: 60rem;
+  }
+
+  .header-image {
+    height: 60vh;
+  }
 
   .separator {
     position: relative;
@@ -129,8 +137,6 @@
 
   .info {
     position: relative;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
     padding: 0.5rem 0 0.5rem 0;
     border-radius: 0.05rem;
     color: white;
@@ -169,7 +175,7 @@
 
   @media (max-width: 900px) {
 
-    .header { height: 48vh; }
+    .header-image { height: 48vh; }
 
   }
 

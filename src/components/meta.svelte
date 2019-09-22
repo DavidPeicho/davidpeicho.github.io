@@ -4,6 +4,12 @@
 
   import { Site } from '$config';
 
+  export const SUPPORTED_META_TAG = new Set([
+    'id', 'date', 'title', 'keywords', 'description',
+    'seoDescription', 'seoTitle',
+    'url', 'image', 'readingTime', 'previous', 'next'
+  ]);
+
   // Default values for the general site metadata.
   const siteDescription = Site.description || '';
   const siteKeywords = Site.keywords || '';
@@ -11,8 +17,21 @@
   const baseURL = Site.baseURL || '';
 
   function createMetadata(data) {
+
+    if (process.env.NODE_ENV === 'development') {
+      // Checks that Metadata properties are all valid.
+      // This will prevent the blog author to make mistakes on some fields.
+      Object.keys(data).forEach((key) => {
+        if (!SUPPORTED_META_TAG.has(key)) {
+          throw new Error(
+            `Meta.svelte: metadata object contains unsupported key '${key}'`
+          );
+        }
+      })
+    }
+
     const meta = {};
-    meta.title = data.title || Site.name;
+    meta.title = data.seoTitle || data.title || Site.name;
     meta.seoDescription = data.seoDescription
                           || data.description || siteDescription;
     meta.keywords = data.keywords || siteKeywords;

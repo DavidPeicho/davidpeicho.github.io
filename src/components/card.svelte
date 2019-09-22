@@ -139,7 +139,7 @@
         { /each }
       </div>
 
-      <p>{description}</p>
+      <p>{@html description}</p>
 
       <div class='buttons-container'>
         { #each buttons as button }
