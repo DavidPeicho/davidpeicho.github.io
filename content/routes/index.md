@@ -23,17 +23,17 @@ jobTimeline:
     logo: images/brand/aerys-logo.png
 teaching:
   - title: Teaching Assistant
-    course: OCAML, C#, & Algorithms
+    course: C, Unix, Shell & Algorithms
     school: EPITA
-    date: 2016
+    date: 2018
   - title: Teaching Assistant
     course: Java, SQL, & Algorithms
     school: EPITA
     date: 2017
   - title: Teaching Assistant
-    course: C, Unix, & POSIX Shell
+    course: OCAML, C#, & Algorithms
     school: EPITA
-    date: 2018
+    date: 2016
 resume: documents/davidpeicho-resume.pdf
 ---
 
@@ -48,7 +48,7 @@ or close to Real-Time medical visualization.
 
 My main field of interests in Computer Science are:
 * **Computer Graphics**
-* **Game Development**, using low-level graphics API or using Unreal Engine 4
+* **Game Development**
 * **C++** and **JavaScript** programming in general!
 
 I graduated from [EPITA (Ecole des Ingénieurs en Intelligence Informatique)](https://www.epita.fr/en) in 2019,
