@@ -173,3 +173,31 @@ obtained from the `webpack/` folder.
 
 If you need an advanced Webpack configuration, you should
 simply change the Webpack configuration files in `webpack.`.
+
+### About Svelte & Sapper
+
+[Svelte](https://svelte.dev) is a pretty recent framework, as well as
+[Sapper](https://sapper.svelte.dev).
+
+After building this static blog, I now have a better idea about how it works,
+but also about what's the pros and cons of using those technologies to build
+a **static website** (I haven't tried to build anything else).
+
+#### Pros
+
+* Writing components directly in JS / HTML / CSS
+* Takes really little time to achieve something
+* Sapper comes already well-configured via a [template](https://github.com/sveltejs/sapper-template)
+You can just drop your components and route handler in the `routes/` directory
+* The [MDsveX](https://github.com/pngwn/MDsveX) transformer gives you the ability
+to write advanced Markdown files
+
+#### Cons
+
+* Not many plugins available
+* I am not a huge fan of the template language, compared to raw JavaScript with
+other frameworks
+* The documentation is a WIP right now
+* It can be hard to forward data from a child component to its parent layout
+* The provided service worker tends to over-cache some files. But that's easy
+to fix by yourself.
