@@ -1,10 +1,12 @@
 import { files, shell } from '@sapper/service-worker';
 
+import pkg from '../package.json';
+
 /* ////////////////////////////////////////////////////////////////////////////
                                   CONSTANTS
 //////////////////////////////////////////////////////////////////////////// */
 
-const VERSION = '0.1';
+const VERSION = pkg.version;
 const CACHE_ID = `cache-static:${VERSION}`;
 
 /**
@@ -42,6 +44,7 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
+  console.log('activate');
 	return event.waitUntil(
 		caches.keys().then(async keys => {
 			// delete old caches
