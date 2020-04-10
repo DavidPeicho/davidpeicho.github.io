@@ -19,12 +19,12 @@
     "url-loader": "^2.1.0"
   },
   "devDependencies": {
-    "copy-webpack-plugin": "^5.0.4",
+    "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^5.2.1",
     "npm-run-all": "^4.1.5",
-    "sapper": "^0.27.8",
-    "svelte": "^3.9.1",
-    "svelte-loader": "^2.9.0",
+    "sapper": "^0.27.12",
+    "svelte": "^3.20.1",
+    "svelte-loader": "^2.13.6",
     "webpack": "^4.7.0",
     "webpack-merge": "^4.2.2"
   },
