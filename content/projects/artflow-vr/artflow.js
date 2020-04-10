@@ -11,6 +11,5 @@ export const Metadata = {
     in the same way they would do it in Tilt Brush or Quill.
     ArtFlow was made to finalize my Master's Degree at EPITA.
   `,
-  priority: 1,
   videoLink: 'https://www.youtube.com/watch?v=QtjKiANf6GY'
 };
