@@ -36,7 +36,6 @@
 <script>
 
   export let metadata;
-  export let segment;
 
   $: links = buildLinks(metadata);
 

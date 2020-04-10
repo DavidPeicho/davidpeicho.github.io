@@ -37,13 +37,6 @@
 <script>
 
   /**
-   * Current route segment the user is at. e.g: `about`, or `projects`.
-   *
-   * @type {string}
-   */
-  export let segment;
-
-  /**
    * List of posts metadata, ordered by date directly on the server.
    *
    * @type {Object[]}

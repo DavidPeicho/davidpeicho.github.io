@@ -84,11 +84,6 @@
 
   export let resume = null;
 
-  /**
-   * Layout used by this component. This prop is forwared by MDSvex.
-   */
-  export let layout;
-
   const socials = createSocialLinks();
 
 </script>
