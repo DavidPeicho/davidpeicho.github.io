@@ -12,16 +12,21 @@ export function importMetadata(ctx, segment = '') {
     if (!id || id === '.' || id === '..') { return null; }
     const module = ctx(path);
     const url = segment !== '' ? `/${segment}/${id}` : `/${id}`;
-    const meta = Object.assign({ id, url }, module.Metadata || {});
+    const meta = Object.assign({
+      id,
+      url,
+      priority: Number.MAX_SAFE_INTEGER
+    }, module.Metadata || {});
     return meta;
   })
   .filter((e) => e !== null)
   .filter((e) => e.published === undefined || !!e.published);
 
+  // Sorts per date and priority.
   list.sort((a, b) => {
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);
-    return dateB - dateA;
+    return saturate(dateB - dateA) + b.priority - a.priority;
   });
 
   // Builds link to next / previous.
@@ -39,4 +44,12 @@ export function importMetadata(ctx, segment = '') {
   });
 
   return list;
+}
+
+function clamp(val, min, max) {
+  return Math.min(Math.max(val, min), max);
+}
+
+function saturate(val) {
+  return clamp(val, -1, 1);
 }
