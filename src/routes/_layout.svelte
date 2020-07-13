@@ -18,6 +18,11 @@
     document.head.appendChild(s);
   }
 
+  export function preload(page, session) {
+    const segment = page.path.split('/').pop() || page.path;
+    return { segment};
+  }
+
 </script>
 
 <script>
@@ -32,6 +37,7 @@
    * @type {string}
    */
   export let segment;
+  console.log(segment);
 
   onMount(() => {
     const id = Site.googleAnalytics;
