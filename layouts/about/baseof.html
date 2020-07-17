@@ -25,17 +25,12 @@
   <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
 
   <!-- Styles -->
-  {{ block "styles" . }} {{ end }} <!-- Get "style_opts" variable from "styles" block -->
-  {{ $base_styles_opts := .Scratch.Get "style_opts" | default (dict "src" "scss/pages/about.scss" "dest" "css/about.css") }}
-
   {{ $current_page := . }}
 
-  {{ range (slice $base_styles_opts ) }}
-    {{ $style := resources.Get .src | resources.ExecuteAsTemplate .dest $current_page | toCSS | minify | fingerprint }}
-    <link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}"/>
-  {{ end }}
+  {{ $style := resources.Get "scss/pages/about.scss" | resources.ExecuteAsTemplate "css/about.css" $current_page | toCSS | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}"/>
 
-  {{ range .AlternativeOutputFormats }}
+    {{ range .AlternativeOutputFormats }}
   {{ printf `<link rel="%s" type="%s+%s" href="%s" title="%s" />` .Rel .MediaType.Type .MediaType.Suffix .Permalink $.Site.Title | safeHTML }} 
   {{ end }}
   {{ block "links" . }} {{ end }}
@@ -48,11 +43,32 @@
 
 <body>
   {{ partial "burger.html" .}}
-
   {{ partial "nav.html" .}}
 
   <main>
-    {{ block "main" . }} {{ end }}
+    <div class="content">
+      {{ partial "anchored-headings.html" .Content }}
+
+      <h2>Teaching</h2>
+      <div class='teaching'>
+        {{ range $experience := .Params.teaching }}
+          <div class="teaching_entry">
+            <div class="teaching_entry_title">
+            {{ partial "icon.html" ( dict "page" . "icon" "student" ) }}
+            <span style='font-weight: 800;'>
+              {{ $experience.date }}, {{ $experience.school }},
+            </span>
+            <span>{{ $experience.title }}</span><br>
+            </div>
+            <div class="center" style='font-style: italic;'>{{ $experience.course }}</div>
+          </div>
+        {{ end }}
+      </div>
+
+      <h2>Find me on</h2>
+      {{ partial "social-icons.html" .}}
+
+    </div>
   </main>
 
   {{ block "footer" . }} {{ end }}

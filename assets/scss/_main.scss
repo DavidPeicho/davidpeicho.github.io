@@ -12,11 +12,37 @@ body.nav--active {
 main {
   padding: 3rem 1.5rem 1rem;
 
+  a {
+    color: #007acc;
+
+    :visited {
+      text-decoration: none;
+    }
+  }
+
   @media screen and (min-width: $medium) {
     padding-left: calc(1.5rem + #{$navWidth});
   }
 
   @media screen and (max-width: $medium - 1) {
     padding-top: calc(3rem + #{$burgerContainerHeight});
+  }
+
+  .content {
+    width: 100%;
+    max-width: 34rem;
+    margin: 0 auto;
+  }
+
+  .center {
+    margin: auto;
+    text-align: center;
+  }
+
+  .icon {
+    width: 1.4rem;
+    height: 1.4rem;
+    background-size: contain;
+    background-repeat: no-repeat;
   }
 }

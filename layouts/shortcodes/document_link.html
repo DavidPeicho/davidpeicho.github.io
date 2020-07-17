@@ -1,0 +1,7 @@
+{{ $href := .Get "href" }}
+{{ $target := default "" (.Get "target") }}
+<a href="{{ $href }}" target="{{ $target }}">
+
+  {{ .Inner | markdownify }}
+
+</a>

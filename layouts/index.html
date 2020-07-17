@@ -1,5 +1,5 @@
 {{ define "styles" }}
-    {{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/about.scss" "dest" "css/about.css") }}
+    {{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/home.scss" "dest" "css/home.css") }}
 {{ end }}
 
 {{ define "main" }}
@@ -14,8 +14,6 @@
     <h2>
       {{ .Params.subheading }}
     </h2>
-    <!-- Replace MEEEEE -->
-
     {{ partial "social-icons.html" .}}
   </div>
 </div>

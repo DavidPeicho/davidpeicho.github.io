@@ -3,7 +3,7 @@
 
 <div class="social-icons">
   {{ range $icons }}
-    {{ $icon := anchorize . }} 
+    {{ $icon := anchorize . }}
     {{ if isset $currentPage.Site.Params $icon }}
       <a class="social-icons__link" title="{{ . }}"
          href="{{ index $currentPage.Site.Params $icon }}"
@@ -11,5 +11,5 @@
         <div class="social-icons__icon" style="background-image: url('{{print "images/social/" $icon ".svg" | absURL}}')"></div>
       </a>
     {{ end }}
-  {{ end }}   
+  {{ end }}
 </div>
