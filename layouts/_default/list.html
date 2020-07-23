@@ -6,8 +6,40 @@
 
 {{ $dateFormat := .Site.Params.dateFormat | default "Jan 2 2006" }}
 
-<div class="post-list__container">
-  <ul class="post-list">
+<div class="posts_list_container">
+  <div class="posts_list">
+    {{ range $i, $elt := .Pages }}
+      <div class="post_list_entry{{ cond (eq (mod $i 2) 0) "" " reverse" }}">
+        <div
+          class="image"
+          style="background-image: url('/images/llama.jpg');"
+        >
+        </div>
+        <div class="blog_content">
+          <div class="text">
+            <div style="text-align: {{ cond (eq (mod $i 2) 0) "right" "left" }}">
+              <time class="post__date" datetime="{{ .Date }}">
+                {{ .Date.Format $dateFormat }}
+              </time>
+              <h2 class="post__title">
+                <a href="{{.RelPermalink}}">{{ $elt.Title }}</a>
+              </h2>
+            </div>
+            <div class="summary">
+              {{ if .Params.summary }}
+                <p>{{ .Params.summary }}</p>
+              {{ else }}
+                {{ .Summary }}
+              {{ end }}
+            </div>
+            <a href="{{ .RelPermalink }}" class="link">Read more</a>
+          </div>
+        </div>
+      </div>
+    {{ end }}
+  </div>
+  {{ partial "browse-by-tag.html" .}}
+  <!-- <ul class="post-list">
     {{ range .Pages }}
     <li class="post">
       <div class="post__header">
@@ -20,8 +52,7 @@
       </div>
     </li>
     {{ end }}
-  </ul>
-  {{ partial "browse-by-tag.html" .}}
+  </ul> -->
 </div>
 
 {{ end }}

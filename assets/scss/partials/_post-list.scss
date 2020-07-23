@@ -1,13 +1,76 @@
 @import "colors";
 @import "vars";
 
-.post-list__container {
+.posts_list_container {
   margin: 0 auto;
-  max-width: 1200px;
+  max-width: 1600px;
   width: 100%;
+  flex-wrap: wrap;
+  justify-content: space-between;
 
   @media screen and (min-width: $medium) {
     padding-left: 50px;
+  }
+
+  .posts_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .post_list_entry {
+    width: 100%;
+    list-style: none;
+    min-height: 25vw;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .blog_content {
+      position: relative;
+      flex: 1;
+
+      .text {
+        position: relative;
+        height: 100%;
+        padding: 2rem 2rem 2rem 2rem;
+      }
+
+      .link {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        padding: 15px;
+        border-radius: 4px;
+        text-decoration: none;
+        background-color: #f6f9fc;
+        color: #9b9b9b;
+        font-size: 0.8rem;
+
+        &:hover {
+          color: $black;
+          font-weight: 400;
+        }
+      }
+    }
+
+    .reverse {
+      padding: 1rem 0rem 1rem 1rem;
+    }
+
+    .image {
+      flex: 1;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-color: rgba(29, 38, 43, 0.5);
+    }
+  }
+
+  .reverse {
+    flex-direction: row-reverse;
   }
 }
 
