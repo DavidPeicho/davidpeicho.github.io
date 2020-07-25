@@ -1,7 +1,7 @@
 ---
 title: "Swizzler"
-date: 2020
-keywords: [ "hugo", "blog" ]
+date: 2020-01-01
+keywords: [ "rust", "programming", "texture", "graphics" ]
 draft: false
 tags: [ 'graphics' ]
 link: https://github.com/albedo-engine/swizzler

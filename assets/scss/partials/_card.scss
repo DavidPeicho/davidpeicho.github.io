@@ -43,6 +43,11 @@
           font-weight: 400;
         }
       }
+
+      .link.reverse {
+        right: initial;
+        left: 1rem;
+      }
     }
 
     .image {
@@ -56,5 +61,6 @@
 
   .reverse {
     flex-direction: row-reverse;
+    justify-content: flex-start;
   }
 }

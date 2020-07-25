@@ -1,6 +1,6 @@
 ---
 title: "FPSDesigner"
-date: 2018
+date: 2014-06-01
 keywords: [ "hugo", "blog" ]
 draft: false
 tags: [ 'games', 'graphics' ]

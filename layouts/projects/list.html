@@ -27,7 +27,7 @@
         {{ end }}
         <div class="blog_content">
           <div class="text">
-            <div style="text-align: {{ cond (eq (mod $i 2) 0) "right" "left" }}">
+            <div style="text-align: {{ cond $wrapLeft  "left" "right" }}">
               <time class="date_medium" datetime="{{ .Date }}">
                 {{ .Date.Format $dateFormat }}
               </time>
@@ -40,13 +40,18 @@
               <!-- Visual list of tag to quickly describe content -->
               <div class="tags_list {{ cond $wrapLeft "" "reverse" }}">
                 {{ range $tag := .Params.tags }}
-                  <small class="tag tag_{{ lower $tag }} {{ cond $wrapLeft "" "tag_reverse" }}">
+                  <small
+                    class="tag tag_{{ lower $tag }} {{ cond $wrapLeft "" "tag_reverse" }}"
+                    style="{{ cond $wrapLeft "margin-right" "margin-left" }}: 0.5rem"
+                  >
                     {{ $tag }}
                   </small>
                 {{ end }}
               </div>
 
             </div>
+
+            <!-- Summary extracted from markdown, and converrted to HTML -->
             <div class="summary">
               {{ if .Params.summary }}
                 <p>{{ .Params.summary }}</p>
@@ -54,12 +59,17 @@
                 {{ .Summary }}
               {{ end }}
             </div>
-            <a href="{{ .Params.link }}" target="_blank" class="link">
+
+            <a
+              href="{{ .Params.link }}"
+              target="_blank"
+              class="link {{ cond $wrapLeft "" "reverse" }}"
+            >
               Read more
             </a>
           </div>
         </div>
-        {{ if ( not $hasVideo ) }}
+        {{ if (not .Params.hideTagIcon) }}
         {{ $firstIcon := index ( .Params.tags ) 0 }}
         <object
           type="image/svg+xml"

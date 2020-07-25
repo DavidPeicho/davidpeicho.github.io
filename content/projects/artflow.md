@@ -1,6 +1,6 @@
 ---
 title: "ArtFlow"
-date: 2018
+date: 2018-01-01
 link: https://github.com/artflow-vr/artflow
 keywords: ["hugo", "blog"]
 draft: false

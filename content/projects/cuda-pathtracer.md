@@ -1,9 +1,9 @@
 ---
 title: "Cuda Pathtracer"
-date: 2018
+date: 2018-01-01
 keywords: [ "hugo", "blog" ]
 draft: false
-tags: [ 'graphics' ]
+tags: [ 'graphics', 'C++' ]
 math: false
 image: "cuda-pathtracer.jpg"
 link: https://github.com/DavidPeicho/cuda-pathtracer

@@ -1,7 +1,7 @@
-@import "./tags";
 @import "../main";
 @import "../partials/card";
 @import "../partials/text";
+@import "./tags";
 
 .cards_list_container {
   margin: 0 auto;
@@ -16,13 +16,12 @@
 
   .tags_list {
     display: flex;
-    justify-content: flex-end;
+    flex-direction: row;
     margin-top: $smallMargin;
 
     .tag {
       min-width: 3rem;
       padding: 0.25rem 0.75rem 0.25rem 0.75rem;
-      margin: 0 0 0 0.5rem;
       text-align: center;
       color: white;
       background-color: #cccccc;
@@ -37,11 +36,15 @@
     }
   }
 
+  .tags_list.reverse {
+    justify-content: flex-end;
+  }
+
   .tag_image {
     margin: auto;
     width: 6rem;
     position: absolute;
-    top: 1rem;
+    bottom: 2rem;
     left: 0;
     right: 0;
   }
