@@ -1,0 +1,77 @@
+{{ define "styles" }}
+    {{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/projects.scss" "dest" "css/projects.css") }}
+{{ end }}
+
+{{ define "main" }}
+
+{{ $dateFormat := .Site.Params.dateFormat | default "Jan 2 2006" }}
+
+<div class="cards_list_container">
+  <div class="cards_list">
+    {{ range $i, $elt := .Pages }}
+      <div class="list_entry{{ cond (eq (mod $i 2) 0) "" " reverse" }}" >
+        {{ $wrapLeft := (eq (mod $i 2) 0) }}
+        {{ $hasVideo := isset .Params "video" }}
+        {{ if $hasVideo }}
+        <iframe
+          class="image"
+          src="{{ .Params.video }}"
+          frameborder="0"
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+        ></iframe>
+        {{ else }}
+        <div
+          class="image"
+          style="background-image: url('{{ .Params.image }}');"
+        ></div>
+        {{ end }}
+        <div class="blog_content">
+          <div class="text">
+            <div style="text-align: {{ cond (eq (mod $i 2) 0) "right" "left" }}">
+              <time class="date_medium" datetime="{{ .Date }}">
+                {{ .Date.Format $dateFormat }}
+              </time>
+              <h2 class="title_medium">
+                <a href="{{ .Params.link }}" target="_blank">
+                  {{ $elt.Title }}
+                </a>
+              </h2>
+
+              <!-- Visual list of tag to quickly describe content -->
+              <div class="tags_list {{ cond $wrapLeft "" "reverse" }}">
+                {{ range $tag := .Params.tags }}
+                  <small class="tag tag_{{ lower $tag }} {{ cond $wrapLeft "" "tag_reverse" }}">
+                    {{ $tag }}
+                  </small>
+                {{ end }}
+              </div>
+
+            </div>
+            <div class="summary">
+              {{ if .Params.summary }}
+                <p>{{ .Params.summary }}</p>
+              {{ else }}
+                {{ .Summary }}
+              {{ end }}
+            </div>
+            <a href="{{ .Params.link }}" target="_blank" class="link">
+              Read more
+            </a>
+          </div>
+        </div>
+        {{ if ( not $hasVideo ) }}
+        {{ $firstIcon := index ( .Params.tags ) 0 }}
+        <object
+          type="image/svg+xml"
+          data="{{print "images/tag/" $firstIcon ".svg" | absURL}}"
+          class="tag_image"
+        >
+        </object>
+        {{ end }}
+      </div>
+    {{ end }}
+  </div>
+  {{ partial "browse-by-tag.html" .}}
+</div>
+
+{{ end }}
