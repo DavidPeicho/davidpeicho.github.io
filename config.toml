@@ -39,26 +39,31 @@ copyright = "© {year}"
       unsafe = true
 
 # Controls the navigation
-[[menu.main]]
-  identifier = "about"
-  name = "about"
-  title = "About"
-  url = "/about"
-
-[[menu.main]]
-  identifier = "blog"
-  name = "blog"
-  title = "Blog"
-  url = "/blog"
-
-[[menu.main]]
-  identifier = "projects"
-  name = "projects"
-  title = "Projects"
-  url = "/projects"
 
 [[menu.main]]
   identifier = "home"
   name = "home"
   title = "Home"
   url = "/"
+  weight = 1
+
+[[menu.main]]
+  identifier = "about"
+  name = "about"
+  title = "About"
+  url = "/about"
+  weight = 2
+
+[[menu.main]]
+  identifier = "projects"
+  name = "projects"
+  title = "Projects"
+  url = "/projects"
+  weight = 3
+
+[[menu.main]]
+  identifier = "blog"
+  name = "blog"
+  title = "Blog"
+  url = "/blog"
+  weight = 4

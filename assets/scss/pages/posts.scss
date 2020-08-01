@@ -1,57 +1,57 @@
 @import "../main";
-@import "../partials/post-list";
+@import "../partials/card";
+@import "../partials/text";
+@import "./tags";
 
-.tags__list {
-  list-style: none;
-  margin: 0;
-  padding: 0 0 0 50px;
-  flex-shrink: 0;
+.cards_list_container {
+  margin: 0 auto;
+  max-width: 1400px;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: space-between;
 
-  @media screen and (max-width: $medium - 1) {
-    display: none;
-  }
-}
-
-.post__header .tags__list {
-  display: none;
-  padding-left: 0;
-
-  @media screen and (max-width: $medium - 1) {
-    display: block;
+  @media screen and (min-width: $large) {
+    padding-left: 50px;
   }
 
-  .tag__item {
-    display: inline-block;
-    margin-right: 10px;
+  .tags_list {
+    display: flex;
+    flex-direction: row;
+    margin-top: $smallMargin;
 
-    &:last-child {
-      margin-right: 0;
+    .tag {
+      min-width: 3rem;
+      padding: 0.25rem 0.75rem 0.25rem 0.75rem;
+      text-align: center;
+      color: white;
+      background-color: #cccccc;
+      border-radius: 0.75rem;
+      font-weight: 700;
+      font-size: 1rem;
+      text-shadow: 1px 1px rgba(0, 0, 0, 0.3);
+    }
+
+    .tag_reverse {
+      margin: 0.5rem 0 0 0;
     }
   }
 
-  .tag__link {
-    font-size: 0.8rem;
-  }
-}
-
-.tag__link {
-  text-decoration: none;
-  color: $grey;
-  font-size: 0.9rem;
-
-  &::before {
-    content: "#";
-    font-size: 0.7rem;
-    padding-right: 1px;
+  .tags_list.reverse {
+    justify-content: flex-end;
   }
 
-  &:hover {
-    color: $darkGrey;
+  .tag_image {
+    margin: auto;
+    width: 5rem;
+    position: absolute;
   }
-}
+  .tag_image.left {
+    left: 0;
+    padding-left: $cardInnerPadding;
+  }
 
-/* page overrides */
-.post-list__container {
-  display: flex;
-  justify-content: space-between;
+  .tag_image.right {
+    right: 0;
+    padding-right: $cardInnerPadding;
+  }
 }

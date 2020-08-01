@@ -3,9 +3,10 @@ title: "Welcome!"
 date: 2019-09-22
 slug: "welcome"
 description: "First blog post describing this website created by David Peicho"
-keywords: ["hugo", "blog"]
+keywords: [ "hugo", "blog", "graphics", "programming" ]
+tags: [ "hugo", "blog"  ]
+image: "llama.jpg"
 draft: false
-tags: []
 math: false
 toc: false
 ---
@@ -24,7 +25,7 @@ and this is my first blog post!
 I am currently working in the Visulization Team, where I maintain our own WebGL
 renderer achieving **real-time** or close to **real-time** medical imaging.
 
-If you want to know more about me in general, you can follow [this link](/).
+If you want to know more about me in general, you can follow [this link](/about).
 
 ## Content of this blog
 
@@ -39,25 +40,14 @@ likely be related to:
 * Game development
 * Optimization (CPU / GPU)
 
-## About this blog
+## Blog Technology
 
-This website is built with [Svelte](https://svelte.dev) and
-[Sapper](https://sapper.svelte.dev).
+This blog is made using [Hugo](https://gohugo.io/). I actually made 3 blogs
+quasi in a row, using first React and Nuxt.JS, then Svelte & Sapper, and
+finally using Hugo.
 
-The Svelte framework is nice and easy to use. You can write components almost
-like you would write raw JavaScript / HTML / CSS.
-
-Svelte is basically a compiler. You write your components in a file mixing JS,
-CSS, and HTML, and the compiler takes care of wrapping everything, creating
-**reactive** properties, performing DOM **invalidation**, etc...
-
-If you want a more technical overview, you can read more on the
-[Svelte website](https://svelte.dev). You can also try it directly via their
-[playground](https://svelte.dev/examples).
-
-This blog is entirely open source and is available on GitHub. If you want to
-learn more about how it works, or if you want to use this blog as a template for
-your own website, feel free to [fork it](https://github.com/DavidPeicho/davidpeicho.github.io)!
+I was not familiar with any of those frameworks. I have spent the last few years
+working with WebGL, but I wasn't really focus on building web components.
 
 ## Acknowledgments
 

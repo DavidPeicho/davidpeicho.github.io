@@ -2,7 +2,14 @@
 <html lang="{{ .Site.LanguageCode }}">
 
 <head>
-  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+
+  <title>
+    {{ if .IsHome }}
+      {{ .Site.Title }}
+    {{ else }}
+      {{ .Title }} | {{ .Site.Title }}
+    {{ end }}
+  </title>
 
   <meta charset="UTF-8">
   <meta name="language" content="en">

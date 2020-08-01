@@ -17,6 +17,10 @@
     flex-wrap: wrap;
     justify-content: space-between;
 
+    @media screen and (max-width: $medium) {
+      flex-direction: column !important;
+    }
+
     .blog_content {
       position: relative;
       flex: 1;
@@ -24,13 +28,14 @@
       .text {
         position: relative;
         height: 100%;
-        padding: 2rem 2rem 2rem 2rem;
+        padding: $cardInnerPadding;
+      }
+
+      .link_box {
+        text-align: right;
       }
 
       .link {
-        position: absolute;
-        bottom: 1rem;
-        right: 1rem;
         padding: 15px;
         border-radius: 4px;
         text-decoration: none;
@@ -43,11 +48,6 @@
           font-weight: 400;
         }
       }
-
-      .link.reverse {
-        right: initial;
-        left: 1rem;
-      }
     }
 
     .image {
@@ -56,6 +56,12 @@
       background-repeat: no-repeat;
       background-position: center center;
       background-color: rgba(29, 38, 43, 0.5);
+
+      @media screen and (max-width: $medium) {
+        height: 100%;
+        min-height: 60vw;
+        width: 100%;
+      }
     }
   }
 
