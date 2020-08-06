@@ -2,6 +2,11 @@
     {{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/posts.scss" "dest" "css/posts.css") }}
 {{ end }}
 
+<!-- Global variable pointing to the image of this page. -->
+{{ $firstElement := index .Pages 0 }}
+{{ $firstImage := $firstElement.Params.image | default $firstElement.Params.video }}
+{{ $.Scratch.Set "seoImage" $firstImage }}
+
 {{ define "main" }}
 
 {{ $dateFormat := .Site.Params.dateFormat | default "Jan 2 2006" }}
@@ -22,7 +27,8 @@
           class="image"
           src="{{ .Params.video }}"
           frameborder="0"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
         ></iframe>
         {{ else }}
         <div

@@ -41,9 +41,9 @@ here
 
 ## Interests
 
-* **Computer Graphics**
-* **Game Development**
-* **C++**, **JavaScript / TypeScript**, **Rust**
+* Computer Graphics
+* Game Development
+* C++, JavaScript / TypeScript, Rust
 * Programming in general :)
 
 

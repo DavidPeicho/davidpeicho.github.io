@@ -4,8 +4,9 @@ date: 2019-09-22
 slug: "welcome"
 description: "First blog post describing this website created by David Peicho"
 keywords: [ "hugo", "blog", "graphics", "programming" ]
-tags: [ "hugo", "blog"  ]
+tags: [ "hugo", "blog" ]
 image: "llama.jpg"
+images: [ "llama.jpg" ]
 draft: false
 math: false
 toc: false
@@ -48,6 +49,9 @@ finally using Hugo.
 
 I was not familiar with any of those frameworks. I have spent the last few years
 working with WebGL, but I wasn't really focus on building web components.
+
+Turns out Hugo was much better for what I wanted to do, and easy to setup and
+to get going.
 
 ## Acknowledgments
 

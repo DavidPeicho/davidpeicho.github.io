@@ -1,45 +1,8 @@
 <!DOCTYPE html>
 <html lang="{{ .Site.LanguageCode }}">
 
-<head>
-  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
-
-  <meta charset="UTF-8">
-  <meta name="language" content="en">
-  <meta name="description" content="{{ if .IsHome}}{{ .Site.Params.Description }}{{ else }}{{.Page.Params.Description}}{{ end }}">
-  <meta name="keywords" content="{{ delimit .Keywords " , " }}">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  <!-- Twitter -->
-  {{ if isset .Site.Params "twitter" }}
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="{{ .Title }}" />
-  <meta name="twitter:description" content="{{ if .IsHome }}{{ htmlEscape .Site.Params.description }}{{ else }}{{ htmlEscape .Description }}{{ end }}"
-  />
-  <meta name="twitter:site" content="@{{ .Site.Params.twitter }}" />
-  <meta name="twitter:creator" content="@{{ .Site.Params.twitter }}" />
-  {{ end }}
-
-  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
-
-  <!-- Styles -->
-  {{ $current_page := . }}
-
-  {{ $style := resources.Get "scss/pages/about.scss" | resources.ExecuteAsTemplate "css/about.css" $current_page | toCSS | minify | fingerprint }}
-  <link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}"/>
-
-    {{ range .AlternativeOutputFormats }}
-  {{ printf `<link rel="%s" type="%s+%s" href="%s" title="%s" />` .Rel .MediaType.Type .MediaType.Suffix .Permalink $.Site.Title | safeHTML }} 
-  {{ end }}
-  {{ block "links" . }} {{ end }}
-  {{ partial "seo-schema.html" .}}
-
-  {{- if not .Site.IsServer -}}
-      {{ template "_internal/google_analytics_async.html" . }}
-  {{- end -}}
-</head>
+{{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/about.scss" "dest" "css/about.css") }}
+{{ partial "head.html" . }}
 
 <body>
   {{ partial "burger.html" .}}
