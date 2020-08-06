@@ -2,6 +2,7 @@
 <html lang="{{ .Site.LanguageCode }}">
 
 {{ block "styles" . }} {{ end }}
+{{ block "seo_variables" . }} {{ end }}
 {{ partial "head.html" . }}
 
 <body>
@@ -16,8 +17,16 @@
   {{ block "footer" . }} {{ end }}
 
   {{ $script := resources.Get "js/index.js" | minify | fingerprint }}
-  <script src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity | safeHTMLAttr }}" crossorigin="anonymous"></script>
+
+  <script
+    src="{{ $script.RelPermalink }}"
+    integrity="{{ $script.Data.Integrity | safeHTMLAttr }}"
+    crossorigin="anonymous"
+  >
+  </script>
+
   {{ block "scripts" . }} {{ end }}
+
 </body>
 
 </html>

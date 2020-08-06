@@ -29,6 +29,7 @@
       </div>
 
       <h2>Find me on</h2>
+
       {{ partial "social-icons.html" .}}
 
     </div>
@@ -37,7 +38,12 @@
   {{ block "footer" . }} {{ end }}
 
   {{ $script := resources.Get "js/index.js" | minify | fingerprint }}
-  <script src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity | safeHTMLAttr }}" crossorigin="anonymous"></script>
+  <script
+    src="{{ $script.RelPermalink }}"
+    integrity="{{ $script.Data.Integrity | safeHTMLAttr }}"
+    crossorigin="anonymous"
+  >
+  </script>
   {{ block "scripts" . }} {{ end }}
 </body>
 

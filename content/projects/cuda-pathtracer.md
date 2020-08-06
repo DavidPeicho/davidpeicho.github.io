@@ -7,6 +7,7 @@ tags: [ 'graphics', 'C++' ]
 math: false
 image: "cuda-pathtracer.jpg"
 link: https://github.com/DavidPeicho/cuda-pathtracer
+weight: 1
 toc: false
 ---
 

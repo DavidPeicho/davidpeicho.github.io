@@ -28,7 +28,7 @@
   <meta name="twitter:site" content="@{{ .Site.Params.twitter }}" />
   <meta name="twitter:creator" content="@{{ .Site.Params.twitter }}" />
   {{ if ( .Scratch.Get "seoImage" ) }}
-    <meta name=”twitter:image” content=”$seoImage“>
+    <meta name=”twitter:image” content=”{{ .Scratch.Get "seoImage" }}“>
   {{ end }}
 
   {{ end }}
