@@ -4,21 +4,29 @@
 
 {{ define "seo_variables" }}
 
-<!--
-  Global variable pointing to the image of this page.
+  <!--
+    Global variable pointing to the image of this page.
 
-  Feeds variables like: `seoImage`, etc...
--->
+    Feeds variables like: `seoImage`, etc...
+  -->
 
-{{ $firstElement := index .Pages 0 }}
-{{ $firstImage := $firstElement.Params.image | default $firstElement.Params.video }}
-{{ $.Scratch.Set "seoImage" ( concatenat .Permalink $firstImage }}
+  {{ with (index .Pages 0) }}
+    {{ $imageLink := .Params.image | default .Params.video }}
+    {{ $url := urls.Parse $imageLink }}
+    {{ if $url.IsAbs }}
+      <!-- Use the URL as is -->
+      {{ $.Scratch.Set "seoImage" $imageLink }}
+    {{ else }}
+      <!-- Preprends the permalink to get a valid absolute URL -->
+      {{ $.Scratch.Set "seoImage" ( printf "%s%s" .Permalink $imageLink ) }}
+    {{ end }}
+  {{ end }}
 
 {{ end }}
 
 {{ define "main" }}
 
-<p>{{ .Permalink }}{{ "cuda-pathtracer.jpg" }}</p>
+<p>{{ ( .Scratch.Get "seoImage" ) }}</p>
 
 {{ $dateFormat := .Site.Params.dateFormat | default "Jan 2 2006" }}
 {{ $pageSection := .Page.Section }}
