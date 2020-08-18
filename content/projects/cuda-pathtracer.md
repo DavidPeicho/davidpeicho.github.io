@@ -5,7 +5,7 @@ keywords: [ "hugo", "blog" ]
 draft: false
 tags: [ 'graphics', 'C++' ]
 math: false
-image: "cuda-pathtracer.jpg"
+image: cuda-pathtracer.jpg
 link: https://github.com/DavidPeicho/cuda-pathtracer
 weight: 1
 toc: false

@@ -11,22 +11,12 @@
   -->
 
   {{ with (index .Pages 0) }}
-    {{ $imageLink := .Params.image | default .Params.video }}
-    {{ $url := urls.Parse $imageLink }}
-    {{ if $url.IsAbs }}
-      <!-- Use the URL as is -->
-      {{ $.Scratch.Set "seoImage" $imageLink }}
-    {{ else }}
-      <!-- Preprends the permalink to get a valid absolute URL -->
-      {{ $.Scratch.Set "seoImage" ( printf "%s%s" .Permalink $imageLink ) }}
-    {{ end }}
+    {{ $.Scratch.Set "pageThumbnail" ( .Params.image | default .Params.video ) }}
   {{ end }}
 
 {{ end }}
 
 {{ define "main" }}
-
-<p>{{ ( .Scratch.Get "seoImage" ) }}</p>
 
 {{ $dateFormat := .Site.Params.dateFormat | default "Jan 2 2006" }}
 {{ $pageSection := .Page.Section }}

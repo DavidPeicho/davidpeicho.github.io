@@ -27,9 +27,17 @@
   />
   <meta name="twitter:site" content="@{{ .Site.Params.twitter }}" />
   <meta name="twitter:creator" content="@{{ .Site.Params.twitter }}" />
-  {{ if ( .Scratch.Get "seoImage" ) }}
-    <meta name=”twitter:image” content=”{{ .Scratch.Get "seoImage" }}“>
-  {{ end }}
+
+    {{ with ( .Scratch.Get "pageThumbnail" ) }}
+      {{ $url := urls.Parse . }}
+      {{ if $url.IsAbs }}
+        <!-- Use the URL as is -->
+        <meta name=”twitter:image” content=”{{ . }}“>
+      {{ else }}
+        <!-- Preprends the permalink to get a valid absolute URL -->
+        <meta name=”twitter:image” content=”{{ $.Permalink }}{{ . }}“>
+      {{ end }}
+    {{ end }}
 
   {{ end }}
 
