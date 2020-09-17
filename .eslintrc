@@ -1,0 +1,44 @@
+{
+  "env": {
+    "es6": true,
+    "browser": true
+  },
+
+  "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "impliedStrict": true,
+        "globalReturn": false
+      }
+  },
+
+  "globals": {},
+
+  "rules": {
+    "array-bracket-spacing": ["error", "always"],
+
+    "block-spacing": ["error", "always"],
+
+    "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+
+    "comma-dangle": ["off"],
+
+    "guard-for-in": [ "off" ],
+
+    "indent": [
+      "error", 2, {
+        "CallExpression": {
+          "arguments": 1
+        },
+        "SwitchCase": 1
+      }
+    ],
+
+    "object-curly-spacing": [ "error", "always" ],
+
+    "padded-blocks": [ "error", { "classes": "always" }],
+
+    "require-jsdoc": [ "off" ]
+  }
+}

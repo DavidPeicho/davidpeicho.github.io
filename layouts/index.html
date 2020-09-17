@@ -5,8 +5,12 @@
 {{ define "main" }}
 
 <div class="splash-container">
-  <div class="splash">
 
+  <div class="canvas-container">
+    <canvas></canvas>
+  </div>
+
+  <!-- <div class="splash">
     <h1>{{ .Params.heading }}<span class="fancy">.</span></h1>
     {{ if isset .Params "handle" }}
     <span class="handle">@{{ .Params.handle }}</span>
@@ -15,7 +19,7 @@
       {{ .Params.subheading }}
     </h2>
     {{ partial "social-icons.html" .}}
-  </div>
+  </div> -->
 </div>
 
 {{ end }}

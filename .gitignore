@@ -9,3 +9,7 @@ Thumbs.db
 
 # Hugo
 public/
+
+# Generated content
+dist/
+assets/js/
