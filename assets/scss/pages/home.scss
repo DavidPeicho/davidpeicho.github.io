@@ -1,14 +1,18 @@
 @import "../main";
 
 .splash-container {
+  min-width: 800px;
+  width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
   align-items: center;
-  font-size: 14px;
+  font-size: 18px;
 
-  @media screen and (min-width: $medium) {
-    font-size: 18px;
+  @media screen and (max-width: $medium + 1) {
+    min-width: initial;
   }
 }
 
@@ -52,13 +56,18 @@ main {
   padding-bottom: 0;
   height: 100%;
 
-  background-color: #e1e8f0;
+  background-color: #eeeeee;
   z-index: 0;
 
   .canvas-container {
     width: 100%;
     height: 100%;
+    max-width: 580px;
     position: relative;
+
+    @media screen and (max-width: $medium - 1) {
+      max-width: initial;
+    }
   }
 
   canvas {

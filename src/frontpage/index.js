@@ -3,7 +3,6 @@ import {
   DataTexture3D,
   LinearFilter,
   PerspectiveCamera,
-  RedFormat,
   Scene,
   WebGLRenderer,
   Vector3,
@@ -26,6 +25,7 @@ const PI_OVER_2 = Math.PI * 0.5;
 
 const gSize = new Vector2();
 const gMouse = new Vector3();
+const gDirection = new Vector3();
 const gPointA = new Vector3();
 const gPointB = new Vector3();
 
@@ -37,15 +37,20 @@ class Mouse {
     this._xnorm = 0.0;
     this._ynorm = 0.0;
     this._offset = { x: domElement.offsetLeft, y: domElement.offsetTop };
+    this._dimensions = {
+      width: domElement.offsetWidth,
+      height: domElement.offsetHeight
+    };
   }
 
   update(e, width, height) {
     const x = e.clientX - this._offset.x;
     const y = e.clientY - this._offset.y;
+    const dim = this._dimensions;
     this._x = x;
     this._y = y;
-    this._xnorm = (x / width) * 2.0 - 1.0;
-    this._ynorm = -(y / height) * 2.0 + 1.0;
+    this._xnorm = (x / dim.width) * 2.0 - 1.0;
+    this._ynorm = -(y / dim.height) * 2.0 + 1.0;
   }
 
   get x() { return this._x; }
@@ -134,7 +139,7 @@ class App {
     });
     resizeObserver.observe(canvas);
 
-    const container = canvas.parentNode;
+    const container = document.body;
     this._mouse = new Mouse(container);
     container.addEventListener("mousemove", this.onMouseMove.bind(this));
 
@@ -166,10 +171,12 @@ class App {
   }
 
   onMouseMove(e) {
-    const size = this._renderer.getSize(gSize);
-    this._mouse.update(e, size.x, size.y);
+    this._mouse.update(e);
 
-    gMouse.set(this._mouse.xNorm, this._mouse.yNorm, 0.5);
+    const right = this.camera.getWorldDirection(gDirection);
+
+
+    /* gMouse.set(this._mouse.xNorm, this._mouse.yNorm, 0.5);
 
     const cameraPos = this.camera.getWorldPosition(gPointA);
     const camToCloud = this.cloud.getWorldPosition(gPointB).sub(cameraPos);
@@ -178,7 +185,7 @@ class App {
     this.light.position.copy(camToCloud).projectOnVector(gMouse).add(cameraPos);
 
     this.light.updateMatrix();
-    this.light.updateMatrixWorld();
+    this.light.updateMatrixWorld(); */
   }
 
   _onResize(entry) {
