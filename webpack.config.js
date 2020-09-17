@@ -1,20 +1,22 @@
 const path = require("path");
 
-process.env.NODE_ENV = process.env.NODE_ENV || "development";
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+const production = process.env.NODE_ENV === 'production';
 
-const production = process.env.NODE_ENV === "production";
+const mode = production ? 'production' : 'development';
+const devtool = production ? 'source-map' : 'inline-source-map';
 
-module.exports = {
-  mode: production ? "production" : "development",
+const DemoConfig = {
 
-  devtool: production ? "source-map" : "inline-source-map",
+  mode,
+  devtool,
 
   entry: {
-    demo: ["./src/frontpage/index.js"],
+    demo: [ './src/frontpage/index.js' ],
   },
 
   output: {
-    path: path.resolve(__dirname, "assets", "js"),
+    path: path.resolve(__dirname, 'assets/js/demo'),
     filename: "[name].js",
   },
 
@@ -24,6 +26,17 @@ module.exports = {
         test: /\.glsl$/i,
         use: "raw-loader",
       },
-    ],
-  },
+      {
+        test: /\.worker\.js$/,
+        loader: 'worker-loader',
+        options: {
+          inline: 'no-fallback'
+        }
+      }
+    ]
+  }
+
 };
+
+
+module.exports = DemoConfig;

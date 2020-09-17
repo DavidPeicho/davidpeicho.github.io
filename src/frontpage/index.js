@@ -8,16 +8,15 @@ import {
   WebGLRenderer,
   Vector3,
   PointLight,
+  RGBFormat,
   Vector2,
   Clock,
 } from "three";
 
-import { ImprovedNoise } from 'three/examples/jsm/math/ImprovedNoise';
-
-import { Cloud } from './cloud';
+import { Cloud, createPerlinTexture } from './cloud';
 import { clamp } from './utils';
 
-const TEXTURE_SIZE = 128;
+import CloudGeneratorWorker from './workers/cloud-generator.worker.js';
 
 /** Constants */
 
@@ -84,50 +83,32 @@ class App {
     this._clock = new Clock();
     this._mouse = null;
 
-    const nbSlices = TEXTURE_SIZE;
-    const voxelPerDim = TEXTURE_SIZE;
-    const voxelPerSlice = voxelPerDim * voxelPerDim;
-    const voxelCount = voxelPerSlice * nbSlices;
+    const volume = createPerlinTexture();
+    this.cloud.material.volume = volume;
 
-    const texture = new DataTexture3D(
-      new Uint8Array(voxelCount),
-      voxelPerDim,
-      voxelPerDim,
-      voxelPerDim
-    );
-    texture.format = RedFormat;
-    texture.minFilter = LinearFilter;
-    texture.magFilter = LinearFilter;
-    texture.unpackAlignment = 1;
+    const worker = new CloudGeneratorWorker();
+    worker.postMessage({
+      width: volume.image.width,
+      height: volume.image.height,
+      depth: volume.image.depth,
+      buffer: volume.image.data
+    });
+    worker.onmessage = (e) => {
+      const texture = new DataTexture3D(
+        new Uint8Array(e.data),
+        volume.image.width,
+        volume.image.height,
+        volume.image.depth
+      );
+      texture.format = RGBFormat;
+      texture.minFilter = LinearFilter;
+      texture.magFilter = LinearFilter;
+      texture.unpackAlignment = 1;
 
-    const vector = new Vector3();
+      this.cloud.material.gradientMap = texture;
+      worker.terminate();
+    };
 
-    const perlin = new ImprovedNoise();
-    const scale = 0.1;
-
-    const aa = 0.55;
-    const bb = 0.32;
-    const cc = 0.32;
-
-    for (let i = 0; i < voxelCount; ++i) {
-      const x = i % voxelPerDim;
-      const y = Math.floor((i % voxelPerSlice) / voxelPerDim);
-      const z = Math.floor(i / voxelPerSlice);
-
-      const v = vector
-        .set(x, y, z)
-        .subScalar(voxelPerDim / 2)
-        .divideScalar(voxelPerDim);
-
-      const ellipse = clamp((v.x * v.x) / aa + (v.y * v.y) / bb + (v.z * v.z) / cc, 0.0, 1.0);
-      const d = 1.0 - ellipse;
-
-      const p = perlin.noise(x * scale, y * scale, z * scale);
-      const rand = (p + 1.0) * 0.5;
-      texture.image.data[i] = Math.round(rand * d * d * 255);
-    }
-
-    this.cloud.material.volume = texture;
   }
 
   init() {
@@ -141,7 +122,7 @@ class App {
       this.scene.background = new Color(color);
     }
 
-    this._renderer = new WebGLRenderer({canvas, context});
+    this._renderer = new WebGLRenderer({ canvas, context });
     this._renderer.setPixelRatio(0.5);
 
     // Setup observer to track canvas bounds.
@@ -165,7 +146,7 @@ class App {
     const elapsed = this._clock.getElapsedTime();
 
     this.cloud.update();
-    this.cloud.rotation.y += delta * 0.75;
+    // this.cloud.rotation.y += delta * 0.15;
     // this.cloud.rotation.y = 6.0;
     this.cloud.updateMatrix();
     this.cloud.updateMatrixWorld();
@@ -176,9 +157,8 @@ class App {
     const thresholdScale = 0.66;
 
     const material = this.cloud.material;
-    // material.absorption = 0.05 + ((Math.sin(sinValue * absorptionScale) + 1.0) * 0.5) * 0.1;
+    // material.absorption = 0.1 + ((Math.sin(sinValue * absorptionScale) + 1.0) * 0.5) * 0.2;
     material.absorption = 0.4;
-    // material.threshold = 0.25 + ((Math.sin(sinValue * thresholdScale) + 1.0) * 0.5) * 0.4;
   }
 
   render() {

@@ -22,6 +22,7 @@ export class CloudMaterial extends ShaderMaterial {
         UniformsLib.lights,
         {
           uVolume: { value: null },
+          uGradientMap: { value: null },
           uInverseModelViewMatrix: { value: new Matrix4() },
           uInverseVoxelSize: { value: new Vector3(1.0, 1.0, 1.0) },
           uWindowMin: { value: 0.15 },
@@ -43,6 +44,7 @@ export class CloudMaterial extends ShaderMaterial {
     this.lights = true;
 
     // this.defines.DEBUG_BOX = true;
+    this.defines.USE_GRADIENT_MAP = false;
   }
 
   set volume(texture) {
@@ -52,6 +54,13 @@ export class CloudMaterial extends ShaderMaterial {
       1.0 / texture.image.height,
       1.0 / texture.image.depth
     );
+  }
+
+  set gradientMap(value) {
+    this.uniforms.uGradientMap.value = value;
+    const needsUpdate = (!!value ^ !!this.defines.USE_GRADIENT_MAP) !== 0;
+    this.defines.USE_GRADIENT_MAP = !!value;
+    this.needsUpdate = needsUpdate;
   }
 
   set threshold(value) {

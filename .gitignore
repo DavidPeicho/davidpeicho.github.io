@@ -13,3 +13,4 @@ public/
 # Generated content
 dist/
 assets/js/
+static/js/workers/

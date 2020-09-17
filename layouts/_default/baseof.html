@@ -19,7 +19,7 @@
   {{ $script := resources.Get "js/index.js" | minify | fingerprint }}
 
   {{ if .IsHome }}
-    {{ $home_script := resources.Get "js/demo.js" }}
+    {{ $home_script := resources.Get "js/demo/demo.js" }}
     <script
       src="{{ $home_script.RelPermalink }}"
       integrity="{{ $home_script.Data.Integrity | safeHTMLAttr }}"

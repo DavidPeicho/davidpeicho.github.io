@@ -25,6 +25,11 @@ struct Ray {
 in Ray vRay;
 
 uniform sampler3D uVolume;
+
+#ifdef USE_GRADIENT_MAP
+uniform sampler3D uGradientMap;
+#endif // USE_GRADIENT_MAP
+
 uniform vec3 uInverseVoxelSize;
 uniform mat4 modelViewMatrix;
 
@@ -123,6 +128,12 @@ getSample(float x, float y, float z)
 vec3
 computeGradient(vec3 position, float s)
 {
+  #ifdef USE_GRADIENT_MAP
+
+  return normalize(texture(uGradientMap, position + 0.5).rgb * 2.0 - 1.0);
+
+  #else // !USE_GRADIENT_MAP
+
   return vec3(
     getSample(position + vec3(uInverseVoxelSize.x, 0.0, 0.0))
     - getSample(position - vec3(uInverseVoxelSize.x, 0.0, 0.0)),
@@ -131,6 +142,8 @@ computeGradient(vec3 position, float s)
     getSample(position + vec3(0.0, 0.0, uInverseVoxelSize.z))
     - getSample(position - vec3(0.0, 0.0, uInverseVoxelSize.z))
   );
+
+  #endif // USE_GRADIENT_MAP
 }
 
 vec3
