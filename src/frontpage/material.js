@@ -82,6 +82,8 @@ export class CloudMaterial extends ShaderMaterial {
     this.needsUpdate = needsUpdate;
   }
 
+  get edgeColor() { return this.uniforms.uEdgeColor.value; }
+
   set windowMin(value) {
     this.uniforms.uWindowMin.value = value;
   }

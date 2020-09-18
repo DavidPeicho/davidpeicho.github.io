@@ -126,7 +126,7 @@ getSample(float x, float y, float z)
 }
 
 vec3
-computeGradient(vec3 position, float s)
+computeGradient(vec3 position, float step)
 {
   #ifdef USE_GRADIENT_MAP
 
@@ -134,14 +134,14 @@ computeGradient(vec3 position, float s)
 
   #else // !USE_GRADIENT_MAP
 
-  return vec3(
-    getSample(position + vec3(uInverseVoxelSize.x, 0.0, 0.0))
-    - getSample(position - vec3(uInverseVoxelSize.x, 0.0, 0.0)),
-    getSample(position + vec3(0.0, uInverseVoxelSize.y, 0.0))
-    - getSample(position - vec3(0.0, uInverseVoxelSize.y, 0.0)),
-    getSample(position + vec3(0.0, 0.0, uInverseVoxelSize.z))
-    - getSample(position - vec3(0.0, 0.0, uInverseVoxelSize.z))
-  );
+  return normalize(vec3(
+    getSample(position.x + step, position.y, position.z)
+    - getSample(position.x - step, position.y, position.z),
+    getSample(position.x, position.y + step, position.z)
+    - getSample(position.x, position.y - step, position.z),
+    getSample(position.x, position.y, position.z + step)
+    - getSample(position.x, position.y, position.z - step)
+  ));
 
   #endif // USE_GRADIENT_MAP
 }
@@ -154,17 +154,18 @@ computeIrradiance(Ray rayView, vec3 gradient)
   #if ( NUM_POINT_LIGHTS > 0 )
 
 	PointLight p;
-  vec3 lightDir;
+  vec3 posToLight;
   float len = 0.0;
   float NdotL = 1.0;
 
 	#pragma unroll_loop_start
 	for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {
 		p = pointLights[ i ];
-    lightDir = p.position - rayView.origin;
-    len = length(lightDir);
-
-    NdotL = max(0.0, dot(gradient, lightDir)) * 0.75;
+    posToLight = p.position - rayView.origin;
+    len = length(posToLight);
+    NdotL = dot(gradient, normalize(posToLight));
+    if (NdotL < 0.0) NdotL = -NdotL;
+    NdotL = max(0.0, NdotL);
     acc += p.color * pow(saturate( -len / p.distance + 1.0 ), p.decay) * NdotL;
 	}
 	#pragma unroll_loop_end
@@ -216,7 +217,7 @@ main()
     #endif // NON_LINEAR_CLASSIFICATION
 
     rayView.origin = transformPoint(modelViewMatrix, ray.origin);
-    vec3 gradient = transformDir(modelViewMatrix, computeGradient(ray.origin, s));
+    vec3 gradient = transformDir(modelViewMatrix, computeGradient(ray.origin, delta));
 
     float transparency = 1.0 - acc.a;
     float sampleFactor = transparency * s;

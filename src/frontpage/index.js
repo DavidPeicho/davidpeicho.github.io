@@ -21,14 +21,6 @@ import CloudGeneratorWorker from './workers/cloud-generator.worker.js';
 
 const PI_OVER_2 = Math.PI * 0.5;
 
-/** Globals. */
-
-const gSize = new Vector2();
-const gMouse = new Vector3();
-const gDirection = new Vector3();
-const gPointA = new Vector3();
-const gPointB = new Vector3();
-
 class Mouse {
 
   constructor(domElement) {
@@ -66,7 +58,8 @@ class App {
     this.scene = new Scene();
 
     this.camera = new PerspectiveCamera();
-    this.camera.position.z = 2.0;
+    // this.camera.position.set(- 0.15, 0.25, 2.0);
+    this.camera.position.set(0.0, 0.0, 2.0);
     this.camera.updateMatrix();
     this.camera.updateMatrixWorld();
 
@@ -75,12 +68,11 @@ class App {
 
     this.light = new PointLight(0xeeeeee);
     this.light.position.copy(this.cloud.position);
-    this.light.position.x += 1.0;
-    this.light.position.z -= 0.5;
+    this.light.translateX(-0.5).translateY(0.5).translateZ(1.5);
     this.light.updateMatrix();
     this.light.updateMatrixWorld();
     this.light.decay = 1.25;
-    this.light.distance = 1.0;
+    this.light.distance = 2.75;
 
     this.scene.add(this.light, this.cloud);
 
@@ -163,7 +155,7 @@ class App {
 
     const material = this.cloud.material;
     // material.absorption = 0.1 + ((Math.sin(sinValue * absorptionScale) + 1.0) * 0.5) * 0.2;
-    material.absorption = 0.4;
+    material.absorption = 0.3;
   }
 
   render() {
@@ -173,19 +165,19 @@ class App {
   onMouseMove(e) {
     this._mouse.update(e);
 
-    const right = this.camera.getWorldDirection(gDirection);
+    const theta = this._mouse.xNorm * PI_OVER_2;
+    const phi = (this._mouse.yNorm * 0.5 + 0.5) * Math.PI;
 
-
-    /* gMouse.set(this._mouse.xNorm, this._mouse.yNorm, 0.5);
-
-    const cameraPos = this.camera.getWorldPosition(gPointA);
-    const camToCloud = this.cloud.getWorldPosition(gPointB).sub(cameraPos);
-
-    gMouse.unproject(this.camera).normalize();
-    this.light.position.copy(camToCloud).projectOnVector(gMouse).add(cameraPos);
+    const radius = 2.0;
+    this.light.position.set(
+      Math.sin(phi) * Math.sin(theta),
+      - Math.cos(phi),
+      Math.sin(phi) * Math.cos( theta )
+    ).multiplyScalar(radius);
 
     this.light.updateMatrix();
-    this.light.updateMatrixWorld(); */
+    this.light.updateMatrixWorld();
+    console.log(`${this.light.position.x}, ${this.light.position.y}, ${this.light.position.z}`);
   }
 
   _onResize(entry) {
