@@ -23,7 +23,7 @@ export class CloudMaterial extends ShaderMaterial {
         {
           uVolume: { value: null },
           uGradientMap: { value: null },
-          uInverseModelViewMatrix: { value: new Matrix4() },
+          uModelViewMatrixInverse: { value: new Matrix4() },
           uInverseVoxelSize: { value: new Vector3(1.0, 1.0, 1.0) },
           uWindowMin: { value: 0.15 },
           uWindowMax: { value: 0.35 },
@@ -104,7 +104,7 @@ export class CloudMaterial extends ShaderMaterial {
   }
 
   get inverseModelView() {
-    return this.uniforms.uInverseModelViewMatrix.value;
+    return this.uniforms.uModelViewMatrixInverse.value;
   }
 
 }

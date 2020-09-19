@@ -23,9 +23,6 @@ export function easeQuadratic(t) {
 export function easeQuadraticOut(v) {
   return v * (2.0 - v);
 }
-export function easeInQuint(t) {
-  return t * t * t * t * t;
-}
 
 export class SinInterpolator {
 

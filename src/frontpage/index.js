@@ -8,6 +8,7 @@ import {
   PointLight,
   RGBFormat,
   Clock,
+  Object3D,
 } from "three";
 
 import { Cloud, createPerlinTexture } from './cloud';
@@ -18,7 +19,6 @@ import {
   easeQuadraticOut,
   Interpolator,
   clamp,
-  easeInQuint,
   lerpColor
 } from "./math";
 
@@ -28,6 +28,8 @@ import CloudGeneratorWorker from './workers/cloud-generator.worker.js';
 
 const CLOUD_BASE_COLOR = (new Color(0x7188a8)).convertSRGBToLinear();
 const CLOUD_BURNT_COLOR = (new Color(0x292929)).convertSRGBToLinear();
+
+const LIGHT_INTENSITY = 1.5;
 
 const Modes = {
   Idle: 0,
@@ -47,6 +49,7 @@ class Mouse {
       width: domElement.offsetWidth,
       height: domElement.offsetHeight
     };
+    this._domElement = domElement;
   }
 
   update(e) {
@@ -57,6 +60,12 @@ class Mouse {
     this._y = y;
     this._xnorm = (x / dim.width) * 2.0 - 1.0;
     this._ynorm = -(y / dim.height) * 2.0 + 1.0;
+  }
+
+  resize() {
+    const domElement = this._domElement;
+    this._dimensions.width = domElement.offsetWidth,
+    this._dimensions.height = domElement.offsetHeight
   }
 
   get x() { return this._x; }
@@ -79,7 +88,7 @@ class App {
 
     this.light = new PointLight();
     this.light.color = new Color(0xeb4d4b).convertSRGBToLinear();
-    this.light.intensity = 1.5;
+    this.light.intensity = LIGHT_INTENSITY;
     this.light.position.copy(this.cloud.position);
     this.light.translateX(-0.5).translateY(0.5).translateZ(1.5);
     this.light.updateMatrix();
@@ -97,7 +106,7 @@ class App {
     this.light2.decay = 1.25;
     this.light2.distance = 2.75;
 
-    this.scene.add(this.light, this.cloud, this.light2);
+    this.scene.add(this.cloud, this.light, this.light2);
 
     this._renderer = null;
     this._clock = new Clock();
@@ -107,21 +116,21 @@ class App {
 
     this._interpolators = {
       absorption: new SinInterpolator({
-        min: 0.3,
-        max: 0.35,
+        min: 0.325,
+        max: 0.38,
         speed: 0.75,
         easingFunction: easeQuadraticOut
       }),
       windowMax: new SinInterpolator({
-        min: 0.3,
+        min: 0.26,
         max: 0.4,
         speed: 1.0
       }),
       burning: new Interpolator({
         min: 0.0,
-        max: 15.0,
-        time: 3.5,
-        outTime: 2.5,
+        max: 18.0,
+        time: 3.0,
+        outTime: 1.0,
         easingFunction: easeQuadraticOut,
         easingOutFunction: (t) => 1.0 - easeQuadraticOut(t)
       }),
@@ -215,13 +224,11 @@ class App {
     const scaleSpeed = 0.002;
     const scale = 0.95 + (Math.sin(elapsed * scaleSpeed - PI_OVER_2) * 0.5 + 0.5) * 0.1;
 
-    this.cloud.update();
     this.cloud.scale.set(scale, scale, scale);
     this.cloud.rotation.y += delta * 0.15;
     this.cloud.updateMatrix();
     this.cloud.updateMatrixWorld();
-
-    const absorptionLerp = this._interpolators.absorption;
+    this.cloud.update(this.camera);
 
     /* Automatic Light Rotation */
 
@@ -246,7 +253,7 @@ class App {
         const burningLerp = this._interpolators.burning;
         if (burningLerp.isDone) {
           this.light2.intensity = 0.0;
-          this.light.intensity = 0.65;
+          this.light.intensity = 0.0;
           this._mode = Modes.Recover;
         } else {
           this.light2.intensity = burningLerp.update(delta);
@@ -258,7 +265,7 @@ class App {
         if (recoverLerp.isRunning) {
           const color = material.baseColor;
           lerpColor(color, CLOUD_BURNT_COLOR, CLOUD_BASE_COLOR, lerp);
-          this.light.intensity = 0.65 + lerp * (1.5 - 0.65);
+          this.light.intensity = lerp * LIGHT_INTENSITY;
         } else if (recoverLerp.isDone) {
           recoverLerp.reset();
           console.log('RESET');
@@ -267,6 +274,7 @@ class App {
         break;
     }
 
+    const absorptionLerp = this._interpolators.absorption;
     material.absorption = absorptionLerp.update(elapsed + PI_OVER_2);
     const windowMaxLerp = this._interpolators.windowMax;
     material.windowMax = windowMaxLerp.update(elapsed - PI_OVER_2);
@@ -297,6 +305,7 @@ class App {
     const asp = rect.width / rect.height;
     const invAsp = rect.height / rect.width;
 
+    this._mouse.resize();
     this._renderer.setSize(rect.width, rect.height, false);
     this.camera.aspect = asp;
     this.camera.updateProjectionMatrix();

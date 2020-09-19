@@ -17,8 +17,13 @@ export class Cloud extends Mesh {
     super(new BoxBufferGeometry(1, 1, 1), new CloudMaterial());
   }
 
-  update() {
+  update(camera) {
     const material = this.material;
+
+    this.modelViewMatrix.multiplyMatrices(
+      camera.matrixWorldInverse,
+      this.matrixWorld
+    );
     material.inverseModelView.getInverse(this.modelViewMatrix);
     material.uniforms.uFrame.value++;
   }
