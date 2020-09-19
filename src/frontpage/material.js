@@ -25,13 +25,13 @@ export class CloudMaterial extends ShaderMaterial {
           uGradientMap: { value: null },
           uModelViewMatrixInverse: { value: new Matrix4() },
           uInverseVoxelSize: { value: new Vector3(1.0, 1.0, 1.0) },
-          uWindowMin: { value: 0.15 },
-          uWindowMax: { value: 0.35 },
           uBaseColor: { value: new Color(0xeeeeee) },
-          uEdgeColor: { value: null },
           uAbsorption: { value: 0.15 },
           uAlphaTest: { value: 0.9 },
-          uFrame: { value: 0.0 }
+          uDecay: { value: 2.0 },
+          uFrame: { value: 0.0 },
+          uWindowMin: { value: 0.15 },
+          uWindowMax: { value: 0.35 }
         }
       ])
     });
@@ -43,7 +43,7 @@ export class CloudMaterial extends ShaderMaterial {
     this.fog = false;
     this.lights = true;
 
-    // this.defines.DEBUG_BOX = true;
+    this.defines.NB_STEPS = 100;
     this.defines.USE_GRADIENT_MAP = false;
   }
 
@@ -76,14 +76,15 @@ export class CloudMaterial extends ShaderMaterial {
 
   set baseColor(value) { this.uniforms.uBaseColor.value = value; }
 
-  set edgeColor(value) {
-    this.uniforms.uEdgeColor.value = value;
-    const needsUpdate = value ^ !!this.defines.EDGE_GLOW;
-    this.defines.EDGE_GLOW = !!value;
-    this.needsUpdate = needsUpdate;
+  set decay(value) {
+    this.uniforms.uDecay.value = value > 0.0 ? value : 1.0;
   }
 
-  get edgeColor() { return this.uniforms.uEdgeColor.value; }
+  set inverse(value) {
+    const needsUpdate = (!!value ^ !!this.defines.INVERSE) !== 0;
+    this.defines.INVERSE = !!value;
+    this.needsUpdate = needsUpdate;
+  }
 
   set windowMin(value) {
     this.uniforms.uWindowMin.value = value;
@@ -97,6 +98,13 @@ export class CloudMaterial extends ShaderMaterial {
   }
   get windowMax() {
     return this.uniforms.uWindowMax.value;
+  }
+
+  set steps(value) {
+    const needsUpdate = value !== this.defines.NB_STEPS;
+    this.defines.NB_STEPS = value;
+    if (!value) { delete this.defines.NB_STEPS; }
+    this.needsUpdate = needsUpdate;
   }
 
   get baseColor() {

@@ -8,9 +8,7 @@ import {
   PointLight,
   RGBFormat,
   Clock,
-  Object3D,
   Vector3,
-  Vector2,
 } from "three";
 
 import { Cloud, createPerlinTexture } from './cloud';
@@ -21,7 +19,8 @@ import {
   easeQuadraticOut,
   Interpolator,
   clamp,
-  lerpColor
+  lerpColor,
+  easeQuadratic
 } from "./math";
 
 import GradientWorker from './workers/gradient-generator.worker.js';
@@ -31,7 +30,36 @@ import GradientWorker from './workers/gradient-generator.worker.js';
 const CLOUD_BASE_COLOR = (new Color(0x7188a8)).convertSRGBToLinear();
 const CLOUD_BURNT_COLOR = (new Color(0x292929)).convertSRGBToLinear();
 
+const AUTO_LIGHT_TIMEOUT = 1.25;
 const LIGHT_INTENSITY = 1.5;
+
+const CloudConfigurations = {
+  camera: {
+    fov: 45
+  },
+  cloud: {
+    absorption: { min: 0.15, max: 0.3 },
+    decay: { min: 1.2 , max: 1.45 },
+    windowMin: 0.1,
+    windowMax: 0.28,
+    inverse: false,
+    steps: 100
+  }
+};
+
+const InvertCloudConfigurations = {
+  camera: {
+    fov: 70
+  },
+  cloud: {
+    absorption: { min: 0.04, max: 0.125 },
+    decay: { min: 6.0 , max: 8.0 },
+    windowMin: 0.2,
+    windowMax: 0.8,
+    inverse: true,
+    steps: 200
+  }
+};
 
 const Modes = {
   Idle: 0,
@@ -87,7 +115,7 @@ class App {
     this.scene = new Scene();
 
     this.camera = new PerspectiveCamera();
-    this.camera.position.set(0, 0, 1);
+    this.camera.position.z = 1.5;
     this.camera.updateMatrix();
     this.camera.updateMatrixWorld();
 
@@ -126,19 +154,19 @@ class App {
 
     this._interpolators = {
       absorption: new SinInterpolator({
-        min: 0.325,
-        max: 0.38,
-        speed: 0.75,
+        min: 0.25,
+        max: 0.35,
+        speed: 1.0,
         easingFunction: easeQuadraticOut
       }),
-      windowMax: new SinInterpolator({
-        min: 0.26,
-        max: 0.4,
+      decay: new SinInterpolator({
+        min: 1.0,
+        max: 2.5,
         speed: 1.0
       }),
       burning: new Interpolator({
         min: 0.0,
-        max: 18.0,
+        max: 14.0,
         time: 3.0,
         outTime: 1.0,
         easingFunction: easeQuadraticOut,
@@ -147,16 +175,14 @@ class App {
       recover: new Interpolator({
         min: 0.0,
         max: 1.0,
-        time: 4.0,
-        delay: 3.0
+        time: 3.0,
+        delay: 0.75,
+        easingFunction: easeQuadratic
       })
     };
 
     const material = this.cloud.material;
     material.baseColor.copy(CLOUD_BASE_COLOR);
-    material.windowMin = 0.15;
-    material.windowMax = this._interpolators.windowMax.min;
-    material.absorption = this._interpolators.absorption.min;
 
     const volume = createPerlinTexture({
       scale: 0.09, ellipse: { a: 0.6, b: 0.3, c: 0.35 }
@@ -186,6 +212,10 @@ class App {
       worker.terminate();
     };
 
+    // this.setConfiguration(Math.random() < 0.5 ? CloudConfigurations : InvertCloudConfigurations);
+    // this.config = Object.assign({}, InvertCloudConfigurations);
+    this.config = Object.assign({}, CloudConfigurations);
+    this.setConfiguration(this.config);
   }
 
   init() {
@@ -193,7 +223,7 @@ class App {
     const context = canvas.getContext("webgl2");
 
     this._renderer = new WebGLRenderer({ canvas, context });
-    this._renderer.setPixelRatio(0.5);
+    this._renderer.setPixelRatio(0.25);
 
     // Setup observer to track canvas bounds.
     const resizeObserver = new ResizeObserver(entries => {
@@ -232,17 +262,21 @@ class App {
     const scale = 0.95 + (Math.sin(elapsed * scaleSpeed - PI_OVER_2) * 0.5 + 0.5) * 0.1;
 
     this.cloud.scale.set(scale, scale, scale);
-    // this.cloud.rotation.y += delta * 0.15;
+    this.cloud.rotation.y += delta * 0.15;
     this.cloud.updateMatrix();
     this.cloud.updateMatrixWorld();
     this.cloud.update(this.camera);
 
     /* Automatic Light Rotation */
 
-    if (this._autoLightTimeout >= 2.5) {
+    if (this._autoLightTimeout >= AUTO_LIGHT_TIMEOUT) {
       const theta = Math.sin((elapsed + PI_OVER_2) * 2.0) * PI_OVER_2;
       const phi = Math.sin(elapsed - PI_OVER_2) * Math.PI;
-      const lerp = clamp((this._autoLightTimeout - 2.5) / 2.5,  0.0, 1.0);
+      const lerp = clamp(
+        (this._autoLightTimeout - AUTO_LIGHT_TIMEOUT) / AUTO_LIGHT_TIMEOUT,
+        0.0,
+        1.0
+      );
       applySphericalCoords(this.light, theta, phi, 2.0, lerp);
     }
     this._autoLightTimeout += delta;
@@ -269,32 +303,48 @@ class App {
           this.light.intensity = lerp * LIGHT_INTENSITY;
         } else if (recoverLerp.isDone) {
           recoverLerp.reset();
-          console.log('RESET');
           this._mode = Modes.Idle;
         }
         break;
     }
 
-    material.absorption = 0.4;
-    // const absorptionLerp = this._interpolators.absorption;
-    // material.absorption = absorptionLerp.update(elapsed + PI_OVER_2);
-    // const windowMaxLerp = this._interpolators.windowMax;
-    // material.windowMax = windowMaxLerp.update(elapsed - PI_OVER_2);
+    const absorptionLerp = this._interpolators.absorption;
+    const decayLerp = this._interpolators.decay;
+    material.absorption = absorptionLerp.update(elapsed);
+    material.decay = decayLerp.update(elapsed);
   }
 
   render() {
     this._renderer.render(this.scene, this.camera);
   }
 
+  setConfiguration(config) {
+    this.camera.fov = config.camera.fov;
+    this.camera.updateProjectionMatrix();
+
+    const material = this.cloud.material;
+    material.absorption = config.cloud.absorption;
+    material.decay = config.cloud.decay.min;
+    material.windowMin = config.cloud.windowMin;
+    material.windowMax = config.cloud.windowMax;
+    material.inverse = config.cloud.inverse;
+    material.steps = config.cloud.steps;
+
+    this._interpolators.decay.min = config.cloud.decay.min;
+    this._interpolators.decay.max = config.cloud.decay.max;
+    this._interpolators.absorption.setMinMax(
+      config.cloud.absorption.min,
+      config.cloud.absorption.max
+    );
+  }
+
   onMouseMove(e) {
-    // this._autoLightControl = false;
     this._mouse.update(e);
 
     const theta = this._mouse.xNorm * PI_OVER_2;
     const phi = (this._mouse.yNorm * 0.5 + 0.5) * Math.PI;
 
-    const lerp = this._autoLightTimeout > 0.0 ? 0.5 : 1.0;
-    applySphericalCoords(this.light, theta, phi, 2.0, lerp);
+    applySphericalCoords(this.light, theta, phi, 2.0);
 
     this._autoLightTimeout = 0.0;
   }
@@ -302,19 +352,12 @@ class App {
   resize(width, height) {
     const asp = width / height;
     const invAsp = height / width;
-
     this._mouse.resize();
     this._renderer.setSize(width, height, false);
     this.camera.aspect = asp;
+    this.camera.position.z = clamp(invAsp, 1.5, 3.0);
     this.camera.updateProjectionMatrix();
-
-    const factor = invAsp * invAsp;
-    // this.camera.position.set(
-    //   0.0,
-    //   clamp(factor * 0.25, 0.1, 0.35),
-    //   clamp(factor, 1.0, 2.0)
-    // );
-    // console.log(`${this.camera.position.x}, ${this.camera.position.y}, ${this.camera.position.z}`);
+    this.camera.updateMatrixWorld();
   }
 
 }

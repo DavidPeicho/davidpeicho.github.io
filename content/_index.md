@@ -1,5 +1,5 @@
 ---
 heading: "Hi, I'm David Peicho"
-subheading: "Research Scientist / Graphics Programmer"
+subheading: "Graphics Engineer"
 handle: "hugo-theme-codex"
 ---

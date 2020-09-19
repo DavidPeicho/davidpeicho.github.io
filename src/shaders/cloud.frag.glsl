@@ -2,13 +2,10 @@ precision highp float;
 precision highp sampler3D;
 
 #define M_PI 3.1415926535897932384626433832795
-#define NB_STEPS 80
 
 #define EPSILON 0.0000001
 #define EPSILON_ONE 1.0000001
 #define saturate(a) clamp(a, 0.0, 1.0)
-
-#define NON_LINEAR_CLASSIFICATION
 
 struct PointLight {
   vec3 position;
@@ -33,12 +30,14 @@ uniform sampler3D uGradientMap;
 uniform vec3 uInverseVoxelSize;
 uniform mat4 modelViewMatrix;
 
+uniform vec3 uBaseColor;
+
 uniform float uWindowMin;
 uniform float uWindowMax;
 uniform float uAbsorption;
 uniform float uAlphaTest;
+uniform float uDecay;
 uniform float uFrame;
-uniform vec3 uBaseColor;
 
 #ifdef EDGE_GLOW
 uniform vec3 uEdgeColor;
@@ -211,10 +210,15 @@ main()
   for (int i = 0; i < NB_STEPS; ++i)
   {
     float s = getSample(ray.origin);
+    #ifdef INVERSE
+    s = 1.0 - s;
+    #endif // INVERSE
+    s = pow(s, uDecay);
     s = smoothstep(uWindowMin, uWindowMax, s) * uAbsorption;
-    #ifdef NON_LINEAR_CLASSIFICATION
-    s *= s * uAbsorption;
-    #endif // NON_LINEAR_CLASSIFICATION
+
+    // #ifdef NON_LINEAR_CLASSIFICATION
+    // s *= s;
+    // #endif // NON_LINEAR_CLASSIFICATION
 
     rayView.origin = transformPoint(modelViewMatrix, ray.origin);
     vec3 gradient = transformDir(modelViewMatrix, computeGradient(ray.origin, delta));
@@ -234,14 +238,5 @@ main()
     if (outsideUnitBox(ray.origin + 0.5)) { break; }
   }
 
-  #ifdef DEBUG_BOX
-  pc_fragColor = debugColor;
-  #else
   pc_fragColor.rgba += acc;
-
-  #ifdef EDGE_GLOW
-  pc_fragColor.rgb += (1.0 - acc.a) * uEdgeColor;
-  #endif // EDGE_GLOW
-
-  #endif
 }

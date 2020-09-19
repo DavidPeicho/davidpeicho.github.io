@@ -16,14 +16,7 @@
 }
 
 .splash {
-  // margin-right: 12rem;
-  // margin-bottom: 12rem;
-
-  @media screen and (max-width: 1200px) {
-    margin: 0;
-  }
-
-  color: #e8eded;
+  color: white;
 
   h1 {
     font-size: 3em;
@@ -48,7 +41,7 @@
 .handle {
   display: inline-block;
   margin-top: 0.275em;
-  color: $grey;
+  color: $lightgray;
   letter-spacing: 0.5px;
 }
 
@@ -87,4 +80,8 @@ canvas {
   justify-content: flex-start;
   padding-top: 1rem;
   margin-left: -0.8rem; // offset to negate icon's padding to align with text above
+}
+
+.social-icons__icon {
+  background-color: white;
 }

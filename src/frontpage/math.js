@@ -1,5 +1,6 @@
 /** Constants */
 
+export const EPSILON = 0.000001;
 export const PI_OVER_2 = Math.PI * 0.5;
 
 export function clamp(v, min, max) {
@@ -48,6 +49,11 @@ export class SinInterpolator {
       1.0
     );
     return this.min + v * range;
+  }
+
+  setMinMax(min, max) {
+    this.min = min;
+    this.max = max;
   }
 
 }
@@ -114,6 +120,11 @@ export class Interpolator {
     }
 
     return this.min + v * range;
+  }
+
+  setMinMax(min, max) {
+    this.min = min;
+    this.max = max;
   }
 
   get clock() { return this._clock; }
