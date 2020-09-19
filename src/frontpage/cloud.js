@@ -9,7 +9,7 @@ import {
 import { ImprovedNoise } from 'three/examples/jsm/math/ImprovedNoise';
 
 import { CloudMaterial } from './material';
-import { clamp } from './utils';
+import { clamp } from './math';
 
 export class Cloud extends Mesh {
 
@@ -30,7 +30,9 @@ export function createPerlinTexture(options = {}) {
   const {
     width = 128,
     height = 128,
-    depth = 128
+    depth = 128,
+    scale = 0.1,
+    ellipse = { a: 0.55, b: 0.32, c: 0.32 }
   } = options;
 
   const halfWidth = width * 0.5;
@@ -44,10 +46,7 @@ export function createPerlinTexture(options = {}) {
   const perlin = new ImprovedNoise();
   const point = new Vector3();
 
-  const scale = 0.1;
-  const aa = 0.55;
-  const bb = 0.32;
-  const cc = 0.32;
+  const { a, b, c } = ellipse;
 
   for (let i = 0; i < voxelCount; ++i) {
     const x = i % width;
@@ -60,8 +59,8 @@ export function createPerlinTexture(options = {}) {
       (z - halfDepth) / depth
     );
 
-    const ellipse = clamp((v.x * v.x) / aa + (v.y * v.y) / bb + (v.z * v.z) / cc, 0.0, 1.0);
-    const d = 1.0 - ellipse;
+    const ellipse = (v.x * v.x) / a + (v.y * v.y) / b + (v.z * v.z) / c;
+    const d = clamp(1.0 - ellipse, 0, 1);
 
     const p = perlin.noise(x * scale, y * scale, z * scale);
     const rand = (p + 1.0) * 0.5;

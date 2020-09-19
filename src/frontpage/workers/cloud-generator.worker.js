@@ -1,8 +1,6 @@
-import {  LinearFilter, RGBFormat } from 'three/src/constants';
 import { Vector3 } from 'three/src/math/Vector3';
-import { DataTexture3D } from 'three/src/textures/DataTexture3D';
 
-import { clamp } from '../utils';
+import { clamp } from '../math';
 
 onmessage = (event) => {
   const { width, height, depth, buffer } = event.data;
@@ -18,16 +16,7 @@ onmessage = (event) => {
   }
 
   const gradientBuffer = new Uint8Array(voxelCount * 3);
-  const texture = new DataTexture3D(
-    buffer,
-    width,
-    height,
-    depth
-  );
-  texture.format = RGBFormat;
-  texture.minFilter = LinearFilter;
-  texture.magFilter = LinearFilter;
-  texture.unpackAlignment = 1;
+
 
   const gradient = new Vector3();
 

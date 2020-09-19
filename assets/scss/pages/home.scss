@@ -1,7 +1,6 @@
 @import "../main";
 
 .splash-container {
-  min-width: 800px;
   width: 100%;
   height: 100%;
   display: flex;
@@ -12,11 +11,18 @@
   font-size: 18px;
 
   @media screen and (max-width: $medium + 1) {
-    min-width: initial;
+    font-size: 14px;
   }
 }
 
 .splash {
+  margin-right: 12rem;
+  margin-bottom: 12rem;
+
+  @media screen and (max-width: 1200px) {
+    margin: 0;
+  }
+
   h1 {
     font-size: 3em;
     line-height: 1;

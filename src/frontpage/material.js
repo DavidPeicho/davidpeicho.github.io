@@ -70,10 +70,11 @@ export class CloudMaterial extends ShaderMaterial {
   set absorption(value) {
     this.uniforms.uAbsorption.value = value;
   }
-
-  set baseColor(value) {
-    this.uniforms.uBaseColor.value = value;
+  get absorption() {
+    return this.uniforms.uAbsorption.value;
   }
+
+  set baseColor(value) { this.uniforms.uBaseColor.value = value; }
 
   set edgeColor(value) {
     this.uniforms.uEdgeColor.value = value;
@@ -87,9 +88,15 @@ export class CloudMaterial extends ShaderMaterial {
   set windowMin(value) {
     this.uniforms.uWindowMin.value = value;
   }
+  get windowMin() {
+    return this.uniforms.uWindowMin.value;
+  }
 
   set windowMax(value) {
     this.uniforms.uWindowMax.value = value;
+  }
+  get windowMax() {
+    return this.uniforms.uWindowMax.value;
   }
 
   get baseColor() {

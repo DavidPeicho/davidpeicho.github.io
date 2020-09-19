@@ -165,7 +165,7 @@ computeIrradiance(Ray rayView, vec3 gradient)
     len = length(posToLight);
     NdotL = dot(gradient, normalize(posToLight));
     if (NdotL < 0.0) NdotL = -NdotL;
-    NdotL = max(0.0, NdotL);
+    NdotL = max(0.0, NdotL) * 1.5;
     acc += p.color * pow(saturate( -len / p.distance + 1.0 ), p.decay) * NdotL;
 	}
 	#pragma unroll_loop_end
@@ -213,7 +213,7 @@ main()
     float s = getSample(ray.origin);
     s = smoothstep(uWindowMin, uWindowMax, s) * uAbsorption;
     #ifdef NON_LINEAR_CLASSIFICATION
-    s *= s;
+    s *= s * uAbsorption;
     #endif // NON_LINEAR_CLASSIFICATION
 
     rayView.origin = transformPoint(modelViewMatrix, ray.origin);
@@ -221,7 +221,10 @@ main()
 
     float transparency = 1.0 - acc.a;
     float sampleFactor = transparency * s;
-    acc.rgb += sampleFactor * (uBaseColor + computeIrradiance(rayView, gradient));
+    vec3 diffuse = computeIrradiance(rayView, gradient);
+    diffuse *= 2.0 - uAbsorption;
+
+    acc.rgb += sampleFactor * (uBaseColor + diffuse);
     acc.a += sampleFactor;
 
     if (acc.a > uAlphaTest) { break; }

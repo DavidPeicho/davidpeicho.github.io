@@ -5,21 +5,35 @@ import {
   PerspectiveCamera,
   Scene,
   WebGLRenderer,
-  Vector3,
   PointLight,
   RGBFormat,
-  Vector2,
   Clock,
 } from "three";
 
 import { Cloud, createPerlinTexture } from './cloud';
-import { clamp } from './utils';
+
+import {
+  PI_OVER_2,
+  SinInterpolator,
+  easeQuadraticOut,
+  Interpolator,
+  clamp,
+  easeInQuint,
+  lerpColor
+} from "./math";
 
 import CloudGeneratorWorker from './workers/cloud-generator.worker.js';
 
 /** Constants */
 
-const PI_OVER_2 = Math.PI * 0.5;
+const CLOUD_BASE_COLOR = (new Color(0x7188a8)).convertSRGBToLinear();
+const CLOUD_BURNT_COLOR = (new Color(0x292929)).convertSRGBToLinear();
+
+const Modes = {
+  Idle: 0,
+  Burning: 1,
+  Recover: 2
+};
 
 class Mouse {
 
@@ -35,7 +49,7 @@ class Mouse {
     };
   }
 
-  update(e, width, height) {
+  update(e) {
     const x = e.clientX - this._offset.x;
     const y = e.clientY - this._offset.y;
     const dim = this._dimensions;
@@ -58,15 +72,14 @@ class App {
     this.scene = new Scene();
 
     this.camera = new PerspectiveCamera();
-    // this.camera.position.set(- 0.15, 0.25, 2.0);
-    this.camera.position.set(0.0, 0.0, 2.0);
     this.camera.updateMatrix();
     this.camera.updateMatrixWorld();
 
     this.cloud = new Cloud();
-    this.cloud.material.baseColor.setHex(0x9b9b9b).convertSRGBToLinear();
 
-    this.light = new PointLight(0xeeeeee);
+    this.light = new PointLight();
+    this.light.color = new Color(0xeb4d4b).convertSRGBToLinear();
+    this.light.intensity = 1.5;
     this.light.position.copy(this.cloud.position);
     this.light.translateX(-0.5).translateY(0.5).translateZ(1.5);
     this.light.updateMatrix();
@@ -74,13 +87,61 @@ class App {
     this.light.decay = 1.25;
     this.light.distance = 2.75;
 
-    this.scene.add(this.light, this.cloud);
+    this.light2 = new PointLight();
+    this.light2.color = new Color(0xe67e22).convertSRGBToLinear();
+    this.light2.intensity = 0.0;
+    this.light2.position.copy(this.cloud.position);
+    this.light2.translateX(-1.0).translateY(0.5).translateZ(1.5);
+    this.light2.updateMatrix();
+    this.light2.updateMatrixWorld();
+    this.light2.decay = 1.25;
+    this.light2.distance = 2.75;
+
+    this.scene.add(this.light, this.cloud, this.light2);
 
     this._renderer = null;
     this._clock = new Clock();
     this._mouse = null;
+    this._autoLightControl = true;
+    this._mode = Modes.Idle;
 
-    const volume = createPerlinTexture();
+    this._interpolators = {
+      absorption: new SinInterpolator({
+        min: 0.3,
+        max: 0.35,
+        speed: 0.75,
+        easingFunction: easeQuadraticOut
+      }),
+      windowMax: new SinInterpolator({
+        min: 0.3,
+        max: 0.4,
+        speed: 1.0
+      }),
+      burning: new Interpolator({
+        min: 0.0,
+        max: 15.0,
+        time: 3.5,
+        outTime: 2.5,
+        easingFunction: easeQuadraticOut,
+        easingOutFunction: (t) => 1.0 - easeQuadraticOut(t)
+      }),
+      recover: new Interpolator({
+        min: 0.0,
+        max: 1.0,
+        time: 4.0,
+        delay: 3.0
+      })
+    };
+
+    const material = this.cloud.material;
+    material.baseColor.copy(CLOUD_BASE_COLOR);
+    material.windowMin = 0.15;
+    material.windowMax = this._interpolators.windowMax.min;
+    material.absorption = this._interpolators.absorption.min;
+
+    const volume = createPerlinTexture({
+      scale: 0.09, ellipse: { a: 0.6, b: 0.3, c: 0.35 }
+    });
     this.cloud.material.volume = volume;
 
     const worker = new CloudGeneratorWorker();
@@ -133,6 +194,15 @@ class App {
 
     const container = document.body;
     this._mouse = new Mouse(container);
+
+    container.addEventListener('mousedown', () => {
+      const interpolator = this._interpolators.burning;
+      if (interpolator.isDone || !interpolator.isRunning) {
+        this._mode = Modes.Burning;
+        this.cloud.material.baseColor.copy(CLOUD_BURNT_COLOR);
+        interpolator.reset();
+      }
+    })
     container.addEventListener("mousemove", this.onMouseMove.bind(this));
 
     this._clock.start();
@@ -142,20 +212,64 @@ class App {
     const delta = this._clock.getDelta();
     const elapsed = this._clock.getElapsedTime();
 
+    const scaleSpeed = 0.002;
+    const scale = 0.95 + (Math.sin(elapsed * scaleSpeed - PI_OVER_2) * 0.5 + 0.5) * 0.1;
+
     this.cloud.update();
-    // this.cloud.rotation.y += delta * 0.15;
-    // this.cloud.rotation.y = 6.0;
+    this.cloud.scale.set(scale, scale, scale);
+    this.cloud.rotation.y += delta * 0.15;
     this.cloud.updateMatrix();
     this.cloud.updateMatrixWorld();
 
+    const absorptionLerp = this._interpolators.absorption;
+
+    /* Automatic Light Rotation */
+
+    if (this._autoLightControl) {
+      const theta = Math.sin((elapsed + PI_OVER_2) * 2.0) * PI_OVER_2;
+      const phi = Math.sin(elapsed - PI_OVER_2) * Math.PI;
+      this.light.position.set(
+        Math.sin(phi) * Math.sin(theta),
+        - Math.cos(phi),
+        Math.sin(phi) * Math.cos(theta)
+      ).multiplyScalar(2.0);
+      this.light.updateMatrix();
+      this.light.updateMatrixWorld();
+    }
+
     /* Cloud material. */
-    const sinValue = elapsed - Math.PI * 0.5;
-    const absorptionScale = 0.66;
-    const thresholdScale = 0.66;
 
     const material = this.cloud.material;
-    // material.absorption = 0.1 + ((Math.sin(sinValue * absorptionScale) + 1.0) * 0.5) * 0.2;
-    material.absorption = 0.3;
+
+    switch (this._mode) {
+      case Modes.Burning:
+        const burningLerp = this._interpolators.burning;
+        if (burningLerp.isDone) {
+          this.light2.intensity = 0.0;
+          this.light.intensity = 0.65;
+          this._mode = Modes.Recover;
+        } else {
+          this.light2.intensity = burningLerp.update(delta);
+        }
+        break;
+      case Modes.Recover:
+        const recoverLerp = this._interpolators.recover;
+        const lerp = recoverLerp.update(delta);
+        if (recoverLerp.isRunning) {
+          const color = material.baseColor;
+          lerpColor(color, CLOUD_BURNT_COLOR, CLOUD_BASE_COLOR, lerp);
+          this.light.intensity = 0.65 + lerp * (1.5 - 0.65);
+        } else if (recoverLerp.isDone) {
+          recoverLerp.reset();
+          console.log('RESET');
+          this._mode = Modes.Idle;
+        }
+        break;
+    }
+
+    material.absorption = absorptionLerp.update(elapsed + PI_OVER_2);
+    const windowMaxLerp = this._interpolators.windowMax;
+    material.windowMax = windowMaxLerp.update(elapsed - PI_OVER_2);
   }
 
   render() {
@@ -163,28 +277,37 @@ class App {
   }
 
   onMouseMove(e) {
+    this._autoLightControl = false;
     this._mouse.update(e);
 
     const theta = this._mouse.xNorm * PI_OVER_2;
     const phi = (this._mouse.yNorm * 0.5 + 0.5) * Math.PI;
 
-    const radius = 2.0;
     this.light.position.set(
       Math.sin(phi) * Math.sin(theta),
       - Math.cos(phi),
       Math.sin(phi) * Math.cos( theta )
-    ).multiplyScalar(radius);
-
+    ).multiplyScalar(2.0);
     this.light.updateMatrix();
     this.light.updateMatrixWorld();
-    console.log(`${this.light.position.x}, ${this.light.position.y}, ${this.light.position.z}`);
   }
 
   _onResize(entry) {
     const rect = entry.contentRect;
+    const asp = rect.width / rect.height;
+    const invAsp = rect.height / rect.width;
+
     this._renderer.setSize(rect.width, rect.height, false);
-    this.camera.aspect = rect.width / rect.height;
+    this.camera.aspect = asp;
     this.camera.updateProjectionMatrix();
+
+    const factor = invAsp * invAsp;
+    this.camera.position.set(
+      0.0,
+      clamp(factor * 0.25, 0.1, 0.35),
+      clamp(factor, 1.0, 2.0)
+    );
+    console.log(`${this.camera.position.x}, ${this.camera.position.y}, ${this.camera.position.z}`);
   }
 
 }

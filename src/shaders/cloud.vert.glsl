@@ -28,7 +28,8 @@ main()
   // vRay.origin = transformPoint(uInverseModelViewMatrix, vec3(0.0));
   // vRay.dir = normalize(transformPoint(uInverseModelViewMatrix, position) - vRay.origin);
 
-  vRay.origin = vec3(inverse(modelMatrix) * vec4(vec3(0.0, 0.0, 2.0), 1.0)).xyz;
+  // vRay.origin = vec3(inverse(modelMatrix) * vec4(vec3(0.0, 0.0, 1.0), 1.0)).xyz;
+  vRay.origin = vec3(inverse(modelViewMatrix) * vec4(vec3(0.0, 0.0, 0.0), 1.0)).xyz;
   vRay.dir = position - vRay.origin;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
