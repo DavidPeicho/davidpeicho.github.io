@@ -64,7 +64,8 @@ export function createPerlinTexture(options = {}) {
       (z - halfDepth) / depth
     );
 
-    const ellipse = (v.x * v.x) / a + (v.y * v.y) / b + (v.z * v.z) / c;
+    // const ellipse = (v.x * v.x) / a + (v.y * v.y) / b + (v.z * v.z) / c;
+    const ellipse = v.length();
     const d = clamp(1.0 - ellipse, 0, 1);
 
     const p = perlin.noise(x * scale, y * scale, z * scale);

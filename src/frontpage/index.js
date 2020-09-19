@@ -9,6 +9,8 @@ import {
   RGBFormat,
   Clock,
   Object3D,
+  Vector3,
+  Vector2,
 } from "three";
 
 import { Cloud, createPerlinTexture } from './cloud';
@@ -22,7 +24,7 @@ import {
   lerpColor
 } from "./math";
 
-import CloudGeneratorWorker from './workers/cloud-generator.worker.js';
+import GradientWorker from './workers/gradient-generator.worker.js';
 
 /** Constants */
 
@@ -36,6 +38,10 @@ const Modes = {
   Burning: 1,
   Recover: 2
 };
+
+/** Globals */
+
+const gVector3 = new Vector3();
 
 class Mouse {
 
@@ -81,6 +87,7 @@ class App {
     this.scene = new Scene();
 
     this.camera = new PerspectiveCamera();
+    this.camera.position.set(0, 0, 1);
     this.camera.updateMatrix();
     this.camera.updateMatrixWorld();
 
@@ -106,6 +113,7 @@ class App {
     this.light2.decay = 1.25;
     this.light2.distance = 2.75;
 
+    this.scene.background = new Color(0xeeeeee);
     this.scene.add(this.cloud, this.light, this.light2);
 
     this._renderer = null;
@@ -113,6 +121,8 @@ class App {
     this._mouse = null;
     this._autoLightControl = true;
     this._mode = Modes.Idle;
+
+    this._autoLightTimeout = 0.0;
 
     this._interpolators = {
       absorption: new SinInterpolator({
@@ -153,7 +163,7 @@ class App {
     });
     this.cloud.material.volume = volume;
 
-    const worker = new CloudGeneratorWorker();
+    const worker = new GradientWorker();
     worker.postMessage({
       width: volume.image.width,
       height: volume.image.height,
@@ -179,25 +189,18 @@ class App {
   }
 
   init() {
-    const main = document.getElementsByTagName("main")[0];
     const canvas = document.getElementsByTagName("canvas")[0];
     const context = canvas.getContext("webgl2");
-
-    if (main) {
-      const style = window.getComputedStyle(main, null);
-      const color = style.getPropertyValue("background-color") || 0xffffff;
-      this.scene.background = new Color(color);
-    }
 
     this._renderer = new WebGLRenderer({ canvas, context });
     this._renderer.setPixelRatio(0.5);
 
     // Setup observer to track canvas bounds.
     const resizeObserver = new ResizeObserver(entries => {
-      if (entries.length === 0) {
-        return;
+      if (entries.length > 0) {
+        const rect = entries[0].contentRect;
+        this.resize(rect.width, rect.height);
       }
-      this._onResize(entries[0]);
     });
     resizeObserver.observe(canvas);
 
@@ -208,6 +211,8 @@ class App {
       const interpolator = this._interpolators.burning;
       if (interpolator.isDone || !interpolator.isRunning) {
         this._mode = Modes.Burning;
+        this.light2.intensity = 0.0;
+        this.light.intensity = 0.0;
         this.cloud.material.baseColor.copy(CLOUD_BURNT_COLOR);
         interpolator.reset();
       }
@@ -215,6 +220,8 @@ class App {
     container.addEventListener("mousemove", this.onMouseMove.bind(this));
 
     this._clock.start();
+
+    this.resize(canvas.offsetWidth, canvas.offsetHeight);
   }
 
   update() {
@@ -225,24 +232,20 @@ class App {
     const scale = 0.95 + (Math.sin(elapsed * scaleSpeed - PI_OVER_2) * 0.5 + 0.5) * 0.1;
 
     this.cloud.scale.set(scale, scale, scale);
-    this.cloud.rotation.y += delta * 0.15;
+    // this.cloud.rotation.y += delta * 0.15;
     this.cloud.updateMatrix();
     this.cloud.updateMatrixWorld();
     this.cloud.update(this.camera);
 
     /* Automatic Light Rotation */
 
-    if (this._autoLightControl) {
+    if (this._autoLightTimeout >= 2.5) {
       const theta = Math.sin((elapsed + PI_OVER_2) * 2.0) * PI_OVER_2;
       const phi = Math.sin(elapsed - PI_OVER_2) * Math.PI;
-      this.light.position.set(
-        Math.sin(phi) * Math.sin(theta),
-        - Math.cos(phi),
-        Math.sin(phi) * Math.cos(theta)
-      ).multiplyScalar(2.0);
-      this.light.updateMatrix();
-      this.light.updateMatrixWorld();
+      const lerp = clamp((this._autoLightTimeout - 2.5) / 2.5,  0.0, 1.0);
+      applySphericalCoords(this.light, theta, phi, 2.0, lerp);
     }
+    this._autoLightTimeout += delta;
 
     /* Cloud material. */
 
@@ -252,8 +255,6 @@ class App {
       case Modes.Burning:
         const burningLerp = this._interpolators.burning;
         if (burningLerp.isDone) {
-          this.light2.intensity = 0.0;
-          this.light.intensity = 0.0;
           this._mode = Modes.Recover;
         } else {
           this.light2.intensity = burningLerp.update(delta);
@@ -274,10 +275,11 @@ class App {
         break;
     }
 
-    const absorptionLerp = this._interpolators.absorption;
-    material.absorption = absorptionLerp.update(elapsed + PI_OVER_2);
-    const windowMaxLerp = this._interpolators.windowMax;
-    material.windowMax = windowMaxLerp.update(elapsed - PI_OVER_2);
+    material.absorption = 0.4;
+    // const absorptionLerp = this._interpolators.absorption;
+    // material.absorption = absorptionLerp.update(elapsed + PI_OVER_2);
+    // const windowMaxLerp = this._interpolators.windowMax;
+    // material.windowMax = windowMaxLerp.update(elapsed - PI_OVER_2);
   }
 
   render() {
@@ -285,40 +287,52 @@ class App {
   }
 
   onMouseMove(e) {
-    this._autoLightControl = false;
+    // this._autoLightControl = false;
     this._mouse.update(e);
 
     const theta = this._mouse.xNorm * PI_OVER_2;
     const phi = (this._mouse.yNorm * 0.5 + 0.5) * Math.PI;
 
-    this.light.position.set(
-      Math.sin(phi) * Math.sin(theta),
-      - Math.cos(phi),
-      Math.sin(phi) * Math.cos( theta )
-    ).multiplyScalar(2.0);
-    this.light.updateMatrix();
-    this.light.updateMatrixWorld();
+    const lerp = this._autoLightTimeout > 0.0 ? 0.5 : 1.0;
+    applySphericalCoords(this.light, theta, phi, 2.0, lerp);
+
+    this._autoLightTimeout = 0.0;
   }
 
-  _onResize(entry) {
-    const rect = entry.contentRect;
-    const asp = rect.width / rect.height;
-    const invAsp = rect.height / rect.width;
+  resize(width, height) {
+    const asp = width / height;
+    const invAsp = height / width;
 
     this._mouse.resize();
-    this._renderer.setSize(rect.width, rect.height, false);
+    this._renderer.setSize(width, height, false);
     this.camera.aspect = asp;
     this.camera.updateProjectionMatrix();
 
     const factor = invAsp * invAsp;
-    this.camera.position.set(
-      0.0,
-      clamp(factor * 0.25, 0.1, 0.35),
-      clamp(factor, 1.0, 2.0)
-    );
-    console.log(`${this.camera.position.x}, ${this.camera.position.y}, ${this.camera.position.z}`);
+    // this.camera.position.set(
+    //   0.0,
+    //   clamp(factor * 0.25, 0.1, 0.35),
+    //   clamp(factor, 1.0, 2.0)
+    // );
+    // console.log(`${this.camera.position.x}, ${this.camera.position.y}, ${this.camera.position.z}`);
   }
 
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Utils
+///////////////////////////////////////////////////////////////////////////////
+
+function applySphericalCoords(object3D, theta, phi, radius = 1.0, lerp = 1.0) {
+  const vec = gVector3.set(
+    Math.sin(phi) * Math.sin(theta),
+    - Math.cos(phi),
+    Math.sin(phi) * Math.cos(theta)
+  ).multiplyScalar(radius);
+
+  object3D.position.lerp(vec, lerp);
+  object3D.updateMatrix();
+  object3D.updateMatrixWorld();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

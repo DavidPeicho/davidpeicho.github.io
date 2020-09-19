@@ -52,6 +52,9 @@ export class SinInterpolator {
 
 }
 
+/**
+ * Simple interpolation class for scalar values.
+ */
 export class Interpolator {
 
   constructor(params = {}) {

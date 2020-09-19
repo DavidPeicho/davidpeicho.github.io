@@ -2,6 +2,14 @@
     {{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/home.scss" "dest" "css/home.css") }}
 {{ end }}
 
+{{ define "pre-main" }}
+
+<div class="canvas-container">
+  <canvas></canvas>
+</div>
+
+{{ end }}
+
 {{ define "main" }}
 
 <div class="splash-container">
@@ -17,10 +25,6 @@
     {{ partial "social-icons.html" .}}
   </div>
 
-</div>
-
-<div class="canvas-container">
-  <canvas></canvas>
 </div>
 
 {{ end }}

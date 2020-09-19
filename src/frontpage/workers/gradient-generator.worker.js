@@ -8,6 +8,14 @@ onmessage = (event) => {
   const voxelPerSlice = width * height;
   const voxelCount = width * height * depth;
 
+  /**
+   * Computes the flattened index (0...voxelCount - 1) of a cartesian
+   * coordinates tuple
+   *
+   * @param {number} x - Cartesian x-coordinate
+   * @param {number} y - Cartesian y-coordinate
+   * @param {number} z - Cartesian z-coordinate
+   */
   function getIndex(x, y, z) {
     x = clamp(x, 0, width - 1);
     y = clamp(y, 0, height - 1);
@@ -16,8 +24,6 @@ onmessage = (event) => {
   }
 
   const gradientBuffer = new Uint8Array(voxelCount * 3);
-
-
   const gradient = new Vector3();
 
   for (let i = 0; i < voxelCount; ++i) {

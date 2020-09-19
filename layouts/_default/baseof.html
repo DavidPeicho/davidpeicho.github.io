@@ -7,8 +7,9 @@
 
 <body>
   {{ partial "burger.html" .}}
-
   {{ partial "nav.html" .}}
+
+  {{ block "pre-main" . }} {{ end }}
 
   <main>
     {{ block "main" . }} {{ end }}
