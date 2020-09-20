@@ -1,3 +1,10 @@
+/**
+ * This worker generates a gradient buffer  of a 3D texture.
+ *
+ * A copy of the texture is sent to the worker, so the host is still able
+ * to use the texture while the generation is ongoing.
+ */
+
 import { Vector3 } from 'three/src/math/Vector3';
 
 import { clamp } from '../math';

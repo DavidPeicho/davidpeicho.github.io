@@ -1,5 +1,7 @@
 /** Constants */
 
+import { Vector3 } from 'three';
+
 export const EPSILON = 0.000001;
 export const PI_OVER_2 = Math.PI * 0.5;
 
@@ -11,6 +13,25 @@ export function lerpColor(base, colorA, colorB, coeff) {
   base.r = colorA.r + (colorB.r - colorA.r) * coeff;
   base.g = colorA.g + (colorB.g - colorA.g) * coeff;
   base.b = colorA.b + (colorB.b - colorA.b) * coeff;
+}
+
+const gVector3 = new Vector3();
+export function applySphericalCoords(
+  object3D,
+  theta,
+  phi,
+  radius = 1.0,
+  lerp = 1.0
+) {
+  const vec = gVector3.set(
+    Math.sin(phi) * Math.sin(theta),
+    - Math.cos(phi),
+    Math.sin(phi) * Math.cos(theta)
+  ).multiplyScalar(radius);
+
+  object3D.position.lerp(vec, lerp);
+  object3D.updateMatrix();
+  object3D.updateMatrixWorld();
 }
 
 /** Easing */

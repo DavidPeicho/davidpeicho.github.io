@@ -7,9 +7,8 @@ import {
   WebGLRenderer,
   PointLight,
   RGBFormat,
-  Clock,
-  Vector3,
-} from "three";
+  Clock
+} from 'three';
 
 import { Cloud, createPerlinTexture } from './cloud';
 
@@ -18,10 +17,11 @@ import {
   SinInterpolator,
   easeQuadraticOut,
   Interpolator,
+  applySphericalCoords,
   clamp,
   lerpColor,
   easeQuadratic
-} from "./math";
+} from './math';
 
 import GradientWorker from './workers/gradient-generator.worker.js';
 
@@ -29,11 +29,18 @@ import GradientWorker from './workers/gradient-generator.worker.js';
 
 const CLOUD_BASE_COLOR = (new Color(0x7188a8)).convertSRGBToLinear();
 const CLOUD_BURNT_COLOR = (new Color(0x292929)).convertSRGBToLinear();
+const LIGHT_COLOR = (new Color(0xeb4d4b)).convertSRGBToLinear();
+const BURNING_LIGHT_COLOR = (new Color(0xe67e22)).convertSRGBToLinear();
 
 const AUTO_LIGHT_TIMEOUT = 1.25;
 const LIGHT_INTENSITY = 1.5;
 
-const CloudConfigurations = {
+const Configs = {
+  Cloud: 'cloud',
+  CloudInverse: 'cloud_inverse'
+};
+
+const CloudConfig = {
   camera: {
     fov: 45
   },
@@ -47,7 +54,7 @@ const CloudConfigurations = {
   }
 };
 
-const InvertCloudConfigurations = {
+const InvertCloudConfig = {
   camera: {
     fov: 70
   },
@@ -66,10 +73,6 @@ const Modes = {
   Burning: 1,
   Recover: 2
 };
-
-/** Globals */
-
-const gVector3 = new Vector3();
 
 class Mouse {
 
@@ -120,29 +123,13 @@ class App {
     this.camera.updateMatrixWorld();
 
     this.cloud = new Cloud();
+    const material = this.cloud.material;
+    material.baseColor.copy(CLOUD_BASE_COLOR);
 
-    this.light = new PointLight();
-    this.light.color = new Color(0xeb4d4b).convertSRGBToLinear();
-    this.light.intensity = LIGHT_INTENSITY;
-    this.light.position.copy(this.cloud.position);
-    this.light.translateX(-0.5).translateY(0.5).translateZ(1.5);
-    this.light.updateMatrix();
-    this.light.updateMatrixWorld();
-    this.light.decay = 1.25;
-    this.light.distance = 2.75;
-
-    this.light2 = new PointLight();
-    this.light2.color = new Color(0xe67e22).convertSRGBToLinear();
-    this.light2.intensity = 0.0;
-    this.light2.position.copy(this.cloud.position);
-    this.light2.translateX(-1.0).translateY(0.5).translateZ(1.5);
-    this.light2.updateMatrix();
-    this.light2.updateMatrixWorld();
-    this.light2.decay = 1.25;
-    this.light2.distance = 2.75;
+    this.light = createPointLight(LIGHT_COLOR, LIGHT_INTENSITY, -0.5, 0.5, 1.5);
 
     this.scene.background = new Color(0xeeeeee);
-    this.scene.add(this.cloud, this.light, this.light2);
+    this.scene.add(this.cloud, this.light);
 
     this._renderer = null;
     this._clock = new Clock();
@@ -175,14 +162,11 @@ class App {
       recover: new Interpolator({
         min: 0.0,
         max: 1.0,
-        time: 3.0,
-        delay: 0.75,
+        time: 2.5,
+        delay: 0.25,
         easingFunction: easeQuadratic
       })
     };
-
-    const material = this.cloud.material;
-    material.baseColor.copy(CLOUD_BASE_COLOR);
 
     const volume = createPerlinTexture({
       scale: 0.09, ellipse: { a: 0.6, b: 0.3, c: 0.35 }
@@ -212,9 +196,12 @@ class App {
       worker.terminate();
     };
 
-    // this.setConfiguration(Math.random() < 0.5 ? CloudConfigurations : InvertCloudConfigurations);
-    // this.config = Object.assign({}, InvertCloudConfigurations);
-    this.config = Object.assign({}, CloudConfigurations);
+    const url = new URL(window.location.href || '');
+    let id = url.searchParams.get('config');
+    if (!id) { id = Math.random() < 0.5 ? Configs.Cloud : Configs.CloudInverse }
+    this.config = Object.assign({},
+      id === Configs.Cloud ? CloudConfig : InvertCloudConfig
+    );
     this.setConfiguration(this.config);
   }
 
@@ -241,8 +228,8 @@ class App {
       const interpolator = this._interpolators.burning;
       if (interpolator.isDone || !interpolator.isRunning) {
         this._mode = Modes.Burning;
-        this.light2.intensity = 0.0;
         this.light.intensity = 0.0;
+        this.light.color.copy(BURNING_LIGHT_COLOR);
         this.cloud.material.baseColor.copy(CLOUD_BURNT_COLOR);
         interpolator.reset();
       }
@@ -290,8 +277,9 @@ class App {
         const burningLerp = this._interpolators.burning;
         if (burningLerp.isDone) {
           this._mode = Modes.Recover;
+          this.light.color.copy(LIGHT_COLOR);
         } else {
-          this.light2.intensity = burningLerp.update(delta);
+          this.light.intensity = burningLerp.update(delta);
         }
         break;
       case Modes.Recover:
@@ -351,11 +339,10 @@ class App {
 
   resize(width, height) {
     const asp = width / height;
-    const invAsp = height / width;
     this._mouse.resize();
     this._renderer.setSize(width, height, false);
     this.camera.aspect = asp;
-    this.camera.position.z = clamp(invAsp, 1.5, 3.0);
+    this.camera.position.z = clamp(height / width, 1.5, 3.0);
     this.camera.updateProjectionMatrix();
     this.camera.updateMatrixWorld();
   }
@@ -366,16 +353,16 @@ class App {
 // Utils
 ///////////////////////////////////////////////////////////////////////////////
 
-function applySphericalCoords(object3D, theta, phi, radius = 1.0, lerp = 1.0) {
-  const vec = gVector3.set(
-    Math.sin(phi) * Math.sin(theta),
-    - Math.cos(phi),
-    Math.sin(phi) * Math.cos(theta)
-  ).multiplyScalar(radius);
-
-  object3D.position.lerp(vec, lerp);
-  object3D.updateMatrix();
-  object3D.updateMatrixWorld();
+function createPointLight(color, intensity, x = 0, y = 0, z = 0) {
+  const light = new PointLight();
+  light.color.copy(color);
+  light.intensity = intensity;
+  light.decay = 1.25;
+  light.distance = 2.75;
+  light.position.set(x, y, z);
+  light.updateMatrix();
+  light.updateMatrixWorld();
+  return light;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -391,6 +378,5 @@ window.onload = function () {
     app.render();
     window.requestAnimationFrame(render);
   }
-
   render();
 };
