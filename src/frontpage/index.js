@@ -7,11 +7,10 @@ import {
   WebGLRenderer,
   PointLight,
   RGBFormat,
-  Clock
+  Clock, InterpolationModes
 } from 'three';
 
 import { Cloud, createPerlinTexture } from './cloud';
-
 import {
   PI_OVER_2,
   SinInterpolator,
@@ -22,11 +21,13 @@ import {
   lerpColor,
   easeQuadratic
 } from './math';
+import { Mouse } from './inputs';
 
 import GradientWorker from './workers/gradient-generator.worker.js';
 
 /** Constants */
 
+const BACKGROUND_COLOR = (new Color(0xeeeeee)).convertSRGBToLinear();
 const CLOUD_BASE_COLOR = (new Color(0x7188a8)).convertSRGBToLinear();
 const CLOUD_BURNT_COLOR = (new Color(0x292929)).convertSRGBToLinear();
 const LIGHT_COLOR = (new Color(0xeb4d4b)).convertSRGBToLinear();
@@ -36,86 +37,56 @@ const AUTO_LIGHT_TIMEOUT = 1.25;
 const LIGHT_INTENSITY = 1.5;
 
 const Configs = {
-  Cloud: 'cloud',
-  CloudInverse: 'cloud_inverse'
-};
 
-const CloudConfig = {
-  camera: {
-    fov: 45
-  },
   cloud: {
-    absorption: { min: 0.15, max: 0.3 },
-    decay: { min: 1.2 , max: 1.45 },
-    windowMin: 0.1,
-    windowMax: 0.28,
-    inverse: false,
-    steps: 100
-  }
-};
-
-const InvertCloudConfig = {
-  camera: {
-    fov: 70
+    camera: { fov: 45 },
+    cloud: {
+      absorption: { min: 0.15, max: 0.3 },
+      decay: { min: 1.2 , max: 1.45 },
+      windowMin: 0.1,
+      windowMax: 0.28,
+      inverse: false,
+      steps: 100
+    }
   },
-  cloud: {
-    absorption: { min: 0.04, max: 0.125 },
-    decay: { min: 6.0 , max: 8.0 },
-    windowMin: 0.2,
-    windowMax: 0.8,
-    inverse: true,
-    steps: 200
+
+  cloudInverse: {
+    camera: { fov: 70 },
+    cloud: {
+      absorption: { min: 0.04, max: 0.1 },
+      decay: { min: 6.0 , max: 8.0 },
+      windowMin: 0.3,
+      windowMax: 0.85,
+      inverse: true,
+      steps: 200
+    }
+  },
+
+  simple: {
+    camera: { fov: 70 }
   }
+
 };
 
-const Modes = {
+const States = {
   Idle: 0,
   Burning: 1,
   Recover: 2
 };
 
-class Mouse {
-
-  constructor(domElement) {
-    this._x = 0;
-    this._y = 0;
-    this._xnorm = 0.0;
-    this._ynorm = 0.0;
-    this._offset = { x: domElement.offsetLeft, y: domElement.offsetTop };
-    this._dimensions = {
-      width: domElement.offsetWidth,
-      height: domElement.offsetHeight
-    };
-    this._domElement = domElement;
-  }
-
-  update(e) {
-    const x = e.clientX - this._offset.x;
-    const y = e.clientY - this._offset.y;
-    const dim = this._dimensions;
-    this._x = x;
-    this._y = y;
-    this._xnorm = (x / dim.width) * 2.0 - 1.0;
-    this._ynorm = -(y / dim.height) * 2.0 + 1.0;
-  }
-
-  resize() {
-    const domElement = this._domElement;
-    this._dimensions.width = domElement.offsetWidth,
-    this._dimensions.height = domElement.offsetHeight
-  }
-
-  get x() { return this._x; }
-  get y() { return this._y; }
-  get xNorm() { return this._xnorm; }
-  get yNorm() { return this._ynorm; }
-
-}
-
+/**
+ * This class manages the state of the scene, the states, and all data used
+ * for the demo.
+ */
 class App {
 
   constructor() {
-    this.scene = new Scene();
+    const canvas = document.getElementsByTagName('canvas')[0];
+
+    this.renderer = new WebGLRenderer({ canvas });
+    this.renderer.setPixelRatio(0.5);
+
+    const configId = getConfigId(this.renderer.capabilities.isWebGL2);
 
     this.camera = new PerspectiveCamera();
     this.camera.position.z = 1.5;
@@ -126,34 +97,42 @@ class App {
     const material = this.cloud.material;
     material.baseColor.copy(CLOUD_BASE_COLOR);
 
-    this.light = createPointLight(LIGHT_COLOR, LIGHT_INTENSITY, -0.5, 0.5, 1.5);
+    this.light = new PointLight(LIGHT_COLOR.getHex(), LIGHT_INTENSITY, 2.75, 1.25);
+    this.light.position.set(-0.5, 0.5, 1.5);
+    this.light.updateMatrix();
+    this.light.updateMatrixWorld();
 
-    this.scene.background = new Color(0xeeeeee);
+    this.scene = new Scene();
+    this.scene.background = (new Color()).copy(BACKGROUND_COLOR);
     this.scene.add(this.cloud, this.light);
 
-    this._renderer = null;
     this._clock = new Clock();
-    this._mouse = null;
-    this._autoLightControl = true;
-    this._mode = Modes.Idle;
+    this._mouse = new Mouse();
+    this._state = States.Idle;
 
+    /** If `true`, the light can be controlled using the mouse */
+    this._controlsEnabled = true;
+    /** Tracks time to start light movement interpolation */
     this._autoLightTimeout = 0.0;
 
+    /**
+     * Interpolators used for parameters changing with time.
+     *
+     * Those interpolators are used to modulate absorption, scale, light
+     * positions, etc...
+     */
     this._interpolators = {
+      scale: new SinInterpolator({ min: 0.95, max: 1.05, speed: 0.1 }),
+      decay: new SinInterpolator({ min: 1.0, max: 2.5, speed: 1.0 }),
       absorption: new SinInterpolator({
         min: 0.25,
         max: 0.35,
         speed: 1.0,
         easingFunction: easeQuadraticOut
       }),
-      decay: new SinInterpolator({
-        min: 1.0,
-        max: 2.5,
-        speed: 1.0
-      }),
       burning: new Interpolator({
         min: 0.0,
-        max: 14.0,
+        max: 15.0,
         time: 3.0,
         outTime: 1.0,
         easingFunction: easeQuadraticOut,
@@ -163,91 +142,65 @@ class App {
         min: 0.0,
         max: 1.0,
         time: 2.5,
-        delay: 0.25,
+        delay: 0.75,
         easingFunction: easeQuadratic
       })
     };
 
-    const volume = createPerlinTexture({
-      scale: 0.09, ellipse: { a: 0.6, b: 0.3, c: 0.35 }
-    });
-    this.cloud.material.volume = volume;
-
-    const worker = new GradientWorker();
-    worker.postMessage({
-      width: volume.image.width,
-      height: volume.image.height,
-      depth: volume.image.depth,
-      buffer: volume.image.data
-    });
-    worker.onmessage = (e) => {
-      const texture = new DataTexture3D(
-        new Uint8Array(e.data),
-        volume.image.width,
-        volume.image.height,
-        volume.image.depth
-      );
-      texture.format = RGBFormat;
-      texture.minFilter = LinearFilter;
-      texture.magFilter = LinearFilter;
-      texture.unpackAlignment = 1;
-
-      this.cloud.material.gradientMap = texture;
-      worker.terminate();
-    };
-
-    const url = new URL(window.location.href || '');
-    let id = url.searchParams.get('config');
-    if (!id) { id = Math.random() < 0.5 ? Configs.Cloud : Configs.CloudInverse }
-    this.config = Object.assign({},
-      id === Configs.Cloud ? CloudConfig : InvertCloudConfig
-    );
+    this.config = Object.assign({}, Configs[configId]);
     this.setConfiguration(this.config);
-  }
 
-  init() {
-    const canvas = document.getElementsByTagName("canvas")[0];
-    const context = canvas.getContext("webgl2");
+    this._createVolume();
 
-    this._renderer = new WebGLRenderer({ canvas, context });
-    this._renderer.setPixelRatio(0.25);
+    this._mouse.domElement = document.body;
+    this.resize(canvas.offsetWidth, canvas.offsetHeight);
 
-    // Setup observer to track canvas bounds.
-    const resizeObserver = new ResizeObserver(entries => {
-      if (entries.length > 0) {
+    const onResize = new ResizeObserver(entries => {
+      if (entries.length > 0 && entries[0].contentRect) {
         const rect = entries[0].contentRect;
         this.resize(rect.width, rect.height);
       }
     });
-    resizeObserver.observe(canvas);
+    onResize.observe(canvas);
 
-    const container = document.body;
-    this._mouse = new Mouse(container);
+    /** Mouse Events. */
 
-    container.addEventListener('mousedown', () => {
-      const interpolator = this._interpolators.burning;
-      if (interpolator.isDone || !interpolator.isRunning) {
-        this._mode = Modes.Burning;
+    document.body.addEventListener('mousedown', () => {
+      const burningLerp = this._interpolators.burning;
+      if (burningLerp.isDone || !burningLerp.isRunning) {
+        this._state = States.Burning;
         this.light.intensity = 0.0;
         this.light.color.copy(BURNING_LIGHT_COLOR);
         this.cloud.material.baseColor.copy(CLOUD_BURNT_COLOR);
-        interpolator.reset();
+        burningLerp.reset();
+        this._interpolators.recover.reset();
+        this._controlsEnabled = false;
+        this._autoLightTimeout = 0.0;
       }
     })
-    container.addEventListener("mousemove", this.onMouseMove.bind(this));
-
+    document.body.addEventListener('mousemove', (event) => {
+      if (this._controlsEnabled) {
+        this._autoLightTimeout = 0.0;
+        this._mouse.update(event);
+        const theta = this._mouse.xNorm * PI_OVER_2;
+        const phi = (this._mouse.yNorm * 0.5 + 0.5) * Math.PI;
+        applySphericalCoords(this.light, theta, phi, 2.0);
+      }
+    });
     this._clock.start();
-
-    this.resize(canvas.offsetWidth, canvas.offsetHeight);
   }
 
   update() {
     const delta = this._clock.getDelta();
     const elapsed = this._clock.getElapsedTime();
 
-    const scaleSpeed = 0.002;
-    const scale = 0.95 + (Math.sin(elapsed * scaleSpeed - PI_OVER_2) * 0.5 + 0.5) * 0.1;
+    const absorptionLerp = this._interpolators.absorption;
+    const decayLerp = this._interpolators.decay;
+    const scaleLerp = this._interpolators.scale;
 
+    /* Cloud Position & Scale. */
+
+    const scale = scaleLerp.update(elapsed);
     this.cloud.scale.set(scale, scale, scale);
     this.cloud.rotation.y += delta * 0.15;
     this.cloud.updateMatrix();
@@ -272,17 +225,18 @@ class App {
 
     const material = this.cloud.material;
 
-    switch (this._mode) {
-      case Modes.Burning:
+    switch (this._state) {
+      case States.Burning:
         const burningLerp = this._interpolators.burning;
         if (burningLerp.isDone) {
-          this._mode = Modes.Recover;
+          this._state = States.Recover;
           this.light.color.copy(LIGHT_COLOR);
+          this._controlsEnabled = true;
         } else {
           this.light.intensity = burningLerp.update(delta);
         }
         break;
-      case Modes.Recover:
+      case States.Recover:
         const recoverLerp = this._interpolators.recover;
         const lerp = recoverLerp.update(delta);
         if (recoverLerp.isRunning) {
@@ -291,19 +245,17 @@ class App {
           this.light.intensity = lerp * LIGHT_INTENSITY;
         } else if (recoverLerp.isDone) {
           recoverLerp.reset();
-          this._mode = Modes.Idle;
+          this._state = States.Idle;
         }
         break;
     }
 
-    const absorptionLerp = this._interpolators.absorption;
-    const decayLerp = this._interpolators.decay;
     material.absorption = absorptionLerp.update(elapsed);
     material.decay = decayLerp.update(elapsed);
   }
 
   render() {
-    this._renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera);
   }
 
   setConfiguration(config) {
@@ -326,43 +278,48 @@ class App {
     );
   }
 
-  onMouseMove(e) {
-    this._mouse.update(e);
-
-    const theta = this._mouse.xNorm * PI_OVER_2;
-    const phi = (this._mouse.yNorm * 0.5 + 0.5) * Math.PI;
-
-    applySphericalCoords(this.light, theta, phi, 2.0);
-
-    this._autoLightTimeout = 0.0;
-  }
-
   resize(width, height) {
     const asp = width / height;
     this._mouse.resize();
-    this._renderer.setSize(width, height, false);
+    this.renderer.setSize(width, height, false);
     this.camera.aspect = asp;
     this.camera.position.z = clamp(height / width, 1.5, 3.0);
     this.camera.updateProjectionMatrix();
     this.camera.updateMatrixWorld();
   }
 
+  _createVolume() {
+    const volume = createPerlinTexture({
+      scale: 0.09,
+      ellipse: { a: 0.6, b: 0.3, c: 0.35 }
+    });
+    const { width, height, depth, data } = volume.image;
+    const worker = new GradientWorker();
+    worker.postMessage({ width, height, depth, buffer: data });
+    worker.onmessage = (e) => {
+      const texture = new DataTexture3D(new Uint8Array(e.data), width, height, depth);
+      texture.format = RGBFormat;
+      texture.minFilter = LinearFilter;
+      texture.magFilter = LinearFilter;
+      texture.unpackAlignment = 1;
+      this.cloud.material.gradientMap = texture;
+      worker.terminate();
+    };
+    this.cloud.material.volume = volume;
+  }
+
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// Utils
-///////////////////////////////////////////////////////////////////////////////
-
-function createPointLight(color, intensity, x = 0, y = 0, z = 0) {
-  const light = new PointLight();
-  light.color.copy(color);
-  light.intensity = intensity;
-  light.decay = 1.25;
-  light.distance = 2.75;
-  light.position.set(x, y, z);
-  light.updateMatrix();
-  light.updateMatrixWorld();
-  return light;
+function getConfigId(supportWebGL2 = false) {
+  const url = new URL(window.location.href || '');
+  let id = url.searchParams.get('config');
+  if (!id) {
+    id = Math.random() < 0.5 ? 'cloud' : 'cloudInverse';
+  } else if (!(id in Configs)) {
+    id = 'cloud';
+  }
+  if (id.startsWith('cloud') && !supportWebGL2) { id = 'simple'; }
+  return id;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -371,8 +328,6 @@ function createPointLight(color, intensity, x = 0, y = 0, z = 0) {
 
 window.onload = function () {
   const app = new App();
-  app.init();
-
   function render() {
     app.update();
     app.render();
