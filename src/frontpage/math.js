@@ -1,7 +1,6 @@
-/** Constants */
-
 import { Vector3 } from 'three';
 
+/** Constants */
 export const EPSILON = 0.000001;
 export const PI_OVER_2 = Math.PI * 0.5;
 
@@ -16,6 +15,17 @@ export function lerpColor(base, colorA, colorB, coeff) {
 }
 
 const gVector3 = new Vector3();
+
+/**
+ * Applies the given Spherical Coordinates parameters to the cartesian
+ * position of a `THREE.Object3D` instance
+ *
+ * @param {THREE.Object3D} object3D - The instance to update the position of
+ * @param {number} theta - Azimuthal angle
+ * @param {number} phi - Polar angle
+ * @param {number} [radius=1.0] - Distance from the origin
+ * @param {number} [lerp=1.0] - Lerping factor
+ */
 export function applySphericalCoords(
   object3D,
   theta,
@@ -36,75 +46,73 @@ export function applySphericalCoords(
 
 /** Easing */
 
-export function easeLinear(v) {
-  return v;
+export function easeLinear(t) {
+  return t;
 }
 export function easeQuadratic(t) {
   return t * t;
 }
-export function easeQuadraticOut(v) {
-  return v * (2.0 - v);
+export function easeQuadraticOut(t) {
+  return t * (2.0 - t);
+}
+export function sinNorm(t) {
+  return Math.sin(t) * 0.5 + 0.5;
 }
 
-export class SinInterpolator {
+/**
+ * Abstract Interpolator
+ */
+export class AInterpolator {
 
   constructor(params = {}) {
     const {
       min = 0.0,
       max = 1.0,
-      speed = 1.0,
       easingFunction = easeLinear
     } = params;
 
     this.min = min;
     this.max = max;
-    this.speed = speed;
     this.easingFunction = easingFunction;
   }
 
-  update(value) {
-    const range = this.max - this.min;
-    const v = clamp(
-      this.easingFunction(Math.sin(value * this.speed) * 0.5 + 0.5),
-      0.0,
-      1.0
-    );
-    return this.min + v * range;
-  }
+  update() { }
 
   setMinMax(min, max) {
     this.min = min;
     this.max = max;
+    return this;
+  }
+
+  get range() {
+    return this.max - this.min;
   }
 
 }
 
 /**
- * Simple interpolation class for scalar values.
+ * Time-constrained interpolator.
+ *
+ * Interpolates a value on a given time range.
  */
-export class Interpolator {
+export class Interpolator extends AInterpolator {
 
   constructor(params = {}) {
+    super(params);
+
     const {
       delay = 0.0,
       time = 1.0,
       outTime = 0.0,
-      min = 0.0,
-      max = 1.0,
-      easingFunction = easeLinear,
       easingOutFunction = null
     } = params;
 
     this.time = time;
     this.outTime = outTime || time;
     this.delay = delay;
-    this.min = min;
-    this.max = max;
-    this.easingFunction = easingFunction;
-    this.easingOutFunction = easingOutFunction || easingFunction;
+    this.easingOutFunction = easingOutFunction || this.easingFunction;
 
     this._clock = 0.0;
-
     this._running = false;
     this._done = false;
   }
@@ -113,10 +121,11 @@ export class Interpolator {
     this._clock = 0.0;
     this._running = false;
     this._done = false;
+    return this;
   }
 
   update(delta) {
-    const range = this.max - this.min;
+    const range = this.range;
     const time = this.time;
     const delay = this.delay;
 
@@ -143,15 +152,31 @@ export class Interpolator {
     return this.min + v * range;
   }
 
-  setMinMax(min, max) {
-    this.min = min;
-    this.max = max;
+  get clock() { return this._clock; }
+  get isRunning() { return this._running; }
+  get isDone() { return this._done; }
+
+  get lerp() {
+    return clamp((this._clock - this.delay) / this.time, 0.0, 1.0);
   }
 
-  get clock() { return this._clock; }
+}
 
-  get isRunning() { return this._running; }
+/**
+ * Unconstrained interpolator. Interpolates a value via global time variable.
+ *
+ * **NOTE**: using an AbsoluteInterpolator, there is no notion of "start" or
+ * "end".
+ */
+export class AbsoluteInterpolator extends Interpolator {
 
-  get isDone() { return this._done; }
+  constructor(params = {}) {
+    super(params);
+  }
+
+  update(elapsed) {
+    const v = clamp(this.easingFunction(elapsed), 0.0, 1.0);
+    return this.min + v * this.range;
+  }
 
 }

@@ -15,43 +15,29 @@ import {
 import { Cloud, createPerlinTexture } from './cloud';
 import {
   PI_OVER_2,
-  SinInterpolator,
-  easeQuadraticOut,
+  AbsoluteInterpolator,
   Interpolator,
+  easeQuadraticOut,
   applySphericalCoords,
   clamp,
   lerpColor,
-  easeQuadratic
+  easeQuadratic,
+  sinNorm
 } from './math';
 import { Mouse } from './inputs';
 
 import GradientWorker from './workers/gradient-generator.worker.js';
 
-/** Constants */
-
-const BACKGROUND_COLOR = (new Color(0xeeeeee)).convertSRGBToLinear();
+const WEBGL2_DISCLAIMER_ID = 'missingWebGL2';
+const BACKGROUND_COLOR = (new Color(0xf7f7f7)).convertSRGBToLinear();
 const CLOUD_BASE_COLOR = (new Color(0x7188a8)).convertSRGBToLinear();
 const CLOUD_BURNT_COLOR = (new Color(0x292929)).convertSRGBToLinear();
 const LIGHT_COLOR = (new Color(0xeb4d4b)).convertSRGBToLinear();
 const BURNING_LIGHT_COLOR = (new Color(0xe67e22)).convertSRGBToLinear();
+/** Minimum time with no interaction before the light is auto controlled. */
 const AUTO_LIGHT_TIMEOUT = 1.25;
+/** Default intensity of the point light. */
 const LIGHT_INTENSITY = 1.5;
-
-class SimpleDemo {
-
-  constructor(app) {
-    const material = new MeshNormalMaterial();
-    material.flatShading = true;
-    app.camera.fov = 55;
-    app.camera.updateProjectionMatrix();
-    this.object3D = new Mesh(new OctahedronBufferGeometry(0.5, 2), material);
-  }
-
-  onInteract() { }
-  onMove() { }
-  update() { }
-
-}
 
 class CloudDemo {
 
@@ -76,16 +62,15 @@ class CloudDemo {
      * positions, etc...
      */
     this._interpolators = {
-      decay: new SinInterpolator({
+      decay: new AbsoluteInterpolator({
         min: decay.min,
         max: decay.max,
-        speed: 1.0
+        easingFunction: sinNorm
       }),
-      absorption: new SinInterpolator({
+      absorption: new AbsoluteInterpolator({
         min: absorption.min,
         max: absorption.max,
-        speed: 1.0,
-        easingFunction: easeQuadraticOut
+        easingFunction: sinNorm
       }),
       burning: new Interpolator({
         min: 0.0,
@@ -115,6 +100,7 @@ class CloudDemo {
 
     this._app = app;
     this._state = CloudDemo.States.Idle;
+    this._colorBeforeBurn = new Color();
     this._createVolume();
   }
 
@@ -124,13 +110,12 @@ class CloudDemo {
     const burningLerp = this._interpolators.burning;
     if (burningLerp.isDone || !burningLerp.isRunning) {
       this._state = CloudDemo.States.Burning;
-      light.intensity = 0.0;
       light.color.copy(BURNING_LIGHT_COLOR);
-      this.object3D.material.baseColor.copy(CLOUD_BURNT_COLOR);
-      burningLerp.reset();
-      this._interpolators.recover.reset();
       app.controlsEnabled = false;
       app.autoLightTimeout = 0.0;
+      burningLerp.reset();
+      this._interpolators.recover.reset();
+      this._colorBeforeBurn.copy(this.object3D.material.baseColor);
     }
   }
 
@@ -162,6 +147,8 @@ class CloudDemo {
           this._state = CloudDemo.States.Recover;
         } else {
           app.light.intensity = burningLerp.update(delta);
+          const lerp = burningLerp.lerp;
+          lerpColor(material.baseColor, this._colorBeforeBurn, CLOUD_BURNT_COLOR, lerp);
         }
         break;
       case CloudDemo.States.Recover:
@@ -178,25 +165,32 @@ class CloudDemo {
         break;
     }
 
-    material.absorption = absorptionLerp.update(elapsed);
+    material.absorption = absorptionLerp.update(elapsed * 1.1);
     material.decay = decayLerp.update(elapsed);
   }
 
+  /**
+   * Creates the 3D cloud texture, and starts the worker in charge of
+   * computing the gradients texture in the background.
+   */
   _createVolume() {
     const volume = createPerlinTexture({ scale: 0.09 });
+    this.object3D.material.volume = volume;
+
     const { width, height, depth, data } = volume.image;
     const worker = new GradientWorker();
-    worker.postMessage({ width, height, depth, buffer: data });
-    worker.onmessage = (e) => {
-      const texture = new DataTexture3D(new Uint8Array(e.data), width, height, depth);
-      texture.format = RGBFormat;
-      texture.minFilter = LinearFilter;
-      texture.magFilter = LinearFilter;
-      texture.unpackAlignment = 1;
-      this.object3D.material.gradientMap = texture;
-      worker.terminate();
-    };
-    this.object3D.material.volume = volume;
+    window.setTimeout(() => {
+      worker.postMessage({ width, height, depth, buffer: data });
+      worker.onmessage = (e) => {
+        const texture = new DataTexture3D(new Uint8Array(e.data), width, height, depth);
+        texture.format = RGBFormat;
+        texture.minFilter = LinearFilter;
+        texture.magFilter = LinearFilter;
+        texture.unpackAlignment = 1;
+        this.object3D.material.gradientMap = texture;
+        worker.terminate();
+      };
+    }, 300);
   }
 
 }
@@ -207,24 +201,39 @@ CloudDemo.States = {
 };
 CloudDemo.Parameters = {
   cloud: {
-    fov: 45,
+    fov: 40,
     absorption: { min: 0.15, max: 0.3 },
     decay: { min: 1.2 , max: 1.45 },
     windowMin: 0.1,
     windowMax: 0.28,
     inverse: false,
-    steps: 100
+    steps: 65
   },
   cloudInverse: {
-    fov: 70,
-    absorption: { min: 0.04, max: 0.1 },
-    decay: { min: 6.0 , max: 8.0 },
+    fov: 60,
+    absorption: { min: 0.08, max: 0.16 },
+    decay: { min: 5.5 , max: 7.5 },
     windowMin: 0.3,
     windowMax: 0.85,
     inverse: true,
-    steps: 200
+    steps: 100
   }
 };
+
+class SimpleDemo {
+
+  constructor(app) {
+    const material = new MeshNormalMaterial();
+    material.flatShading = true;
+    app.camera.updateProjectionMatrix();
+    this.object3D = new Mesh(new OctahedronBufferGeometry(0.5, 2), material);
+  }
+
+  onInteract() { }
+  onMove() { }
+  update() { }
+
+}
 
 /**
  * This class manages the state of the scene, the states, and all data used
@@ -232,16 +241,11 @@ CloudDemo.Parameters = {
  */
 class App {
 
-  constructor() {
-    const canvas = document.getElementsByTagName('canvas')[0];
-
-    this.renderer = new WebGLRenderer({ canvas });
+  constructor(canvas) {
+    this.renderer = new WebGLRenderer({ canvas, antialias: true });
     const supportWebGL2 = this.renderer.capabilities.isWebGL2;
 
     this.camera = new PerspectiveCamera();
-    this.camera.position.z = 1.5;
-    this.camera.updateMatrix();
-    this.camera.updateMatrixWorld();
 
     this.light = new PointLight(LIGHT_COLOR.getHex(), LIGHT_INTENSITY, 2.75, 1.25);
     this.light.position.set(-0.5, 0.5, 1.5);
@@ -253,20 +257,24 @@ class App {
 
     const url = new URL(window.location.href || '');
     let config = url.searchParams.get('config');
-    if (!config || !(config in CloudDemo.Parameters)) {
-      config = Math.random() < 0.5 ? 'cloud' : 'cloudInverse';
+    if (!config) { config = Math.random() < 0.5 ? 'cloud' : 'cloudInverse'; }
+    if (config.startsWith('cloud') && !supportWebGL2) {
+      config = 'simple';
+      const disclaimerElement = document.getElementById(WEBGL2_DISCLAIMER_ID);
+      if (disclaimerElement) {
+        disclaimerElement.style.display = 'initial';
+      }
     }
-    config = config.startsWith('cloud') && !supportWebGL2 ? 'simple' : config;
-    this.camera.updateProjectionMatrix();
 
     this.demo = null;
     switch (config) {
-      case 'simple':
-        this.demo = new SimpleDemo(this);
+      case 'cloud':
+      case 'cloudInverse':
+        this.demo = new CloudDemo(this, CloudDemo.Parameters[config]);
         break;
       default:
-        this.demo = new CloudDemo(this, CloudDemo.Parameters[config]);
-        this.renderer.setPixelRatio(0.5);
+        this.demo = new SimpleDemo(this);
+        this.render
         break;
     }
     this.scene.add(this.demo.object3D, this.light);
@@ -279,29 +287,14 @@ class App {
 
     this._clock = new Clock();
     this._mouse = new Mouse();
-
-    /**
-     * Interpolators used for parameters changing with time.
-     *
-     * Those interpolators are used to modulate absorption, scale, light
-     * positions, etc...
-     */
-    this._interpolators = {
-      scale: new SinInterpolator({ min: 0.95, max: 1.05, speed: 0.1 })
-    };
+    this._scaleLerp = new AbsoluteInterpolator({
+      min: 0.92,
+      max: 1.1,
+      easingFunction: sinNorm
+    });
 
     this._mouse.domElement = document.body;
     this.resize(canvas.offsetWidth, canvas.offsetHeight);
-
-    /** Resize Event. */
-
-    const onResize = new ResizeObserver(entries => {
-      if (entries.length > 0 && entries[0].contentRect) {
-        const rect = entries[0].contentRect;
-        this.resize(rect.width, rect.height);
-      }
-    });
-    onResize.observe(canvas);
 
     /** Mouse Events. */
 
@@ -323,8 +316,8 @@ class App {
 
     /* Cloud Position & Scale. */
 
-    const scaleLerp = this._interpolators.scale;
-    const scale = scaleLerp.update(elapsed);
+    const scaleLerp = this._scaleLerp;
+    const scale = scaleLerp.update(elapsed * 0.125);
     object3D.scale.set(scale, scale, scale);
     object3D.rotation.y += delta * 0.15;
     object3D.updateMatrix();
@@ -333,8 +326,8 @@ class App {
     /* Automatic Light Rotation */
 
     if (this.autoLightTimeout >= AUTO_LIGHT_TIMEOUT) {
-      const theta = Math.sin((elapsed + PI_OVER_2) * 2.0) * PI_OVER_2;
-      const phi = Math.sin(elapsed - PI_OVER_2) * Math.PI;
+      const theta = Math.sin((elapsed + PI_OVER_2) * 2.5) * PI_OVER_2;
+      const phi = Math.sin((elapsed - PI_OVER_2) * 1.35) * Math.PI;
       const lerp = clamp(
         (this.autoLightTimeout - AUTO_LIGHT_TIMEOUT) / AUTO_LIGHT_TIMEOUT,
         0.0,
@@ -356,9 +349,12 @@ class App {
     this._mouse.resize();
     this.renderer.setSize(width, height, false);
     this.camera.aspect = asp;
-    this.camera.position.z = clamp(height / width, 1.5, 3.0);
+    let f = clamp(asp < 1.0 ? 1.0 / asp : asp, 0.75, 1.0) * 1.25;
+    this.camera.position.z = 1.0 + (asp > 1.0 ? 1.0 : f);
     this.camera.updateProjectionMatrix();
+    this.camera.updateMatrix();
     this.camera.updateMatrixWorld();
+    this.render();
   }
 
 }
@@ -368,7 +364,19 @@ class App {
 ///////////////////////////////////////////////////////////////////////////////
 
 window.onload = function () {
-  const app = new App();
+  const canvas = document.getElementsByTagName('canvas')[0];
+  const app = new App(canvas);
+
+  /** Resize Event. */
+
+  const onResize = new ResizeObserver(entries => {
+    if (entries.length > 0 && entries[0].contentRect) {
+      const rect = entries[0].contentRect;
+      app.resize(rect.width, rect.height);
+    }
+  });
+  onResize.observe(canvas);
+
   function render() {
     app.update();
     app.render();

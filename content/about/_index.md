@@ -30,7 +30,6 @@ I am David, a Research Scientist within the visualization team at
 My current job consists of pushing 3D Medical Visualization
 capabilities in the Web, mostly using WebGL. My goal is to achieve **real-time** or close to **real-time** medical visualization.
 
-
 I graduated from [EPITA (Ecole des Ingénieurs en Intelligence Informatique)](https://www.epita.fr/en) in 2019,
 where I obtained a Master's degree in Computer Science, and specialized in Artificial Intelligence.
 

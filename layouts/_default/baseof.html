@@ -5,7 +5,7 @@
 {{ block "seo_variables" . }} {{ end }}
 {{ partial "head.html" . }}
 
-<body>
+<body class="{{ cond .IsHome "lightgray" "" }} ">
   {{ partial "burger.html" .}}
   {{ partial "nav.html" .}}
 

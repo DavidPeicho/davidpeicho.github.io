@@ -9,6 +9,10 @@ body.nav--active {
   overflow: hidden;
 }
 
+body.lightgray {
+  background-color: $lightGrey;
+}
+
 main {
   position: relative;
   padding: 3rem 1.5rem 1rem;
