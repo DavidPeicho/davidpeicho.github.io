@@ -17,6 +17,7 @@
 
 .splash {
   color: white;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.55);
 
   h1 {
     font-size: 3em;
@@ -26,7 +27,8 @@
   }
 
   h2 {
-    font-size: 2.25em;
+    margin-top: 0.5rem;
+    font-size: 2em;
     font-weight: 500;
     line-height: 1.25;
     max-width: 22em;
@@ -35,7 +37,7 @@
 }
 
 .fancy {
-  color: $primary;
+  color: #3498db;
 }
 
 .handle {
@@ -48,6 +50,15 @@
 .writing {
   text-decoration: none;
   color: $primary;
+}
+
+#missingWebGL2 {
+  width: 100%;
+  display: none;
+  position: absolute;
+  bottom: 2rem;
+  text-align: center;
+  color: $black;
 }
 
 /* overrides */

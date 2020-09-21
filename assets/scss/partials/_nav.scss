@@ -6,15 +6,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  // background: #fff;
   visibility: hidden;
   z-index: 1;
+  opacity: 0;
 
   @media screen and (min-width: $medium) {
     display: block;
     visibility: visible;
     padding-top: 3em;
     width: $navWidth;
+    opacity: initial;
   }
 }
 
@@ -22,6 +23,14 @@
   visibility: visible;
   height: 100%;
   width: 100%;
+  background: white;
+  opacity: 1;
+
+  -webkit-transition: opacity 0.5s ease;
+  -moz-transition: opacity 0.5s ease;
+  -ms-transition: opacity 0.5s ease;
+  -o-transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
 
   @media screen and (min-width: $medium) {
     width: $navWidth;

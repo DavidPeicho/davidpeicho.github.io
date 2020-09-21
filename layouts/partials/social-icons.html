@@ -4,15 +4,12 @@
 <div class="social-icons">
   {{ range $icons }}
     {{ $icon := anchorize . }}
-    {{ $url := print "images/social/" $icon ".svg" | absURL }}
+    {{ $url := print "/images/social/" $icon ".svg" }}
     {{ if isset $currentPage.Site.Params $icon }}
       <a class="social-icons__link" title="{{ . }}"
          href="{{ index $currentPage.Site.Params $icon }}"
          target="_blank" rel="noopener">
-        <div
-          class="social-icons__icon"
-          style="-webkit-mask-image: url('{{ $url }}'); mask-image: url('{{ $url }}'); -webkit-mask-size: cover; mask-size: cover;">
-        </div>
+        <div class="social-icons__icon" style="background-image: url('{{ $url }}')"></div>
       </a>
     {{ end }}
   {{ end }}
