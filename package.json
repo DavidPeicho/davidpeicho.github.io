@@ -2,15 +2,16 @@
   "name": "david-peicho-blog",
   "version": "1.0.0",
   "author": "David Peicho",
-  "description": "David Peicho blog containing CS-related posts",
+  "description": "David Peicho blog containing Computer Graphics related posts",
   "license": "MIT",
   "scripts": {
     "dev": "hugo server",
     "dev:js": "cross-env NODE_ENV=development webpack -w",
     "build:js": "cross-env NODE_ENV=production webpack",
-    "build": "hugo -d ./dist",
+    "build": "npm run build:js && hugo -d ./dist",
     "lint": "eslint ./src",
-    "format": "prettier ./ --write"
+    "format": "prettier ./ --write",
+    "deploy": "./scripts/publish.sh"
   },
   "husky": {
     "hooks": {
@@ -28,14 +29,14 @@
     "webpack-cli": "^3.3.12",
     "worker-loader": "^3.0.2"
   },
+  "dependencies": {
+    "three": "^0.120.1"
+  },
   "browserslist": [
     "last 2 version",
     "> 2%"
   ],
   "lint-staged": {
     "*.{css,scss}": "prettier --write"
-  },
-  "dependencies": {
-    "three": "^0.120.1"
   }
 }
