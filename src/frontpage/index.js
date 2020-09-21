@@ -1,13 +1,15 @@
 import {
   Color,
+  Clock,
   DataTexture3D,
   LinearFilter,
+  Mesh,
+  OctahedronBufferGeometry,
   PerspectiveCamera,
   Scene,
   WebGLRenderer,
   PointLight,
-  RGBFormat,
-  Clock, InterpolationModes
+  RGBFormat, MeshNormalMaterial
 } from 'three';
 
 import { Cloud, createPerlinTexture } from './cloud';
@@ -32,88 +34,40 @@ const CLOUD_BASE_COLOR = (new Color(0x7188a8)).convertSRGBToLinear();
 const CLOUD_BURNT_COLOR = (new Color(0x292929)).convertSRGBToLinear();
 const LIGHT_COLOR = (new Color(0xeb4d4b)).convertSRGBToLinear();
 const BURNING_LIGHT_COLOR = (new Color(0xe67e22)).convertSRGBToLinear();
-
 const AUTO_LIGHT_TIMEOUT = 1.25;
 const LIGHT_INTENSITY = 1.5;
 
-const Configs = {
+class SimpleDemo {
 
-  cloud: {
-    camera: { fov: 45 },
-    cloud: {
-      absorption: { min: 0.15, max: 0.3 },
-      decay: { min: 1.2 , max: 1.45 },
-      windowMin: 0.1,
-      windowMax: 0.28,
-      inverse: false,
-      steps: 100
-    }
-  },
-
-  cloudInverse: {
-    camera: { fov: 70 },
-    cloud: {
-      absorption: { min: 0.04, max: 0.1 },
-      decay: { min: 6.0 , max: 8.0 },
-      windowMin: 0.3,
-      windowMax: 0.85,
-      inverse: true,
-      steps: 200
-    }
-  },
-
-  simple: {
-    camera: { fov: 70 }
+  constructor(app) {
+    const material = new MeshNormalMaterial();
+    material.flatShading = true;
+    app.camera.fov = 55;
+    app.camera.updateProjectionMatrix();
+    this.object3D = new Mesh(new OctahedronBufferGeometry(0.5, 2), material);
   }
 
-};
+  onInteract() { }
+  onMove() { }
+  update() { }
 
-const States = {
-  Idle: 0,
-  Burning: 1,
-  Recover: 2
-};
+}
 
-/**
- * This class manages the state of the scene, the states, and all data used
- * for the demo.
- */
-class App {
+class CloudDemo {
 
-  constructor() {
-    const canvas = document.getElementsByTagName('canvas')[0];
+  constructor(app, options) {
+    const {
+      fov = 50,
+      absorption,
+      decay,
+      windowMin,
+      windowMax,
+      inverse = false,
+      steps = 100
+    } = options;
 
-    this.renderer = new WebGLRenderer({ canvas });
-    this.renderer.setPixelRatio(0.5);
-
-    const configId = getConfigId(this.renderer.capabilities.isWebGL2);
-
-    this.camera = new PerspectiveCamera();
-    this.camera.position.z = 1.5;
-    this.camera.updateMatrix();
-    this.camera.updateMatrixWorld();
-
-    this.cloud = new Cloud();
-    const material = this.cloud.material;
-    material.baseColor.copy(CLOUD_BASE_COLOR);
-
-    this.light = new PointLight(LIGHT_COLOR.getHex(), LIGHT_INTENSITY, 2.75, 1.25);
-    this.light.position.set(-0.5, 0.5, 1.5);
-    this.light.updateMatrix();
-    this.light.updateMatrixWorld();
-
-    this.scene = new Scene();
-    this.scene.background = (new Color()).copy(BACKGROUND_COLOR);
-    this.scene.add(this.cloud, this.light);
-
-    this._clock = new Clock();
-    this._mouse = new Mouse();
-    this._state = States.Idle;
-
-    /** If `true`, the light can be controlled using the mouse */
-    this._controlsEnabled = true;
-    /** Tracks time to start light movement interpolation */
-    this._autoLightTimeout = 0.0;
+    this.object3D = new Cloud();
+    app.camera.fov = fov;
 
     /**
      * Interpolators used for parameters changing with time.
@@ -122,11 +76,14 @@ class App {
      * positions, etc...
      */
     this._interpolators = {
-      scale: new SinInterpolator({ min: 0.95, max: 1.05, speed: 0.1 }),
-      decay: new SinInterpolator({ min: 1.0, max: 2.5, speed: 1.0 }),
+      decay: new SinInterpolator({
+        min: decay.min,
+        max: decay.max,
+        speed: 1.0
+      }),
       absorption: new SinInterpolator({
-        min: 0.25,
-        max: 0.35,
+        min: absorption.min,
+        max: absorption.max,
         speed: 1.0,
         easingFunction: easeQuadraticOut
       }),
@@ -147,13 +104,196 @@ class App {
       })
     };
 
-    this.config = Object.assign({}, Configs[configId]);
-    this.setConfiguration(this.config);
+    const material = this.object3D.material;
+    material.baseColor.copy(CLOUD_BASE_COLOR);
+    material.absorption = absorption;
+    material.decay = decay.min;
+    material.windowMin = windowMin;
+    material.windowMax = windowMax;
+    material.inverse = inverse;
+    material.steps = steps;
 
+    this._app = app;
+    this._state = CloudDemo.States.Idle;
     this._createVolume();
+  }
+
+  onInteract() {
+    const app = this._app;
+    const light = app.light;
+    const burningLerp = this._interpolators.burning;
+    if (burningLerp.isDone || !burningLerp.isRunning) {
+      this._state = CloudDemo.States.Burning;
+      light.intensity = 0.0;
+      light.color.copy(BURNING_LIGHT_COLOR);
+      this.object3D.material.baseColor.copy(CLOUD_BURNT_COLOR);
+      burningLerp.reset();
+      this._interpolators.recover.reset();
+      app.controlsEnabled = false;
+      app.autoLightTimeout = 0.0;
+    }
+  }
+
+  onMove(mouse) {
+    const app = this._app;
+    if (app.controlsEnabled) {
+      app.autoLightTimeout = 0.0;
+      const theta = mouse.xNorm * PI_OVER_2;
+      const phi = (mouse.yNorm * 0.5 + 0.5) * Math.PI;
+      applySphericalCoords(app.light, theta, phi, 2.0);
+    }
+  }
+
+  update(elapsed, delta) {
+    const absorptionLerp = this._interpolators.absorption;
+    const decayLerp = this._interpolators.decay;
+
+    const material = this.object3D.material;
+    material.update(this.object3D, this._app.camera);
+
+    const app = this._app;
+
+    switch (this._state) {
+      case CloudDemo.States.Burning:
+        const burningLerp = this._interpolators.burning;
+        if (burningLerp.isDone) {
+          app.light.color.copy(LIGHT_COLOR);
+          app.controlsEnabled = true;
+          this._state = CloudDemo.States.Recover;
+        } else {
+          app.light.intensity = burningLerp.update(delta);
+        }
+        break;
+      case CloudDemo.States.Recover:
+        const recoverLerp = this._interpolators.recover;
+        const lerp = recoverLerp.update(delta);
+        if (recoverLerp.isRunning) {
+          const color = material.baseColor;
+          lerpColor(color, CLOUD_BURNT_COLOR, CLOUD_BASE_COLOR, lerp);
+          app.light.intensity = lerp * LIGHT_INTENSITY;
+        } else if (recoverLerp.isDone) {
+          recoverLerp.reset();
+          this._state = CloudDemo.States.Idle;
+        }
+        break;
+    }
+
+    material.absorption = absorptionLerp.update(elapsed);
+    material.decay = decayLerp.update(elapsed);
+  }
+
+  _createVolume() {
+    const volume = createPerlinTexture({ scale: 0.09 });
+    const { width, height, depth, data } = volume.image;
+    const worker = new GradientWorker();
+    worker.postMessage({ width, height, depth, buffer: data });
+    worker.onmessage = (e) => {
+      const texture = new DataTexture3D(new Uint8Array(e.data), width, height, depth);
+      texture.format = RGBFormat;
+      texture.minFilter = LinearFilter;
+      texture.magFilter = LinearFilter;
+      texture.unpackAlignment = 1;
+      this.object3D.material.gradientMap = texture;
+      worker.terminate();
+    };
+    this.object3D.material.volume = volume;
+  }
+
+}
+CloudDemo.States = {
+  Idle: 0,
+  Burning: 1,
+  Recover: 2
+};
+CloudDemo.Parameters = {
+  cloud: {
+    fov: 45,
+    absorption: { min: 0.15, max: 0.3 },
+    decay: { min: 1.2 , max: 1.45 },
+    windowMin: 0.1,
+    windowMax: 0.28,
+    inverse: false,
+    steps: 100
+  },
+  cloudInverse: {
+    fov: 70,
+    absorption: { min: 0.04, max: 0.1 },
+    decay: { min: 6.0 , max: 8.0 },
+    windowMin: 0.3,
+    windowMax: 0.85,
+    inverse: true,
+    steps: 200
+  }
+};
+
+/**
+ * This class manages the state of the scene, the states, and all data used
+ * for the demo.
+ */
+class App {
+
+  constructor() {
+    const canvas = document.getElementsByTagName('canvas')[0];
+
+    this.renderer = new WebGLRenderer({ canvas });
+    const supportWebGL2 = this.renderer.capabilities.isWebGL2;
+
+    this.camera = new PerspectiveCamera();
+    this.camera.position.z = 1.5;
+    this.camera.updateMatrix();
+    this.camera.updateMatrixWorld();
+
+    this.light = new PointLight(LIGHT_COLOR.getHex(), LIGHT_INTENSITY, 2.75, 1.25);
+    this.light.position.set(-0.5, 0.5, 1.5);
+    this.light.updateMatrix();
+    this.light.updateMatrixWorld();
+
+    this.scene = new Scene();
+    this.scene.background = (new Color()).copy(BACKGROUND_COLOR);
+
+    const url = new URL(window.location.href || '');
+    let config = url.searchParams.get('config');
+    if (!config || !(config in CloudDemo.Parameters)) {
+      config = Math.random() < 0.5 ? 'cloud' : 'cloudInverse';
+    }
+    config = config.startsWith('cloud') && !supportWebGL2 ? 'simple' : config;
+    this.camera.updateProjectionMatrix();
+
+    this.demo = null;
+    switch (config) {
+      case 'simple':
+        this.demo = new SimpleDemo(this);
+        break;
+      default:
+        this.demo = new CloudDemo(this, CloudDemo.Parameters[config]);
+        this.renderer.setPixelRatio(0.5);
+        break;
+    }
+    this.scene.add(this.demo.object3D, this.light);
+
+    /** If `true`, the light can be controlled using the mouse */
+    this.controlsEnabled = true;
+
+    /** Tracks time to start light movement interpolation */
+    this.autoLightTimeout = 0.0;
+
+    this._clock = new Clock();
+    this._mouse = new Mouse();
+
+    /**
+     * Interpolators used for parameters changing with time.
+     *
+     * Those interpolators are used to modulate absorption, scale, light
+     * positions, etc...
+     */
+    this._interpolators = {
+      scale: new SinInterpolator({ min: 0.95, max: 1.05, speed: 0.1 })
+    };
 
     this._mouse.domElement = document.body;
     this.resize(canvas.offsetWidth, canvas.offsetHeight);
+
+    /** Resize Event. */
 
     const onResize = new ResizeObserver(entries => {
       if (entries.length > 0 && entries[0].contentRect) {
@@ -166,116 +306,49 @@ class App {
     /** Mouse Events. */
 
     document.body.addEventListener('mousedown', () => {
-      const burningLerp = this._interpolators.burning;
-      if (burningLerp.isDone || !burningLerp.isRunning) {
-        this._state = States.Burning;
-        this.light.intensity = 0.0;
-        this.light.color.copy(BURNING_LIGHT_COLOR);
-        this.cloud.material.baseColor.copy(CLOUD_BURNT_COLOR);
-        burningLerp.reset();
-        this._interpolators.recover.reset();
-        this._controlsEnabled = false;
-        this._autoLightTimeout = 0.0;
-      }
+      this.demo.onInteract();
     })
     document.body.addEventListener('mousemove', (event) => {
-      if (this._controlsEnabled) {
-        this._autoLightTimeout = 0.0;
-        this._mouse.update(event);
-        const theta = this._mouse.xNorm * PI_OVER_2;
-        const phi = (this._mouse.yNorm * 0.5 + 0.5) * Math.PI;
-        applySphericalCoords(this.light, theta, phi, 2.0);
-      }
+      this._mouse.update(event);
+      this.demo.onMove(this._mouse);
     });
+
     this._clock.start();
   }
 
   update() {
     const delta = this._clock.getDelta();
     const elapsed = this._clock.getElapsedTime();
-
-    const absorptionLerp = this._interpolators.absorption;
-    const decayLerp = this._interpolators.decay;
-    const scaleLerp = this._interpolators.scale;
+    const object3D = this.demo.object3D;
 
     /* Cloud Position & Scale. */
 
+    const scaleLerp = this._interpolators.scale;
     const scale = scaleLerp.update(elapsed);
-    this.cloud.scale.set(scale, scale, scale);
-    this.cloud.rotation.y += delta * 0.15;
-    this.cloud.updateMatrix();
-    this.cloud.updateMatrixWorld();
-    this.cloud.update(this.camera);
+    object3D.scale.set(scale, scale, scale);
+    object3D.rotation.y += delta * 0.15;
+    object3D.updateMatrix();
+    object3D.updateMatrixWorld();
 
     /* Automatic Light Rotation */
 
-    if (this._autoLightTimeout >= AUTO_LIGHT_TIMEOUT) {
+    if (this.autoLightTimeout >= AUTO_LIGHT_TIMEOUT) {
       const theta = Math.sin((elapsed + PI_OVER_2) * 2.0) * PI_OVER_2;
       const phi = Math.sin(elapsed - PI_OVER_2) * Math.PI;
       const lerp = clamp(
-        (this._autoLightTimeout - AUTO_LIGHT_TIMEOUT) / AUTO_LIGHT_TIMEOUT,
+        (this.autoLightTimeout - AUTO_LIGHT_TIMEOUT) / AUTO_LIGHT_TIMEOUT,
         0.0,
         1.0
       );
       applySphericalCoords(this.light, theta, phi, 2.0, lerp);
     }
-    this._autoLightTimeout += delta;
+    this.autoLightTimeout += delta;
 
-    /* Cloud material. */
-
-    const material = this.cloud.material;
-
-    switch (this._state) {
-      case States.Burning:
-        const burningLerp = this._interpolators.burning;
-        if (burningLerp.isDone) {
-          this._state = States.Recover;
-          this.light.color.copy(LIGHT_COLOR);
-          this._controlsEnabled = true;
-        } else {
-          this.light.intensity = burningLerp.update(delta);
-        }
-        break;
-      case States.Recover:
-        const recoverLerp = this._interpolators.recover;
-        const lerp = recoverLerp.update(delta);
-        if (recoverLerp.isRunning) {
-          const color = material.baseColor;
-          lerpColor(color, CLOUD_BURNT_COLOR, CLOUD_BASE_COLOR, lerp);
-          this.light.intensity = lerp * LIGHT_INTENSITY;
-        } else if (recoverLerp.isDone) {
-          recoverLerp.reset();
-          this._state = States.Idle;
-        }
-        break;
-    }
-
-    material.absorption = absorptionLerp.update(elapsed);
-    material.decay = decayLerp.update(elapsed);
+    this.demo.update(elapsed, delta);
   }
 
   render() {
     this.renderer.render(this.scene, this.camera);
-  }
-
-  setConfiguration(config) {
-    this.camera.fov = config.camera.fov;
-    this.camera.updateProjectionMatrix();
-
-    const material = this.cloud.material;
-    material.absorption = config.cloud.absorption;
-    material.decay = config.cloud.decay.min;
-    material.windowMin = config.cloud.windowMin;
-    material.windowMax = config.cloud.windowMax;
-    material.inverse = config.cloud.inverse;
-    material.steps = config.cloud.steps;
-
-    this._interpolators.decay.min = config.cloud.decay.min;
-    this._interpolators.decay.max = config.cloud.decay.max;
-    this._interpolators.absorption.setMinMax(
-      config.cloud.absorption.min,
-      config.cloud.absorption.max
-    );
   }
 
   resize(width, height) {
@@ -288,38 +361,6 @@ class App {
     this.camera.updateMatrixWorld();
   }
 
-  _createVolume() {
-    const volume = createPerlinTexture({
-      scale: 0.09,
-      ellipse: { a: 0.6, b: 0.3, c: 0.35 }
-    });
-    const { width, height, depth, data } = volume.image;
-    const worker = new GradientWorker();
-    worker.postMessage({ width, height, depth, buffer: data });
-    worker.onmessage = (e) => {
-      const texture = new DataTexture3D(new Uint8Array(e.data), width, height, depth);
-      texture.format = RGBFormat;
-      texture.minFilter = LinearFilter;
-      texture.magFilter = LinearFilter;
-      texture.unpackAlignment = 1;
-      this.cloud.material.gradientMap = texture;
-      worker.terminate();
-    };
-    this.cloud.material.volume = volume;
-  }
-
-}
-
-function getConfigId(supportWebGL2 = false) {
-  const url = new URL(window.location.href || '');
-  let id = url.searchParams.get('config');
-  if (!id) {
-    id = Math.random() < 0.5 ? 'cloud' : 'cloudInverse';
-  } else if (!(id in Configs)) {
-    id = 'cloud';
-  }
-  if (id.startsWith('cloud') && !supportWebGL2) { id = 'simple'; }
-  return id;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

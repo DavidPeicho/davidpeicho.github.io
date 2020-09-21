@@ -1,6 +1,3 @@
-// out vec3 vOrigin;
-// out vec3 vDirection;
-
 struct Ray {
   vec3 origin;
   vec3 dir;
@@ -27,7 +24,6 @@ void
 main()
 {
   vRay.origin = uModelViewMatrixInverse[3].xyz;
-  // vRay.origin = vec3(inverse(modelViewMatrix) * vec4(vec3(0.0, 0.0, 0.0), 1.0)).xyz;
   vRay.dir = position - vRay.origin;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }

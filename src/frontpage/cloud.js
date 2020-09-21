@@ -17,15 +17,8 @@ export class Cloud extends Mesh {
     super(new BoxBufferGeometry(1, 1, 1), new CloudMaterial());
   }
 
-  update(camera) {
-    const material = this.material;
-
-    this.modelViewMatrix.multiplyMatrices(
-      camera.matrixWorldInverse,
-      this.matrixWorld
-    );
-    material.inverseModelView.getInverse(this.modelViewMatrix);
-    material.uniforms.uFrame.value++;
+  copy(src) {
+    this.material.copy(src)
   }
 
 }
@@ -36,8 +29,7 @@ export function createPerlinTexture(options = {}) {
     width = 128,
     height = 128,
     depth = 128,
-    scale = 0.1,
-    ellipse = { a: 0.55, b: 0.32, c: 0.32 }
+    scale = 0.1
   } = options;
 
   const halfWidth = width * 0.5;
@@ -51,8 +43,6 @@ export function createPerlinTexture(options = {}) {
   const perlin = new ImprovedNoise();
   const point = new Vector3();
 
-  const { a, b, c } = ellipse;
-
   for (let i = 0; i < voxelCount; ++i) {
     const x = i % width;
     const y = Math.floor((i % voxelPerSlice) / width);
@@ -64,9 +54,8 @@ export function createPerlinTexture(options = {}) {
       (z - halfDepth) / depth
     );
 
-    // const ellipse = (v.x * v.x) / a + (v.y * v.y) / b + (v.z * v.z) / c;
-    const ellipse = v.length();
-    const d = clamp(1.0 - ellipse, 0, 1);
+    const length = v.length();
+    const d = clamp(1.0 - length, 0, 1);
 
     const p = perlin.noise(x * scale, y * scale, z * scale);
     const rand = (p + 1.0) * 0.5;
