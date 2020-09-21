@@ -1,5 +1,8 @@
 {
+  "title": "About",
   "heading": "David Peicho",
+  "keywords": [ "graphics", "rendering", "3D", "blog", "david peiicho" ],
+  "description": "List articles relative to Computer Graphics and / or Game Development, written by David Peicho",
   "teaching": [
     {
       "title": "Teaching Assistant",
@@ -24,13 +27,13 @@
 
 ## Hi
 
-I am David, a Research Scientist within the visualization team at
+I am David Peicho, a Research Scientist within the visualization team at
 [Siemens Healthineers](https://www.siemens-healthineers.com/).
 
 My current job consists of pushing 3D Medical Visualization
 capabilities in the Web, mostly using WebGL. My goal is to achieve **real-time** or close to **real-time** medical visualization.
 
-I graduated from [EPITA (Ecole des Ingénieurs en Intelligence Informatique)](https://www.epita.fr/en) in 2019,
+I graduated from [EPITA (Ecole des Ingénieurs en Intelligence Informatique)](https://www.epita.fr/en) in 2018,
 where I obtained a Master's degree in Computer Science, and specialized in Artificial Intelligence.
 
 My up-to-date resume is available →

@@ -2,6 +2,14 @@
 <html lang="{{ .Site.LanguageCode }}">
 
 {{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/about.scss" "dest" "css/about.css") }}
+
+<!--
+  Global variable pointing to the image of this page.
+
+  Feeds variablwes like: `seoImage`, etc...
+-->
+{{ $.Scratch.Set "pageThumbnail" ( "me.jpg" | absURL ) }}
+
 {{ partial "head.html" . }}
 
 <body>
@@ -10,7 +18,8 @@
 
   <main>
     <div class="content">
-      {{ partial "anchored-headings.html" .Content }}
+
+      {{ .Content | safeHTML }}
 
       <h2>Teaching</h2>
       <div class='teaching'>

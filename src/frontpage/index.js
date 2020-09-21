@@ -9,7 +9,7 @@ import {
   Scene,
   WebGLRenderer,
   PointLight,
-  RGBFormat, MeshNormalMaterial
+  RGBFormat, MeshNormalMaterial, ACESFilmicToneMapping
 } from 'three';
 
 import { Cloud, createPerlinTexture } from './cloud';
@@ -190,7 +190,7 @@ class CloudDemo {
         this.object3D.material.gradientMap = texture;
         worker.terminate();
       };
-    }, 300);
+    }, 100);
   }
 
 }
@@ -211,12 +211,12 @@ CloudDemo.Parameters = {
   },
   cloudInverse: {
     fov: 60,
-    absorption: { min: 0.08, max: 0.16 },
-    decay: { min: 5.5 , max: 7.5 },
+    absorption: { min: 0.08, max: 0.15 },
+    decay: { min: 6.0 , max: 7.5 },
     windowMin: 0.3,
     windowMax: 0.85,
     inverse: true,
-    steps: 100
+    steps: 140
   }
 };
 
@@ -243,6 +243,8 @@ class App {
 
   constructor(canvas) {
     this.renderer = new WebGLRenderer({ canvas, antialias: true });
+    this.renderer.toneMapping = ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 2.0;
     const supportWebGL2 = this.renderer.capabilities.isWebGL2;
 
     this.camera = new PerspectiveCamera();
@@ -257,7 +259,7 @@ class App {
 
     const url = new URL(window.location.href || '');
     let config = url.searchParams.get('config');
-    if (!config) { config = Math.random() < 0.5 ? 'cloud' : 'cloudInverse'; }
+    if (!config) { config = Math.random() < 0.4 ? 'cloud' : 'cloudInverse'; }
     if (config.startsWith('cloud') && !supportWebGL2) {
       config = 'simple';
       const disclaimerElement = document.getElementById(WEBGL2_DISCLAIMER_ID);
@@ -270,6 +272,7 @@ class App {
     switch (config) {
       case 'cloud':
       case 'cloudInverse':
+        this.renderer.setPixelRatio(0.75);
         this.demo = new CloudDemo(this, CloudDemo.Parameters[config]);
         break;
       default:
@@ -292,6 +295,8 @@ class App {
       max: 1.1,
       easingFunction: sinNorm
     });
+    this._interactionPrompt = document.getElementById('interactionPrompt');
+    this._interactionPromptVisible = true;
 
     this._mouse.domElement = document.body;
     this.resize(canvas.offsetWidth, canvas.offsetHeight);
@@ -299,6 +304,10 @@ class App {
     /** Mouse Events. */
 
     document.body.addEventListener('mousedown', () => {
+      if (this._interactionPromptVisible && this._interactionPrompt) {
+        this._interactionPrompt.style.display = 'none';
+        this._interactionPromptVisible = false;
+      }
       this.demo.onInteract();
     })
     document.body.addEventListener('mousemove', (event) => {

@@ -1,4 +1,18 @@
 <head>
+  {{ .Scratch.Set "pageFullTitle" .Site.Title }}
+  {{ with .Title  }}
+    {{ $pageTitle := (print . " | ") }}
+    {{ $.Scratch.Set "pageFullTitle" (print $pageTitle $.Site.Title) }}
+  {{ end }}
+
+  {{ $pageFullTitle := (.Scratch.Get "pageFullTitle") }}
+
+  {{ .Scratch.Set "pageDescription" "" }}
+  {{ if .IsHome }}
+    {{ .Scratch.Set "pageDescription" (htmlEscape .Site.Params.description) }}
+  {{ else }}
+    {{ .Scratch.Set "pageDescription" (htmlEscape .Description) }}
+  {{ end }}
 
   <title>
     {{ if .IsHome }}
@@ -10,7 +24,10 @@
 
   <meta charset="UTF-8">
   <meta name="language" content="en">
-  <meta name="description" content="{{ if .IsHome}}{{ .Site.Params.Description }}{{ else }}{{.Page.Params.Description}}{{ end }}">
+  <meta
+    name="description"
+    content="{{ if .IsHome}}{{ .Site.Params.Description }}{{ else }}{{.Page.Params.Description}}{{ end }}"
+  >
   <meta name="keywords" content="{{ delimit .Keywords " , " }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -20,28 +37,38 @@
   {{ if isset .Site.Params "twitter" }}
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="{{ .Title }}" />
+  <meta name="twitter:title" content="{{ $pageFullTitle }}" />
   <meta
     name="twitter:description"
-    content="{{ if .IsHome }}{{ htmlEscape .Site.Params.description }}{{ else }}{{ htmlEscape .Description }}{{ end }}"
+    content="{{ .Scratch.Get "pageDescription" }}"
   />
   <meta name="twitter:site" content="@{{ .Site.Params.twitter }}" />
   <meta name="twitter:creator" content="@{{ .Site.Params.twitter }}" />
 
-    {{ with ( .Scratch.Get "pageThumbnail" ) }}
-      {{ $url := urls.Parse . }}
-      {{ if $url.IsAbs }}
-        <!-- Use the URL as is -->
-        <meta name=”twitter:image” content=”{{ . }}“>
-      {{ else }}
-        <!-- Preprends the permalink to get a valid absolute URL -->
-        <meta name=”twitter:image” content=”{{ $.Permalink }}{{ . }}“>
-      {{ end }}
-    {{ end }}
-
   {{ end }}
 
   <!-- Facebook -->
+
+  <meta property="og:title" content="{{ $pageFullTitle }}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="{{ .Permalink }}" />
+  <meta property="og:description" content="{{ .Scratch.Get "pageDescription" }}" />
+  <meta property="og:site_name" content="{{ .Site.Title }}" />
+
+  <!-- Card Image -->
+
+  {{ with ( .Scratch.Get "pageThumbnail" ) }}
+    {{ $url := urls.Parse . }}
+    {{ if $url.IsAbs }}
+      <!-- Use the URL as is -->
+      <meta name=”twitter:image” content=”{{ . }}“>
+      <meta property="og:image" content="{{ . }}" />
+    {{ else }}
+      <!-- Preprends the permalink to get a valid absolute URL -->
+      <meta name=”twitter:image” content=”{{ $.Permalink }}{{ . }}“>
+      <meta property="og:image" content="{{ $.Permalink }}{{ . }}" />
+    {{ end }}
+  {{ end }}
 
   <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
 

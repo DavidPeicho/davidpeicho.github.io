@@ -188,6 +188,7 @@ main()
   Ray rayView;
 
   bool intersect = intersectAABB(ray, near, far);
+  if (!intersect) { discard; }
 
   ray.origin = vRay.origin + near * ray.dir;
 

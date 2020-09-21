@@ -7,10 +7,11 @@ draft: false
 tags: [ 'vr', 'graphics', 'js', 'three.js' ]
 math: false
 toc: false
+weight: 1
 video: https://www.youtube.com/embed/QtjKiANf6GY
 ---
 
-ArtFlow is a WebVR experience in which users can draw and build a world
+<b>WebVR</b> experience in which users can draw and build a world
 in the same way they would do it in Tilt Brush or Quill.
 ArtFlow was made to finalize my Master's Degree at EPITA.
 

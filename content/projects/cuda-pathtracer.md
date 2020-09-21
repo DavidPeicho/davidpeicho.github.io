@@ -7,11 +7,11 @@ tags: [ 'graphics', 'C++' ]
 math: false
 image: cuda-pathtracer.jpg
 link: https://github.com/DavidPeicho/cuda-pathtracer
-weight: 1
+weight: 2
 toc: false
 ---
 
-Simple Pathtracer written in CUDA. It supports Texturing, Normal Mapping, IBL,
-and Depth Of Field. Quick project made to try out CUDA.
+First hobby pathtracer written in CUDA. Contains a limited amount of features,
+including <b>Texturing</b>, <b>Normal Mapping</b>, <b>IBL</b>, and <b>Depth Of Field</b>.
 
 <!--more-->
