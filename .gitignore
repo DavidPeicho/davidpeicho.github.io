@@ -11,6 +11,7 @@ Thumbs.db
 public/
 
 # Generated content
-dist/
+docs/
+resources/
 assets/js/
 static/js/workers/

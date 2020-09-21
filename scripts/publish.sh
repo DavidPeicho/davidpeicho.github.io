@@ -4,10 +4,14 @@ set -e
 
 printf "\033[0;32mDeploying to GitHub...\033[0m\n"
 
+npm run clean
+
+git checkout gh-pages
+git rebase master
+
 npm run lint && npm run build
 
-cd public
-git add .
+git add docs/ -f
 msg="publish $(date)"
 if [ -n "$*" ]; then
 	msg="$*"

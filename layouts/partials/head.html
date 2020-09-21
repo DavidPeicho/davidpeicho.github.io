@@ -61,12 +61,13 @@
     {{ $url := urls.Parse . }}
     {{ if $url.IsAbs }}
       <!-- Use the URL as is -->
-      <meta name=”twitter:image” content=”{{ . }}“>
+      <meta name="twitter:image" content="{{ . }}" />
       <meta property="og:image" content="{{ . }}" />
+      <meta property="og:image:secure_url" content="{{ . }}" />
     {{ else }}
-      <!-- Preprends the permalink to get a valid absolute URL -->
-      <meta name=”twitter:image” content=”{{ $.Permalink }}{{ . }}“>
-      <meta property="og:image" content="{{ $.Permalink }}{{ . }}" />
+      <meta name="twitter:image" content="{{ $.Permalink }}{{ . }}" />
+      <meta property="og:image" content="{{ $.Permalink }}{{ . }}"/>
+      <meta property="og:image:secure_url" content="{{ $.Permalink }}{{ . }}"/>
     {{ end }}
   {{ end }}
 
