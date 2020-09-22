@@ -5,7 +5,7 @@ keywords: [ "pathtracer", "rendering", "CUDA", "c++" ]
 tags: [ 'graphics', 'C++' ]
 images: [ "/images/projects/cuda-pathtracer.jpg" ]
 link: https://github.com/DavidPeicho/cuda-pathtracer
-weight: 2
+weight: 1
 toc: false
 ---
 

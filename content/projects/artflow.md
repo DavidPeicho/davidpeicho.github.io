@@ -7,7 +7,7 @@ draft: false
 tags: [ 'vr', 'graphics', 'js', 'three.js' ]
 math: false
 toc: false
-weight: 1
+weight: 2
 video: "https://www.youtube.com/embed/QtjKiANf6GY"
 videos: [ "https://youtu.be/QtjKiANf6GY" ]
 ---

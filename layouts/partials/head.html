@@ -68,6 +68,7 @@
   {{ with ( .Scratch.Get "pageVideo" ) }}
     <meta name="twitter:player" content="{{ . }}" />
     <meta property='og:video' content="{{ . }}" />
+    <meta property='og:video:secure_url' content="{{ . }}" />
   {{ end }}
 
   <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
