@@ -2,7 +2,20 @@
 <html lang="{{ .Site.LanguageCode }}">
 
 {{ block "styles" . }} {{ end }}
+
+{{ with ( .Params.images ) }}
+  {{ with ( index . 0 ) }}
+    {{ $.Scratch.Set "pageThumbnail" ( . | absURL ) }}
+  {{ end }}
+{{ end }}
+{{ with ( .Params.videos ) }}
+  {{ with (index . 0) }}
+    {{ $.Scratch.Set "pageVideo" ( . | absURL ) }}
+  {{ end }}
+{{ end }}
+
 {{ block "seo_variables" . }} {{ end }}
+
 {{ partial "head.html" . }}
 
 <body class="{{ cond .IsHome "lightgray" "" }} ">

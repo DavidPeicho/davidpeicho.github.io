@@ -10,12 +10,16 @@
     Feeds variables like: `seoImage`, etc...
   -->
 
-  {{ with (index .Pages 0) }}
-    {{ with .Params.image }}
-      {{ $.Scratch.Set "pageThumbnail" . }}
+  {{ with ( index .Pages 0 ) }}
+    {{ with ( .Params.images ) }}
+      {{ with (index . 0) }}
+        {{ $.Scratch.Set "pageThumbnail" ( . | absURL ) }}
+      {{ end }}
     {{ end }}
-    {{ with .Params.video }}
-      {{ $.Scratch.Set "pageVideo" . }}
+    {{ with ( .Params.videos ) }}
+      {{ with (index . 0) }}
+        {{ $.Scratch.Set "pageVideo" ( . | absURL ) }}
+      {{ end }}
     {{ end }}
   {{ end }}
 
@@ -33,13 +37,21 @@
         {{ $wrapLeft := (eq (mod $i 2) 0) }}
         {{ $link := .Params.link | default .RelPermalink }}
         {{ $isLinkExternal := isset .Params "link" }}
-        {{ $hasVideo := isset .Params "video" }}
+
+        {{ with ( .Params.images ) }}
+          {{ with (index . 0) }}
+            {{ $.Scratch.Set "_image" ( . | absURL ) }}
+          {{ end }}
+        {{ end }}
+        {{ with ( .Params.video ) }}
+          {{ $.Scratch.Set "_video" ( . | absURL ) }}
+        {{ end }}
 
         <!-- Displays video / image for the post. -->
-        {{ if $hasVideo }}
+        {{ if ( $.Scratch.Get "_video" ) }}
         <iframe
           class="image"
-          src="{{ .Params.video }}"
+          src="{{ $.Scratch.Get "_video" }}"
           frameborder="0"
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen
@@ -47,9 +59,12 @@
         {{ else }}
         <div
           class="image"
-          style="background-image: url('{{ .Params.image }}');"
+          style="background-image: url('{{ $.Scratch.Get "_image" }}');"
         ></div>
         {{ end }}
+
+        {{ $.Scratch.Delete "_image" }}
+        {{ $.Scratch.Delete "_video" }}
 
         <!-- Content of the card, including title, date, and link. -->
         <div class="blog_content">

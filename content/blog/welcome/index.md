@@ -5,8 +5,7 @@ slug: "welcome"
 description: "First blog post describing this blog"
 keywords: [ "hugo", "blog", "graphics", "programming" ]
 tags: [ "hugo", "blog" ]
-image: "llama.jpg"
-images: [ "llama.jpg" ]
+images: [ "/images/posts/welcome/llama.jpg" ]
 draft: false
 math: false
 toc: false

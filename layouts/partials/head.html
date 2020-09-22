@@ -58,17 +58,11 @@
   <!-- Card Image -->
 
   {{ with ( .Scratch.Get "pageThumbnail" ) }}
-    {{ $url := urls.Parse . }}
-    {{ if $url.IsAbs }}
-      <!-- Use the URL as is -->
-      <meta name="twitter:image" content="{{ . }}" />
-      <meta property="og:image" content="{{ . }}" />
-      <meta property="og:image:secure_url" content="{{ . }}" />
-    {{ else }}
-      <meta name="twitter:image" content="{{ $.Permalink }}{{ . }}" />
-      <meta property="og:image" content="{{ $.Permalink }}{{ . }}"/>
-      <meta property="og:image:secure_url" content="{{ $.Permalink }}{{ . }}"/>
-    {{ end }}
+    <!-- Use the URL as is -->
+    {{ $url := (. | absURL) }}
+    <meta name="twitter:image" content="{{ $url }}" />
+    <meta property="og:image" content="{{ $url }}" />
+    <meta property="og:image:secure_url" content="{{ $url }}" />
   {{ end }}
 
   {{ with ( .Scratch.Get "pageVideo" ) }}

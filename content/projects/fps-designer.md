@@ -1,12 +1,13 @@
 ---
 title: "FPSDesigner"
 date: 2014-06-01
-keywords: [ "hugo", "blog" ]
+keywords: [ "game", "fps", "C#" ]
 draft: false
 tags: [ 'games', 'graphics' ]
 math: false
 link: https://github.com/FPSDesigner/FPSDesigner
-video: https://www.youtube.com/embed/KYwLaBxQztM
+video: "https://www.youtube.com/embed/KYwLaBxQztM"
+videos: [ "https://youtu.be/KYwLaBxQztM" ]
 toc: false
 weight: 3
 ---

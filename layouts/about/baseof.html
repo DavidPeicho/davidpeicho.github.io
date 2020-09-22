@@ -3,15 +3,18 @@
 
 {{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/about.scss" "dest" "css/about.css") }}
 
-<!--
-  Global variable pointing to the image of this page.
-
-  Feeds variablwes like: `seoImage`, etc...
--->
-{{ with .Params.image }}
-  {{ $.Scratch.Set "pageThumbnail" . }}
+{{ with ( .Params.images ) }}
+  {{ with ( index . 0 ) }}
+    {{ $.Scratch.Set "pageThumbnail" ( . | absURL ) }}
+  {{ end }}
+{{ end }}
+{{ with ( .Params.videos ) }}
+  {{ with (index . 0) }}
+    {{ $.Scratch.Set "pageVideo" ( . | absURL ) }}
+  {{ end }}
 {{ end }}
 
+{{ block "seo_variables" . }} {{ end }}
 {{ partial "head.html" . }}
 
 <body>

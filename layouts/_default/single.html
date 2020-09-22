@@ -2,18 +2,6 @@
     {{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/post.scss" "dest" "css/post.css") }}
 {{ end }}
 
-{{ define "seo_variables" }}
-
-  <!--
-    Global variable pointing to the image of this page.
-
-    Feeds variables like: `seoImage`, etc...
-  -->
-
-  {{ $.Scratch.Set "pageThumbnail" ( .Params.image | default .Params.video ) }}
-
-{{ end }}
-
 {{ define "main" }}
     {{ $dateFormat := .Site.Params.dateFormat | default "Jan 2 2006" }}
 

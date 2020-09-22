@@ -6,6 +6,7 @@ keywords: []
 draft: true
 tags: []
 math: false
-image: "{{ image | absURL }}"
+images: []
+videos: []
 toc: false
 ---

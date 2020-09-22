@@ -1,11 +1,9 @@
 ---
 title: "Cuda Pathtracer"
 date: 2018-01-01
-keywords: [ "hugo", "blog" ]
-draft: false
+keywords: [ "pathtracer", "rendering", "CUDA", "c++" ]
 tags: [ 'graphics', 'C++' ]
-math: false
-image: cuda-pathtracer.jpg
+images: [ "/images/projects/cuda-pathtracer.jpg" ]
 link: https://github.com/DavidPeicho/cuda-pathtracer
 weight: 2
 toc: false

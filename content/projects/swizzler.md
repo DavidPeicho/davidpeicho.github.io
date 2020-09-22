@@ -5,7 +5,7 @@ keywords: [ "rust", "programming", "texture", "graphics" ]
 draft: false
 tags: [ 'graphics' ]
 link: https://github.com/albedo-engine/swizzler
-image: https://github.com/albedo-engine/swizzler/raw/master/images/cli.gif
+images: [ "https://github.com/albedo-engine/swizzler/raw/master/images/cli.gif" ]
 toc: false
 ---
 

@@ -3,7 +3,8 @@ title: "{{ replace .TranslationBaseName "-" " " | title }}"
 date: {{ .Date }}
 slug: ""
 description: ""
-image: "{{ image | absURL }}"
+images: []
+videos: []
 keywords: []
 draft: true
 tags: []
