@@ -16,7 +16,7 @@ googleAnalytics = "UA-142103532-1"
   # https://gohugo.io/functions/format/#gos-layout-string
   dateFormat = "Jan 2 2006"
 
-  description = "Blog about computer graphics, rendering, game developmnent, or just computer science!"
+  description = "David Peicho's blog about computer graphics, rendering, game developmnent, or just computer science!"
 
   # Links to your social accounts, comment/uncomment as needed. Icons will be displayed for those specified.
   twitter = "https://twitter.com/DavidPeicho"

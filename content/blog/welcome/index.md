@@ -2,7 +2,7 @@
 title: "Welcome!"
 date: 2019-09-22
 slug: "welcome"
-description: "First blog post describing this website created by David Peicho"
+description: "First blog post describing this blog"
 keywords: [ "hugo", "blog", "graphics", "programming" ]
 tags: [ "hugo", "blog" ]
 image: "llama.jpg"

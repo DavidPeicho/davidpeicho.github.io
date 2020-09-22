@@ -1,8 +1,9 @@
 {
   "title": "About",
   "heading": "David Peicho",
-  "keywords": [ "graphics", "rendering", "3D", "blog", "david peiicho" ],
-  "description": "List articles relative to Computer Graphics and / or Game Development, written by David Peicho",
+  "keywords": [ "graphics", "rendering", "3D", "blog", "david peicho" ],
+  "description": "David Peicho is a Graphics Programer / Research Scientist currently working in the visualization team at Siemens Healthineers ",
+  "image": "me.jpg",
   "teaching": [
     {
       "title": "Teaching Assistant",
