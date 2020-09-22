@@ -11,7 +11,7 @@ git rebase master
 
 npm run lint && npm run build
 
-git add docs/ -f
+git add -f docs
 msg="publish $(date)"
 if [ -n "$*" ]; then
 	msg="$*"
