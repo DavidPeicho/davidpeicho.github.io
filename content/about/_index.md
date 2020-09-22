@@ -3,7 +3,7 @@
   "heading": "David Peicho",
   "keywords": [ "graphics", "rendering", "3D", "blog", "david peicho" ],
   "description": "David Peicho is a Graphics Programer / Research Scientist currently working in the visualization team at Siemens Healthineers ",
-  "image": [ "/images/me.jpg" ],
+  "images": [ "/images/me.jpg" ],
   "teaching": [
     {
       "title": "Teaching Assistant",
