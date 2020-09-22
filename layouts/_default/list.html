@@ -11,7 +11,12 @@
   -->
 
   {{ with (index .Pages 0) }}
-    {{ $.Scratch.Set "pageThumbnail" ( .Params.image | default .Params.video ) }}
+    {{ with .Params.image }}
+      {{ $.Scratch.Set "pageThumbnail" . }}
+    {{ end }}
+    {{ with .Params.video }}
+      {{ $.Scratch.Set "pageVideo" . }}
+    {{ end }}
   {{ end }}
 
 {{ end }}

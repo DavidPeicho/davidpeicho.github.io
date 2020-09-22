@@ -8,7 +8,9 @@
 
   Feeds variablwes like: `seoImage`, etc...
 -->
-{{ $.Scratch.Set "pageThumbnail" ( "me.jpg" | absURL ) }}
+{{ with .Params.image }}
+  {{ $.Scratch.Set "pageThumbnail" . }}
+{{ end }}
 
 {{ partial "head.html" . }}
 
