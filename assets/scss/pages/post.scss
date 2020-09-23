@@ -39,7 +39,6 @@ $tocBreakpoint: 1024px;
   }
 
   blockquote {
-    width: 95%;
     margin: 0 auto;
     font-size: 1rem;
 
@@ -51,8 +50,7 @@ $tocBreakpoint: 1024px;
 
   img {
     width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
+    margin: 0 0;
     display: block;
   }
 }
@@ -220,6 +218,23 @@ footer {
       }
     }
   }
+}
+
+.post__content blockquote {
+  margin: 1rem 0;
+  padding: .5rem 1rem .5rem .75rem;
+  border-left: .25rem solid #e9ecef;
+  :first-child { margin-top: 0; }
+  :last-child { margin-bottom: 0; }
+}
+
+.hint {
+  @each $name, $color in $hint-colors {
+    &.#{$name} {
+      border-left-color: $color;
+      background-color: rgba($color, 0.1);
+    }
+  };
 }
 
 .twitter-tweet.twitter-tweet-rendered {

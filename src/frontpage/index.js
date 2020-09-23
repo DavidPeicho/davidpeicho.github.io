@@ -9,7 +9,7 @@ import {
   Scene,
   WebGLRenderer,
   PointLight,
-  RGBFormat, MeshNormalMaterial, ACESFilmicToneMapping
+  RGBFormat, MeshNormalMaterial
 } from 'three';
 
 import { Cloud, createPerlinTexture } from './cloud';
@@ -37,7 +37,7 @@ const BURNING_LIGHT_COLOR = (new Color(0xe67e22)).convertSRGBToLinear();
 /** Minimum time with no interaction before the light is auto controlled. */
 const AUTO_LIGHT_TIMEOUT = 1.25;
 /** Default intensity of the point light. */
-const LIGHT_INTENSITY = 1.5;
+const LIGHT_INTENSITY = 2.0;
 
 class CloudDemo {
 
@@ -74,7 +74,7 @@ class CloudDemo {
       }),
       burning: new Interpolator({
         min: 0.0,
-        max: 15.0,
+        max: 13,
         time: 3.0,
         outTime: 1.0,
         easingFunction: easeQuadraticOut,
@@ -111,11 +111,11 @@ class CloudDemo {
     if (burningLerp.isDone || !burningLerp.isRunning) {
       this._state = CloudDemo.States.Burning;
       light.color.copy(BURNING_LIGHT_COLOR);
-      app.controlsEnabled = false;
-      app.autoLightTimeout = 0.0;
       burningLerp.reset();
       this._interpolators.recover.reset();
       this._colorBeforeBurn.copy(this.object3D.material.baseColor);
+      app.controlsEnabled = false;
+      app.autoLightTimeout = AUTO_LIGHT_TIMEOUT * 0.25;
     }
   }
 
@@ -124,8 +124,8 @@ class CloudDemo {
     if (app.controlsEnabled) {
       app.autoLightTimeout = 0.0;
       const theta = mouse.xNorm * PI_OVER_2;
-      const phi = (mouse.yNorm * 0.5 + 0.5) * Math.PI;
-      applySphericalCoords(app.light, theta, phi, 2.0);
+      const phi = (mouse.yNorm * 0.5 + 0.5) *  Math.PI;
+      applySphericalCoords(app.light, theta, phi, 1.5);
     }
   }
 
@@ -202,8 +202,8 @@ CloudDemo.States = {
 CloudDemo.Parameters = {
   cloud: {
     fov: 40,
-    absorption: { min: 0.15, max: 0.3 },
-    decay: { min: 1.2 , max: 1.45 },
+    absorption: { min: 0.10, max: 0.2 },
+    decay: { min: 1.15 , max: 1.35 },
     windowMin: 0.1,
     windowMax: 0.28,
     inverse: false,
@@ -211,12 +211,12 @@ CloudDemo.Parameters = {
   },
   cloudInverse: {
     fov: 60,
-    absorption: { min: 0.08, max: 0.15 },
-    decay: { min: 6.0 , max: 7.5 },
+    absorption: { min: 0.065, max: 0.085 },
+    decay: { min: 5.5 , max: 7.0 },
     windowMin: 0.3,
     windowMax: 0.85,
     inverse: true,
-    steps: 140
+    steps: 150
   }
 };
 
@@ -243,14 +243,13 @@ class App {
 
   constructor(canvas) {
     this.renderer = new WebGLRenderer({ canvas, antialias: true });
-    this.renderer.toneMapping = ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 2.0;
     const supportWebGL2 = this.renderer.capabilities.isWebGL2;
 
     this.camera = new PerspectiveCamera();
 
     this.light = new PointLight(LIGHT_COLOR.getHex(), LIGHT_INTENSITY, 2.75, 1.25);
     this.light.position.set(-0.5, 0.5, 1.5);
+    this.light.decay = 1.0;
     this.light.updateMatrix();
     this.light.updateMatrixWorld();
 
@@ -259,7 +258,7 @@ class App {
 
     const url = new URL(window.location.href || '');
     let config = url.searchParams.get('config');
-    if (!config) { config = Math.random() < 0.4 ? 'cloud' : 'cloudInverse'; }
+    if (!config) { config = Math.random() <= 0.35 ? 'cloud' : 'cloudInverse'; }
     if (config.startsWith('cloud') && !supportWebGL2) {
       config = 'simple';
       const disclaimerElement = document.getElementById(WEBGL2_DISCLAIMER_ID);
@@ -335,14 +334,14 @@ class App {
     /* Automatic Light Rotation */
 
     if (this.autoLightTimeout >= AUTO_LIGHT_TIMEOUT) {
-      const theta = Math.sin((elapsed + PI_OVER_2) * 2.5) * PI_OVER_2;
-      const phi = Math.sin((elapsed - PI_OVER_2) * 1.35) * Math.PI;
+      const theta = Math.sin((elapsed * 0.75 + PI_OVER_2) * 2.5) * PI_OVER_2;
+      const phi = Math.sin((elapsed * 0.75 - PI_OVER_2) * 1.35) * 2.0 * Math.PI;
       const lerp = clamp(
         (this.autoLightTimeout - AUTO_LIGHT_TIMEOUT) / AUTO_LIGHT_TIMEOUT,
         0.0,
         1.0
       );
-      applySphericalCoords(this.light, theta, phi, 2.0, lerp);
+      applySphericalCoords(this.light, theta, phi, 1.0, lerp);
     }
     this.autoLightTimeout += delta;
 

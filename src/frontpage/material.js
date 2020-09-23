@@ -11,6 +11,8 @@ import {
 import cloudVertexShader from '../shaders/cloud.vert.glsl';
 import cloudFragmentShader from '../shaders/cloud.frag.glsl';
 
+const gMatrix4 = new Matrix4();
+
 /**
  * Material feeding the cloud shader.
  *
@@ -31,8 +33,7 @@ export class CloudMaterial extends ShaderMaterial {
         {
           uVolume: { value: null },
           uGradientMap: { value: null },
-          uModelViewMatrixInverse: { value: new Matrix4() },
-          uInverseVoxelSize: { value: new Vector3(1.0, 1.0, 1.0) },
+          uLocalSpaceCameraOrigin: { value: new Vector3() },
           uBaseColor: { value: new Color(0xeeeeee) },
           uAbsorption: { value: 0.15 },
           uAlphaTest: { value: 0.9 },
@@ -44,9 +45,16 @@ export class CloudMaterial extends ShaderMaterial {
       ])
     });
 
+    // NOTE: This is super important. We want to only render the back faces
+    // so we can generate a proper ray direction. Don't forget that users
+    // can render using a perspective camera. Thus, we need to generate our
+    // directions based on the back faces and not the front ones.
     this.side = BackSide;
 
+    // Needs to be `true` so that Three.js renders our cloud in an extra step,
+    // after all opaque meshes are rendered.
     this.transparent = true;
+
     this.toneMapped = false;
     this.fog = false;
     this.lights = true;
@@ -56,21 +64,28 @@ export class CloudMaterial extends ShaderMaterial {
   }
 
   update(object3d, camera) {
+    const localOriginUniform = this.uniforms.uLocalSpaceCameraOrigin.value;
+
     object3d.modelViewMatrix.multiplyMatrices(
       camera.matrixWorldInverse,
       object3d.matrixWorld
     );
-    this.inverseModelView.getInverse(object3d.modelViewMatrix);
+
+    // Use a global variable to perform in-place inverse. This is much faster
+    // that allocating a matrix (obviously also reducw GC).
+    gMatrix4.getInverse(object3d.matrixWorld);
+    // Copies the camera world position into `uLocalSpaceCameraOrigin`.
+    // NOTE: the camera world matrix **must be** up-to-date!
+    camera.getWorldPosition(localOriginUniform);
+    // Transform the camera world space into the volume local space using
+    // the above inverse transform.
+    localOriginUniform.applyMatrix4(gMatrix4);
+
     this.uniforms.uFrame.value++;
   }
 
   set volume(texture) {
     this.uniforms.uVolume.value = texture;
-    this.uniforms.uInverseVoxelSize.value.set(
-      1.0 / texture.image.width,
-      1.0 / texture.image.height,
-      1.0 / texture.image.depth
-    );
   }
 
   /** 3D texture to sample */

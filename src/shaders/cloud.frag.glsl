@@ -27,11 +27,9 @@ uniform sampler3D uVolume;
 uniform sampler3D uGradientMap;
 #endif // USE_GRADIENT_MAP
 
-uniform vec3 uInverseVoxelSize;
 uniform mat4 modelViewMatrix;
 
 uniform vec3 uBaseColor;
-
 uniform float uWindowMin;
 uniform float uWindowMax;
 uniform float uAbsorption;
@@ -39,13 +37,12 @@ uniform float uAlphaTest;
 uniform float uDecay;
 uniform float uFrame;
 
-#ifdef EDGE_GLOW
-uniform vec3 uEdgeColor;
-#endif // EDGE_GLOW
-
+#if ( NUM_POINT_LIGHTS > 0 )
 uniform PointLight pointLights[ NUM_POINT_LIGHTS ];
+#endif // NUM_POINT_LIGHTS > 0
 
-uint wang_hash(inout uint seed)
+uint
+wang_hash(inout uint seed)
 {
   seed = (seed ^ 61u) ^ (seed >> 16u);
   seed *= 9u;
@@ -55,7 +52,8 @@ uint wang_hash(inout uint seed)
   return seed;
 }
 
-float randomFloat(inout uint seed)
+float
+randomFloat(inout uint seed)
 {
   return float(wang_hash(seed)) / 4294967296.;
 }
@@ -73,20 +71,20 @@ transformDir(mat4 transform, vec3 dir)
   return normalize(transform * vec4(dir, 0.0)).xyz;
 }
 
-bool
-intersectAABB(Ray ray, inout float near, inout float far)
+void
+computeNearFar(Ray ray, inout float near, inout float far)
 {
   // Ray is assumed to be in local coordinates, ie:
   // ray = inverse(objectMatrix * invCameraMatrix) * ray
-
   // Equation of ray: O + D * t
 
-  vec3 aabbMin = vec3(-0.5);
-  vec3 aabbMax = vec3(0.5);
-
   vec3 invRay = 1.0 / ray.dir;
-  vec3 tbottom = invRay * (aabbMin - ray.origin);
-  vec3 ttop = invRay * (aabbMax - ray.origin);
+
+  // Shortcut here, it should be: `aabbMin - ray.origin`.
+  // As we are always using normalized AABB, we can skip the line
+  // `(0, 0, 0) - ray.origin`.
+  vec3 tbottom = - invRay * ray.origin;
+  vec3 ttop = invRay * (vec3(1.0) - ray.origin);
 
   vec3 tmin = min(ttop, tbottom);
   vec3 tmax = max(ttop, tbottom);
@@ -96,26 +94,12 @@ intersectAABB(Ray ray, inout float near, inout float far)
 
   near = largestMin;
   far = smallestMax;
-
-  return smallestMax > largestMin;
-}
-
-bool
-outsideUnitBox(vec3 pos)
-{
-  return (
-    pos.x < 0. || pos.y < 0. || pos.z < 0. ||
-    pos.x > 1. || pos.y > 1. || pos.z > 1.
-  );
 }
 
 float
 getSample(vec3 modelPosition)
 {
-  // Center the fetch
-  vec3 pos = modelPosition + 0.5;
-  // vec3 pos = modelPosition;
-  return texture(uVolume, pos).r;
+  return texture(uVolume, modelPosition).r;
 }
 
 float
@@ -129,7 +113,7 @@ computeGradient(vec3 position, float step)
 {
   #ifdef USE_GRADIENT_MAP
 
-  return normalize(texture(uGradientMap, position + 0.5).rgb * 2.0 - 1.0);
+  return normalize(texture(uGradientMap, position).rgb * 2.0 - 1.0);
 
   #else // !USE_GRADIENT_MAP
 
@@ -146,7 +130,7 @@ computeGradient(vec3 position, float step)
 }
 
 vec3
-computeIrradiance(Ray rayView, vec3 gradient)
+computeIrradiance(vec3 originViewSpace, vec3 gradient)
 {
   vec3 acc = vec3(0.0);
 
@@ -160,11 +144,11 @@ computeIrradiance(Ray rayView, vec3 gradient)
 	#pragma unroll_loop_start
 	for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {
 		p = pointLights[ i ];
-    posToLight = p.position - rayView.origin;
+    posToLight = p.position - originViewSpace;
     len = length(posToLight);
     NdotL = dot(gradient, normalize(posToLight));
     if (NdotL < 0.0) NdotL = -NdotL;
-    NdotL = max(0.0, NdotL) * 1.5;
+    NdotL = max(0.2, NdotL);
     acc += p.color * pow(saturate( -len / p.distance + 1.0 ), p.decay) * NdotL;
 	}
 	#pragma unroll_loop_end
@@ -177,18 +161,15 @@ computeIrradiance(Ray rayView, vec3 gradient)
 void
 main()
 {
-  float near = 0.0;
-  float far = 0.0;
   vec4 acc = vec4(0.0);
 
   Ray ray;
   ray.origin = vRay.origin;
   ray.dir = normalize(vRay.dir);
 
-  Ray rayView;
-
-  bool intersect = intersectAABB(ray, near, far);
-  if (!intersect) { discard; }
+  float near = 0.0;
+  float far = 0.0;
+  computeNearFar(ray, near, far);
 
   ray.origin = vRay.origin + near * ray.dir;
 
@@ -196,18 +177,21 @@ main()
   float delta = min(inc.x, min(inc.y, inc.z)) / float(NB_STEPS);
   ray.dir = ray.dir * delta;
 
+  float dist = near;
+
   #define JITTER
   #ifdef JITTER
-    // https://blog.demofox.org/2020/05/25/casual-shadertoy-path-tracing-1-basic-camera-diffuse-emissive/
-	  uint seed = uint(gl_FragCoord.x) * uint(1973) + uint(gl_FragCoord.y) * uint(9277) + uint(uFrame) * uint(26699);
-    float randNum = randomFloat(seed) * 2.0 - 1.0;
-    ray.origin += ray.dir * randNum;
+  // https://blog.demofox.org/2020/05/25/casual-shadertoy-path-tracing-1-basic-camera-diffuse-emissive/
+  uint seed =
+    uint(gl_FragCoord.x) * uint(1973) +
+    uint(gl_FragCoord.y) * uint(9277) +
+    uint(uFrame) * uint(26699);
+  float randNum = randomFloat(seed) * 2.0 - 1.0;
+  ray.origin += ray.dir * randNum;
+  dist += randNum * delta;
   #endif
 
-  #ifdef DEBUG_BOX
-  vec4 debugColor = intersect ? vec4(1.0, 0.0, 0.0, 1.0) : vec4(0.0);
-  #endif
-
+  vec3 originViewSpace = vec3(0.0);
   for (int i = 0; i < NB_STEPS; ++i)
   {
     float s = getSample(ray.origin);
@@ -217,17 +201,13 @@ main()
     s = pow(s, uDecay);
     s = smoothstep(uWindowMin, uWindowMax, s) * uAbsorption;
 
-    // #ifdef NON_LINEAR_CLASSIFICATION
-    // s *= s;
-    // #endif // NON_LINEAR_CLASSIFICATION
-
-    rayView.origin = transformPoint(modelViewMatrix, ray.origin);
+    // NOTE: would be better to pass light in local space as well.
+    // Three.js has light in View Space by default so I simply used that.
+    originViewSpace = transformPoint(modelViewMatrix, ray.origin);
     vec3 gradient = transformDir(modelViewMatrix, computeGradient(ray.origin, delta));
 
-    float transparency = 1.0 - acc.a;
-    float sampleFactor = transparency * s;
-    vec3 diffuse = computeIrradiance(rayView, gradient);
-    diffuse *= 2.0 - uAbsorption;
+    float sampleFactor = (1.0 - acc.a) * s;
+    vec3 diffuse = computeIrradiance(originViewSpace, gradient);
 
     acc.rgb += sampleFactor * (uBaseColor + diffuse);
     acc.a += sampleFactor;
@@ -235,8 +215,9 @@ main()
     if (acc.a > uAlphaTest) { break; }
 
     ray.origin += ray.dir;
+    dist += delta;
 
-    if (outsideUnitBox(ray.origin + 0.5)) { break; }
+    if (dist > far) { break; }
   }
 
   pc_fragColor.rgba += acc;

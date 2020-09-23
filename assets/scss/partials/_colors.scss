@@ -6,3 +6,10 @@ $grey: #9b9b9b;
 $darkGrey: #717171;
 $white: #fff;
 $primary: #9013fe;
+
+// Hint colors
+$hint-colors: (
+  info: $lightgray,
+  warning: #f1c40f,
+  danger: #e74c3c
+) !default;

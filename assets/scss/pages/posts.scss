@@ -17,11 +17,13 @@
   .tags_list {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     margin-top: $smallMargin;
 
     .tag {
       min-width: 3rem;
       padding: 0.25rem 0.75rem 0.25rem 0.75rem;
+      margin-bottom: $smallMargin;
       text-align: center;
       color: white;
       background-color: #cccccc;
