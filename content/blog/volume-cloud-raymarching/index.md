@@ -6,7 +6,7 @@ description: "Walthrough to understand how to visualize clouds using raymarching
 keywords: [ "volume rendering", "raymarching", "cloud", "three.js", "webgl" ]
 tags: [ "graphics", "volume-rendering", "webgl", "three.js" ]
 images: [ "/images/homepage.jpg" ]
-draft: true
+draft: false
 math: true
 ---
 
