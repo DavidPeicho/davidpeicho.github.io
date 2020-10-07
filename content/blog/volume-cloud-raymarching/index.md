@@ -31,6 +31,10 @@ Three.js has a nice [cloud example](https://threejs.org/examples/?q=cloud#webgl2
 from which this demo is inspired. If you want to quickly integrate something I
 recommend you to have a look at it.
 
+This tutorial will be splitted into two blog posts:
+* Part 1: theory, basic setup, ray generation, and first results!
+* Part 2: improvements, and burning effect. This part isn't published yet.
+
 If you are comfortable with graphics, it may be faster and more interesting
 for you to dive [in the code](https://github.com/DavidPeicho/davidpeicho.github.io/tree/master/src) and simply cherry pick what you need.
 
