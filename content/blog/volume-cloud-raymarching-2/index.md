@@ -15,6 +15,8 @@ the lighting and how to create the burning effect.
 
 <!--more-->
 
+![Demo](/images/homepage.jpg)
+
 This blog post will be a lot less driven by theory, and a lot more by
 experimentation, tweaking, trial and error :)
 

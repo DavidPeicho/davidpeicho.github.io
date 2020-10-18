@@ -5,7 +5,7 @@ slug: "cloud-raymarching-walkthrough-part1"
 description: "Walthrough to understand how to visualize clouds using raymarching"
 keywords: [ "volume rendering", "raymarching", "cloud", "three.js", "webgl" ]
 tags: [ "graphics", "volume-rendering", "webgl", "three.js" ]
-images: [ "/images/homepage.jpg" ]
+images: [ "/images/posts/raymarching-2.jpg" ]
 draft: false
 math: true
 ---
@@ -15,7 +15,7 @@ available on the [Home page](/).
 
 <!--more-->
 
-![Demo](/images/homepage.jpg)
+![Demo](/images/posts/raymarching-2.jpg)
 
 ## Intro
 
