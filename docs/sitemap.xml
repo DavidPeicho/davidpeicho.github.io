@@ -19,31 +19,36 @@
   
   <url>
     <loc>https://davidpeicho.github.io/</loc>
-    <lastmod>2020-09-24T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/</loc>
-    <lastmod>2020-09-24T00:00:00+00:00</lastmod>
+    <loc>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/</loc>
+    <lastmod>2020-10-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://davidpeicho.github.io/tags/graphics/</loc>
-    <lastmod>2020-09-24T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://davidpeicho.github.io/blog/</loc>
-    <lastmod>2020-09-24T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://davidpeicho.github.io/tags/</loc>
-    <lastmod>2020-09-24T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://davidpeicho.github.io/tags/three.js/</loc>
+    <lastmod>2020-10-08T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/</loc>
     <lastmod>2020-09-24T00:00:00+00:00</lastmod>
   </url>
   

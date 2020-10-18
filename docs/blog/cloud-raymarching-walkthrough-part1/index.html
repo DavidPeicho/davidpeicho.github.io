@@ -72,9 +72,9 @@
   
     
     
-    <meta name="twitter:image" content="https://davidpeicho.github.io/images/homepage.jpg" />
-    <meta property="og:image" content="https://davidpeicho.github.io/images/homepage.jpg" />
-    <meta property="og:image:secure_url" content="https://davidpeicho.github.io/images/homepage.jpg" />
+    <meta name="twitter:image" content="https://davidpeicho.github.io/images/posts/raymarching-2.jpg" />
+    <meta property="og:image" content="https://davidpeicho.github.io/images/posts/raymarching-2.jpg" />
+    <meta property="og:image:secure_url" content="https://davidpeicho.github.io/images/posts/raymarching-2.jpg" />
   
 
   
@@ -90,7 +90,7 @@
 
   
     
-    <link rel="stylesheet" href="/css/post.min.c3b58be526659b8de1a3e2589b1e7d486d819a1377d2a02d88c8c1dbf64bb48e.css" integrity="sha256-w7WL5SZlm43ho&#43;JYmx59SG2BmhN30qAtiMjB2/ZLtI4="/>
+    <link rel="stylesheet" href="/css/post.min.84be1fa5732c695ddd63ecb9bb741d9c147e824f0365a801fb07a0457bf0286b.css" integrity="sha256-hL4fpXMsaV3dY&#43;y5u3QdnBR&#43;gk8DZagB&#43;wegRXvwKGs="/>
   
 
   
@@ -120,7 +120,7 @@
       "datePublished": "2020-09-24 00:00:00 \x2b0000 UTC",
       "dateModified" : "2020-09-24 00:00:00 \x2b0000 UTC",
       "url" : "https:\/\/davidpeicho.github.io\/blog\/cloud-raymarching-walkthrough-part1\/",
-      "wordCount" : "4486",
+      "wordCount" : "4487",
       "keywords" : ["volume rendering", "raymarching", "cloud", "three.js", "webgl", "Blog"]
     }
   
@@ -191,7 +191,7 @@ if (!doNotTrack) {
               
 <p>This blog post will walk you through how I created the volume rendering visualization
 available on the <a href="/">Home page</a>.</p>
-<p><img src="/images/homepage.jpg" alt="Demo"></p>
+<p><img src="/images/posts/raymarching-2.jpg" alt="Demo"></p>
 <h2 id="intro">Intro<a class="anchor" href="#intro">#</a></h2>
 <p>This tutorial is made for beginners and I will try to be as descriptive as possible.
 Results will be validated at each step to ensure you get the expected results.</p>
@@ -429,7 +429,7 @@ const onResize = new ResizeObserver(entries =&gt; {
     const { width, height } = entries[0].contentRect;
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(width, height);
+    renderer.setSize(width, height, false);
   }
 });
 onResize.observe(renderer.domElement);
@@ -1031,6 +1031,11 @@ how I created the <em>&ldquo;fire&rdquo;-like</em> effect.</p>
     </a>
   
 
+  
+    <a class="pagination__item" href="https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/">
+      <span class="pagination__label">Next Post</span>
+      <span class="pagination__title" >(2/2) Behind The Scene: Cloud Raymarching Demo</a>
+    </a>
   
 </div>
 

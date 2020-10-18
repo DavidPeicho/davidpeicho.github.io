@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© {year}</copyright>
-    <lastBuildDate>Thu, 24 Sep 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 08 Oct 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://davidpeicho.github.io/tags/graphics/index.xml" rel="self" type="application/rss+xml" />
     
@@ -42,6 +42,16 @@ ArtFlow was made to finalize my Master&amp;rsquo;s Degree at EPITA.&lt;/p&gt;</d
       <description>&lt;p&gt;FPSDesigner is a &lt;i&gt;&amp;quot;Unity-like&amp;quot;&lt;/i&gt; editor to help build FPS games.
 It&amp;rsquo;s designed into two parts, a C# &lt;b&gt;Core Engine&lt;/b&gt; running on top of XNA,
 as well as a &lt;b&gt;WPF editor&lt;/b&gt; to build the levels.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>(2/2) Behind The Scene: Cloud Raymarching Demo</title>
+      <link>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/</link>
+      <pubDate>Thu, 08 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/</guid>
+      <description>&lt;p&gt;Second part of &lt;a href=&#34;https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/&#34;&gt;Behind The Scene: Cloud Raymarching Demo&lt;/a&gt;, in which we will go through how to improving
+the lighting and how to create the burning effect.&lt;/p&gt;</description>
     </item>
     
     <item>
