@@ -50,5 +50,7 @@ yarn run dev:js
 ## Thanks
 
 * Thanks to [jakewies](https://github.com/jakewies/hugo-theme-codex) for the awesome and minimalistic Hugo theme
+* Thanks to the [hugo-book theme](https://github.com/alex-shpak/hugo-book/) for all
+the free available shortcuts
 * Thanks to [model-viewer](https://github.com/google/model-viewer/) for the
 nice interation [prompt icon](https://github.com/DavidPeicho/davidpeicho.github.io/tree/develop/layouts/partials/interaction-prompt.html)
