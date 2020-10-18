@@ -32,6 +32,7 @@ uniform mat4 modelViewMatrix;
 uniform vec3 uBaseColor;
 uniform float uWindowMin;
 uniform float uWindowMax;
+// Absorption of the cloud. The closer to 0.0, the more transparent it appears.
 uniform float uAbsorption;
 uniform float uAlphaTest;
 uniform float uDecay;
@@ -113,6 +114,8 @@ computeGradient(vec3 position, float step)
 {
   #ifdef USE_GRADIENT_MAP
 
+  // Gradients are saved in the range `[0; 1]`. We need to map it back to
+  // [-1; 1].
   return normalize(texture(uGradientMap, position).rgb * 2.0 - 1.0);
 
   #else // !USE_GRADIENT_MAP
@@ -129,9 +132,17 @@ computeGradient(vec3 position, float step)
   #endif // USE_GRADIENT_MAP
 }
 
+/**
+ * Computes the diffuse lighting at the point `originViewSpace` with normal
+ * `normalViewSpace`.
+ *
+ * **NOTE**: For now, the lighting is done in **view** space. Be careful
+ * not to give model space / world space parameters.
+ */
 vec3
-computeIrradiance(vec3 originViewSpace, vec3 gradient)
+computeIrradiance(vec3 originViewSpace, vec3 normalViewSpace)
 {
+  // Accumulated light contribution of all point lights.
   vec3 acc = vec3(0.0);
 
   #if ( NUM_POINT_LIGHTS > 0 )
@@ -146,10 +157,10 @@ computeIrradiance(vec3 originViewSpace, vec3 gradient)
 		p = pointLights[ i ];
     posToLight = p.position - originViewSpace;
     len = length(posToLight);
-    NdotL = dot(gradient, normalize(posToLight));
-    if (NdotL < 0.0) NdotL = -NdotL;
-    NdotL = max(0.2, NdotL);
-    acc += p.color * pow(saturate( -len / p.distance + 1.0 ), p.decay) * NdotL;
+    NdotL = dot(normalViewSpace, normalize(posToLight));
+    if (NdotL < 0.0) { NdotL = -NdotL; }
+    NdotL = max(0.1, NdotL);
+    acc += p.color * pow(saturate(-len / p.distance + 1.0), p.decay) * NdotL;
 	}
 	#pragma unroll_loop_end
 
@@ -187,11 +198,13 @@ main()
     uint(gl_FragCoord.y) * uint(9277) +
     uint(uFrame) * uint(26699);
   float randNum = randomFloat(seed) * 2.0 - 1.0;
+  // Adds a little random offset to the ray origin to reduce artefacts.
   ray.origin += ray.dir * randNum;
+  // **NOTE**: don't forget to adapt the max distance to travel because
+  // we move the origin!
   dist += randNum * delta;
   #endif
 
-  vec3 originViewSpace = vec3(0.0);
   for (int i = 0; i < NB_STEPS; ++i)
   {
     float s = getSample(ray.origin);
@@ -201,13 +214,15 @@ main()
     s = pow(s, uDecay);
     s = smoothstep(uWindowMin, uWindowMax, s) * uAbsorption;
 
-    // NOTE: would be better to pass light in local space as well.
-    // Three.js has light in View Space by default so I simply used that.
-    originViewSpace = transformPoint(modelViewMatrix, ray.origin);
-    vec3 gradient = transformDir(modelViewMatrix, computeGradient(ray.origin, delta));
+    vec3 gradient = computeGradient(ray.origin, delta);
+    vec3 originViewSpace = transformPoint(modelViewMatrix, ray.origin);
+    // The gradient isn't exactly the `normal`. It's the positive change of
+    // rate. The cloud is built with higher values close to the middle. Thus,
+    // we negate the gradient to get the normal pointing outward.
+    vec3 viewSpaceNormal = transformDir(modelViewMatrix, - gradient);
 
     float sampleFactor = (1.0 - acc.a) * s;
-    vec3 diffuse = computeIrradiance(originViewSpace, gradient);
+    vec3 diffuse = computeIrradiance(originViewSpace, viewSpaceNormal);
 
     acc.rgb += sampleFactor * (uBaseColor + diffuse);
     acc.a += sampleFactor;
@@ -220,5 +235,5 @@ main()
     if (dist > far) { break; }
   }
 
-  pc_fragColor.rgba += acc;
+  pc_fragColor.rgba = acc;
 }

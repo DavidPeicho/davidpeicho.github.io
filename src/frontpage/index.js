@@ -9,7 +9,7 @@ import {
   Scene,
   WebGLRenderer,
   PointLight,
-  RGBFormat, MeshNormalMaterial
+  RGBFormat, MeshNormalMaterial, Vector3
 } from 'three';
 
 import { Cloud, createPerlinTexture } from './cloud';
@@ -22,11 +22,14 @@ import {
   clamp,
   lerpColor,
   easeQuadratic,
-  sinNorm
+  sinNorm,
+  saturate
 } from './math';
 import { Mouse } from './inputs';
 
 import GradientWorker from './workers/gradient-generator.worker.js';
+
+/** CONSTANTS. */
 
 const WEBGL2_DISCLAIMER_ID = 'missingWebGL2';
 const BACKGROUND_COLOR = (new Color(0xf7f7f7)).convertSRGBToLinear();
@@ -38,6 +41,12 @@ const BURNING_LIGHT_COLOR = (new Color(0xe67e22)).convertSRGBToLinear();
 const AUTO_LIGHT_TIMEOUT = 1.25;
 /** Default intensity of the point light. */
 const LIGHT_INTENSITY = 2.0;
+/** Speed factor for the automatic light rotation. */
+const LIGHT_SPEED = 1.3;
+
+/** GLOBALS: used for in-place computation and reduction of GC.s */
+
+const gPoint = new Vector3();
 
 class CloudDemo {
 
@@ -180,6 +189,8 @@ class CloudDemo {
     const { width, height, depth, data } = volume.image;
     const worker = new GradientWorker();
     window.setTimeout(() => {
+      // Send a message to the worker, which will trigger the function that
+      // generates the gradient texture.
       worker.postMessage({ width, height, depth, buffer: data });
       worker.onmessage = (e) => {
         const texture = new DataTexture3D(new Uint8Array(e.data), width, height, depth);
@@ -256,6 +267,8 @@ class App {
     this.scene = new Scene();
     this.scene.background = (new Color()).copy(BACKGROUND_COLOR);
 
+    this.enableAutoRotation = true;
+
     const url = new URL(window.location.href || '');
     let config = url.searchParams.get('config');
     if (!config) { config = Math.random() <= 0.35 ? 'cloud' : 'cloudInverse'; }
@@ -325,23 +338,30 @@ class App {
     /* Cloud Position & Scale. */
 
     const scaleLerp = this._scaleLerp;
-    const scale = scaleLerp.update(elapsed * 0.125);
-    object3D.scale.set(scale, scale, scale);
-    object3D.rotation.y += delta * 0.15;
-    object3D.updateMatrix();
-    object3D.updateMatrixWorld();
+    if (this.enableAutoRotation) {
+      const scale = scaleLerp.update(elapsed * 0.125);
+      object3D.scale.set(scale, scale, scale);
+      object3D.rotation.y += delta * 0.15;
+      object3D.updateMatrix();
+      object3D.updateMatrixWorld();
+    }
 
     /* Automatic Light Rotation */
 
     if (this.autoLightTimeout >= AUTO_LIGHT_TIMEOUT) {
-      const theta = Math.sin((elapsed * 0.75 + PI_OVER_2) * 2.5) * PI_OVER_2;
-      const phi = Math.sin((elapsed * 0.75 - PI_OVER_2) * 1.35) * 2.0 * Math.PI;
-      const lerp = clamp(
-        (this.autoLightTimeout - AUTO_LIGHT_TIMEOUT) / AUTO_LIGHT_TIMEOUT,
-        0.0,
-        1.0
+      const scaledElapsed = elapsed * LIGHT_SPEED;
+      gPoint.set(
+        Math.sin(scaledElapsed * 1.15),
+        Math.cos(scaledElapsed * 0.95 + PI_OVER_2),
+        Math.cos(scaledElapsed * 1.3)
+      ).normalize().multiplyScalar(1.15);
+
+      const t = saturate(
+        (this.autoLightTimeout - AUTO_LIGHT_TIMEOUT) / AUTO_LIGHT_TIMEOUT
       );
-      applySphericalCoords(this.light, theta, phi, 1.0, lerp);
+      this.light.position.lerp(gPoint, t);
+      this.light.updateMatrix();
+      this.light.updateMatrixWorld();
     }
     this.autoLightTimeout += delta;
 
