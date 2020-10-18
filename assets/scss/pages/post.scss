@@ -48,6 +48,11 @@ $tocBreakpoint: 1024px;
     }
   }
 
+  video {
+    width: 100%;
+    margin: 0 0;
+  }
+
   img {
     width: 100%;
     margin: 0 0;
@@ -200,6 +205,35 @@ footer {
     color: $grey;
     font-size: 0.65rem;
   }
+}
+
+/* Expand */
+
+.expand {
+
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e9ecef;
+  border-radius: .25rem;
+  overflow: hidden;
+
+  .expand-head {
+    display: flex;
+    justify-content: space-between;
+    background: #f8f9fa;
+    padding: .5rem 1rem;
+    cursor: pointer;
+  }
+
+  .expand-content {
+    display: none;
+    padding: 1rem;
+  }
+
+  input[type=checkbox]:checked+.expand-content {
+    display: block;
+  }
+
 }
 
 /* overrides */

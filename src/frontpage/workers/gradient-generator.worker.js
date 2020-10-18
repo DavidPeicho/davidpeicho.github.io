@@ -9,6 +9,12 @@ import { Vector3 } from 'three/src/math/Vector3';
 
 import { clamp } from '../math';
 
+/**
+ * Triggered when the host send a message to the worker.
+ *
+ * The worker assumes any message should compute the gradient texture and send
+ * it back.
+ */
 onmessage = (event) => {
   const { width, height, depth, buffer } = event.data;
 
@@ -38,6 +44,9 @@ onmessage = (event) => {
     const y = Math.floor((i % voxelPerSlice) / width);
     const z = Math.floor(i / voxelPerSlice);
 
+    // Computes the gradient at position `x`, `y`, `z`.
+    // The gradient is then mapped from the range [-1; 1] to [0; 1] to
+    // be stored in a texture.
     gradient.set(
       buffer[getIndex(x + 1, y, z)] - buffer[getIndex(x - 1, y, z)],
       buffer[getIndex(x, y + 1, z)] - buffer[getIndex(x, y - 1, z)],

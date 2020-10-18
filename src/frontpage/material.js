@@ -60,6 +60,9 @@ export class CloudMaterial extends ShaderMaterial {
     this.lights = true;
 
     this.defines.NB_STEPS = 100;
+
+    // By default, the shader is compiled to compute the gradients during the
+    // fragment shader step.
     this.defines.USE_GRADIENT_MAP = false;
   }
 

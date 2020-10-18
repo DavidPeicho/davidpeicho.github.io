@@ -8,6 +8,10 @@ export function clamp(v, min, max) {
   return Math.min(Math.max(v, min), max);
 }
 
+export function saturate(v) {
+  return clamp(v, 0.0, 1.0);
+}
+
 export function lerpColor(base, colorA, colorB, coeff) {
   base.r = colorA.r + (colorB.r - colorA.r) * coeff;
   base.g = colorA.g + (colorB.g - colorA.g) * coeff;
