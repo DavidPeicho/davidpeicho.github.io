@@ -1,0 +1,12 @@
+<div class="expand">
+  <label>
+    <div class="expand-head">
+      <span>{{ default ("Expand") (.Get 0) }}</span>
+      <span>↕</span>
+    </div>
+    <input type="checkbox" style="display: none;" />
+    <div class="expand-content">
+      {{ .Inner | markdownify }}
+    </div>
+  </label>
+</div>

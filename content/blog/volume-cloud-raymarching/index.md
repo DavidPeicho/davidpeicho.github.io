@@ -303,7 +303,7 @@ const onResize = new ResizeObserver(entries => {
     const { width, height } = entries[0].contentRect;
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(width, height);
+    renderer.setSize(width, height, false);
   }
 });
 onResize.observe(renderer.domElement);
