@@ -15,6 +15,9 @@ the lighting and how to create the burning effect.
 
 <!--more-->
 
+This blog post will be a lot less driven by theory, and a lot more by
+experimentation, tweaking, trial and error :)
+
 ## Light Support
 
 Right now, the light is hardcoded in the shader. In the [demo](/), I decided to let
@@ -194,7 +197,7 @@ There is an important thing to note here. Three.js sends the light info in
 **View Space**. Thus, we **have to** perform our lighting in view space, or
 we need to transform the light in the **Ray Model Space**.
 
-{{< hint info >}}
+{{< hint warning >}}
 It would be more efficient to have all lights in **Ray Model Space** transformed
 at the beggining of the fragment shader. However, it adds some complexity that
 isn't really needed here for almost no performance gain on a small amount of lights.
@@ -245,13 +248,545 @@ light.updateMatrixWorld();
 scene.add(cloud, light);
 ```
 
+![Light Support](./light-support.jpg)
+
+## Animate Light Position
+
+In the demo, the light is automatically rotating around the cloud. There are
+many many ways to achieve this and it's up to personal preferences.
+
+I decided to go for a simple modulation of the position coordinates using
+the `sin()` and `cos()` functions.
+
+We can obtain good enough results by doing something simple such as:
+
+_index.js_
+
+```js
+function render() {
+  const elapsed = clock.getElapsedTime();
+
+  // Animate light position smoothly using `sin` and `cos`
+  // functions.
+  const speed = 1.5;
+  light.position.set(
+    Math.sin(elapsed * speed) * 0.75,
+    Math.cos(elapsed * speed * 1.5 + Math.PI * 0.5) * 0.5,
+    Math.cos(elapsed * speed * 1.15) * 0.5 + 1.0
+  ).normalize().multiplyScalar(1.15);
+  light.updateMatrix();
+  light.updateMatrixWorld();
+
+  cloud.material.update(cloud, camera);
+
+  renderer.render(scene, camera);
+  window.requestAnimationFrame(render);
+}
+```
+
+Nothing should be new here. The `x` and `y` coordinates are respectively
+scaled by `0.75` and `0.5` to prevent the light from going too far away from
+the visible front part of the cloud.
+
+<video autoplay loop muted playsinline src="light-position.mp4"></video>
+
+Do not hesitate to cutomize the effect to your needs!
+
+## Animate Volume Properties
+
+For this section, I will (mostly) let the reader play with the values.
+Modulating temporally the volume attributes breaks the "staticness" of the
+actual result. Right now, nothing moves except the light, and we are
+going to change that!
+
+Let's see what happens if we modulate the absorption. The absorption will
+simply be a factor for the volume data.
+
+As usual, let's modify the material and the shader to add a new uniform.
+
+_material.js_
+
+```js
+export class CloudMaterial extends ShaderMaterial {
+
+  constructor() {
+    super({
+      ...
+      uniforms: UniformsUtils.merge([
+        UniformsLib.lights,
+        {
+          ...
+          uAbsorption: { value: 0.5 },
+          ...
+        }
+      ])
+    });
+
+    ...
+
+  }
+
+  set absorption(value) {
+    this.uniforms.uAbsorption.value = value;
+  }
+
+  get absorption() {
+    return this.uniforms.uAbsorption.value;
+  }
+
+  ...
+```
+
+_cloud.frag.glsl_
+
+```glsl
+precision highp float;
+precision highp sampler3D;
+
+...
+
+// Absorption of the cloud. The closer to 0.0,
+// the more transparent it appears.
+uniform float uAbsorption;
+
+...
+
+void
+main()
+{
+
+  ...
+
+  for (int i = 0; i < NB_STEPS; ++i)
+  {
+    float s = texture(uVolume, ray.origin).r;
+    // Applies the absorption factor the sample.
+    s = smoothstep(0.12, 0.35, s) * uAbsorption;
+    ...
+  }
+
+  ...
+}
+
+```
+
+Just like we did for the light position, we will modulate the absorption using
+the `sin()` function:
+
+_index.js_
+
+```js
+...
+
+function render() {
+  ...
+
+  // Maps the sin value from [-1; 1] tp [0; 1].
+  const sinNorm = Math.sin(elapsed * 0.75) * 0.5 + 0.5;
+  // Maps the sin value from [0; 1] to [0.05; 0.35].
+  cloud.material.absorption = sinNorm * 0.35 + 0.05;
+
+  ...
+}
+```
+
+We first re-map the `sin()` value into the range `[0; 1]`, and we then map the
+normalized range to `[0.05; 0.35]`.
+
+If you decided to use the same factors and the same interpolation, you should
+obtain:
+
+<video autoplay loop muted playsinline src="absorption.mp4"></video>
+
+Again, if you have a look at [the code](https://github.com/DavidPeicho/davidpeicho.github.io/tree/master/src) running on this blog, you will see that I exposed more uniforms to the
+user. It allows me to change more parameters and it kind of break the sensation
+of "loop".
+
+This is one of my favorite part to code. Don't be afraid of modifying properties,
+changing colors through time, etc... With all those parameters, you can make
+the cloud look **exactly** how you want it to look!
+
 ## Burning Effect
 
-TODO
+In the [demo](/), the burning effect works this way:
+
+1. User mouse click is detected, burnining starts
+2. The light intensity and the cloud base color are interpolated during
+a short time
+3. When it's considered "burnt", the cloud slowly retrieves its original color
+
+As you can see, we already added everything we need in the shader! There is no
+addition needed to achieve this. There may be better way of doing this, but the
+quality is already pretty good for the effort.
+
+Let's first make a gross version that will work, but only for this use case. We
+will create **3** states: **Idle**, **Burning**, and **Recovering**.
+
+__index.js__
+
+```js
+...
+
+// Base color of the light, i.e., red
+const lightColor = (new Color(0xeb4d4b)).convertSRGBToLinear();
+// Color of the light when the cloud is burning, i.e., orange
+const burningColor = (new Color(0xe67e22)).convertSRGBToLinear();
+
+// `0` ⟶ Idle, `1` ⟶ Burning, `2` ⟶ Idle
+let state = 0;
+// Used to smootly create the burning and recovery effects.
+let timer = 0.0;
+
+document.body.addEventListener('mousedown', () => {
+  light.color.copy(burningColor)
+  state = 1;
+  timer = 0.0;
+});
+
+function render() {
+  ...
+}
+```
+
+The code should speak by itself. When the mouse is down, we change the color
+of the light to something orange, and we set the state to **Burning**.
+
+Let's modulate the intensity of the light to create a smooth transition:
+
+__index.js__
+
+```js
+...
+
+// Total burning time, in seconds.
+const burningTime = 2.5;
+
+function render() {
+  switch (state) {
+    // Burning.
+    case 1: {
+      // Normalized value of the timer in range [0...1].
+      const t = timer / burningTime;
+      light.intensity = (
+        timer < burningTime * 0.5 ? t : 1.0 - t
+      ) * 15;
+      // Checks whether the burning is over or not.
+      if (timer >= burningTime) {
+        light.color.copy(lightColor);
+        timer = 0.0;
+        state = 2;
+      }
+      break;
+    }
+  }
+
+  timer += delta;
+}
+
+```
+
+This code may look complicated, but it actually only changes the intensity up
+to **15** in `burningTime * 0.5` seconds, and then goes down to **0** during
+another `burningTime * 0.5` seconds.
+
+Let's do exactly the same thing for the recovery now. We want to wait a little
+bit, and then smoothly retrieve the original light intensity.
+
+__index.js__
+
+```js
+...
+
+// Total recovery time, in seconds.
+const recoveryTime = 3.5;
+// Delay before starting to recover, in seconds.
+const recoveryDelay = 2.0;
+
+function render() {
+  switch (state) {
+    // Burning.
+    case 1: {
+      // Normalized value of the timer in range [0...1].
+      const t = timer / burningTime;
+      light.intensity = (
+        timer < burningTime * 0.5 ? t : 1.0 - t
+      ) * 15;
+      // Checks whether the burning is over or not.
+      if (timer >= burningTime) {
+        light.color.copy(lightColor);
+        timer = 0.0;
+        state = 2;
+      }
+      break;
+    }
+    // Recovery
+    case 2: {
+      const t = (timer - recoveryDelay) / recoveryTime;
+      light.intensity = t < 0 ? 0 : t * lightIntensity;
+      if (timer >= recoveryTime + recoveryDelay) {
+        state = 0;
+      }
+      break;
+    }
+  }
+
+  ...
+
+}
+
+```
+
+{{< hint warning >}}
+
+If you leave your browser tab, the `delta` time will be relative to how long
+you were off. This will completely mess up our light intensity. In order to
+fix that, you should clamp the intensity values obtained when interpolating.
+
+{{< /hint >}}
+
+And voila! You made it! Appreciate the final result:
+
+<video autoplay loop muted playsinline src="light-states.mp4"></video>
+
+If you are stuck on something, below is the entire `index.js` file. Feel free to
+click on it to inspect the code.
+
+{{< expand index.js >}}
+
+```js
+window.onload = function () {
+  const canvas = document.getElementsByTagName('canvas')[0]
+  const renderer = new WebGLRenderer({ canvas });
+  const camera = new PerspectiveCamera();
+  camera.position.z = 2.0;
+  camera.updateMatrix();
+  camera.updateMatrixWorld();
+
+  /** Parameters. */
+  const lightIntensity = 1.5;
+  // Base color of the light, i.e., red
+  const lightColor = (new Color(0xeb4d4b)).convertSRGBToLinear();
+  // Color of the light when the cloud is burning, i.e., orange
+  const burningColor = (new Color(0xe67e22)).convertSRGBToLinear();
+
+  const cloud = new Cloud();
+  cloud.material.volume = createPerlinTexture({ scale: 0.09 });
+  cloud.material.baseColor = (new Color(0x7188a8)).convertSRGBToLinear();
+
+  const light = new PointLight(
+    lightColor,
+    lightIntensity,
+    2.75,
+    1.25,
+    1.0
+  );
+  light.position.set(1.0, 1.0, 2.0);
+  light.updateMatrix();
+  light.updateMatrixWorld();
+
+  const scene = new Scene();
+  scene.background = new Color(0xf7f7f7);
+  scene.add(cloud, light);
+
+  const clock = new Clock();
+  clock.start();
+
+  // The observer triggers an event when the canvas is resized.
+  // On resize, we can update the camera aspect ratio,
+  // and update the framebuffer size using `renderer.setSize()`.
+  const onResize = new ResizeObserver(entries => {
+    if (entries.length > 0) {
+      const { width, height } = entries[0].contentRect;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height, false);
+    }
+  }, );
+  onResize.observe(renderer.domElement);
+
+  // Total burning time, in seconds.
+  const burningTime = 2.5;
+  // Total recovery time, in seconds.
+  const recoveryTime = 3.5;
+  // Delay before starting to recover, in seconds.
+  const recoveryDelay = 2.0;
+
+  // `0` ⟶ Idle, `1` ⟶ Burning, `2` ⟶ Idle
+  let state = 0;
+  // Used to smootly create the burning and recovery effects.
+  let timer = 0.0;
+
+  document.body.addEventListener('mousedown', () => {
+    light.color.copy(burningColor)
+    state = 1;
+    timer = 0.0;
+  });
+
+  function render() {
+    const delta = clock.getDelta();
+    const elapsed = clock.getElapsedTime();
+
+    // Animate light position smoothly using `sin` and `cos` functions.
+    const speed = 1.5;
+    light.position.set(
+      Math.sin(elapsed * speed) * 0.75,
+      Math.cos(elapsed * speed * 1.5 + Math.PI * 0.5) * 0.5,
+      Math.cos(elapsed * speed * 1.15) * 0.5 + 1.0
+    ).normalize().multiplyScalar(1.15);
+    light.updateMatrix();
+    light.updateMatrixWorld();
+
+    cloud.material.update(cloud, camera);
+    cloud.material.absorption = (Math.sin(elapsed * 0.75) * 0.5 + 0.5) * 0.35 + 0.05;
+
+    switch (state) {
+      // Burning.
+      case 1: {
+        const t = timer / burningTime;
+        light.intensity = (timer < burningTime * 0.5 ? t : 1.0 - t) * 15;
+        // Checks whether the burning is over or not.
+        if (timer >= burningTime) {
+          light.color.copy(lightColor);
+          timer = 0.0;
+          state = 2;
+        }
+        break;
+      }
+      // Recovery
+      case 2: {
+        const t = (timer - recoveryDelay) / recoveryTime;
+        light.intensity = t < 0 ? 0 : t * lightIntensity;
+        if (timer >= recoveryTime + recoveryDelay) {
+          state = 0;
+        }
+        break;
+      }
+    }
+
+    // Increases the timer using the time between two frames.
+    timer += delta;
+
+    renderer.render(scene, camera);
+    window.requestAnimationFrame(render);
+  }
+  render();
+};
+```
+
+{{< /expand >}}
+
+## Reducing Artefacts
+
+You may or may not have noticed, but it's possible to see some sampling artefacts.
+
+![Sampling Artefacts](./artefacts.jpg)
+
+Those artefacts are due to undersampling. In other words, when sampling the
+texture, we may miss some important data due to the size of our fixed marching step.
+
+Performing _"good"_ sampling is an advanced topic, **way** beyond the scope
+of this little blog post. I can re-direct curious reader to:
+* [[Pharr M. et al., Physically Based Rendering: From Theory To Implementation, Chapter 'Sampling Theory']](http://www.pbr-book.org/3ed-2018/Sampling_and_Reconstruction/Sampling_Theory.html)
+* [Engel K. et al, Real-Time Volume Graphics, Chapter 'Sampling Artifacts'](https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf)
+
+There is a really easy trick that can help transform those artefacts into
+noisier artefacts. That doesn't sound appealing state like that, but small noise
+is something that is easily "canceled-out" by the humain brain.
+
+The trick is to use Stochastic Jittering [[Engel K. et al, 03]](https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf),
+which consists in slightling moving the ray origin before marching the volume.
+
+The good thing with Stochastic Jittering is that it's extremely easy to implement.
+Let's first modify our material to receive the current frame number. This number
+will be used to get a random number in the shader:
+
+_material.js_
+
+```js
+export class CloudMaterial extends ShaderMaterial {
+
+  constructor() {
+    super({
+      ...
+      uniforms: UniformsUtils.merge([
+        UniformsLib.lights,
+        {
+          ...
+          uFrame: { value: 0.0 },
+        }
+      ])
+    });
+  }
+
+  set frameNum(val) {
+    this.uniforms.uFrame.value = val;
+  }
+
+  get frameNum() {
+    return this.uniforms.uFrame.value;
+  }
+
+  ...
+}
+```
+
+_index.js_
+
+```js
+function render() {
+  ...
+
+  ++cloud.material.frameNum;
+
+  ...
+}
+```
+
+{{< hint warning >}}
+Don't forget to add the uniform as well in the shader.
+{{< /hint >}}
+
+```glsl
+void
+main()
+{
+  ...
+
+  vec3 inc = 1.0 / abs( ray.dir );
+  float delta = min(inc.x, min(inc.y, inc.z)) / float(NB_STEPS);
+  ray.dir = ray.dir * delta;
+
+  // https://blog.demofox.org/2020/05/25/casual-shadertoy-path-tracing-1-basic-camera-diffuse-emissive/
+  uint seed =
+    uint(gl_FragCoord.x) * uint(1973) +
+    uint(gl_FragCoord.y) * uint(9277) +
+    uint(uFrame) * uint(26699);
+
+  // Random number in the range [-1; 1].
+  float randNum = randomFloat(seed) * 2.0 - 1.0;
+  // Adds a little random offset to the ray origin to reduce artefacts.
+  ray.origin += ray.dir * randNum;
+  // **NOTE**: don't forget to adapt the max distance to travel because
+  // we move the origin!
+  dist += randNum * delta;
+
+  ...
+}
+```
+
+The last three lines above do exactly what we talked about: they are used
+to slightly offset the ray origin. This should significantly reduce the visible
+artefacts we had until now.
+
+{{< hint warning >}}
+Remember: Stochastic Jittering transforms a type of artefact into noise.
+Technically, we now have noise as artefact. However, it's first a lot less
+visible, and it's also a lot more pleasant to see noise than wood-grain artefacts.
+{{< /hint >}}
 
 ## Improving Performance
 
-### 1. Gradient Cache
+### Performance: Gradient Cache
 
 To compute the gradients, we used the [Finite-difference](https://en.wikipedia.org/wiki/Finite_difference_method) technique and we ended up with **6** extra fetches.
 
@@ -507,10 +1042,6 @@ If you don't use anything to import the worker, you will need to set it up
 
 {{< /hint >}}
 
-### Performance: Light Transformation
-
-TODO
-
 ### Performance: Loop Unrolling
 
 It shouldn't impact too much performance, but it's a good idea to perform
@@ -594,12 +1125,29 @@ unrolling. Once unrolled, Three.js doesn't keep the scope of the loop, you thus
 can't add definition in the loop or you will get a compile time re-definition error.
 {{< /hint >}}
 
-## Reducing Artefacts
-
-TODO: jittering
-
 ## Going Further
 
-#### 1. Emtpy-space Skipping
+#### 1. Cleaning The Code
 
-TODO
+For this tutorial, I didn't want to show you all the re-factoring I have been
+doing. I don't think it helps to understand what's going on. A good idea would
+be to clean a bit the code and make it more customizable. You don't need to
+overengineer it, just improve it for your own use case :)
+
+For instance, as there are a lot of values to interpolate, I decided to make
+a simple [interpolator](https://github.com/DavidPeicho/davidpeicho.github.io/blob/master/src/frontpage/math.js)
+that would handle delays and scaling.
+
+#### 2. Performance Improvements
+
+There are several potential performance improvements:
+
+* Transform all lights into the cloud model space before marching;
+* TODO
+
+## References
+
+# References
+
+1. [Engel K., Hadwiger M.,  M. Kniss J.,  Rezk-Salama, C., 2006, Real-Time Volume Graphics](https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf)
+2. [Pharr M., Jakob .W, & Humphreys .G, Physically Based Rendering: From Theory To Implementation](http://www.pbr-book.org/3ed-2018/Volume_Scattering.html)
