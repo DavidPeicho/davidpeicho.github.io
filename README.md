@@ -6,6 +6,8 @@
   Hugo website containing references to my projects and some articles.
 </div>
 
+<img src="./static/images/homepage.jpg" />
+
 ## Using This Blog
 
 This blog is a modification of the [codex](https://github.com/jakewies/hugo-theme-codex) theme.
