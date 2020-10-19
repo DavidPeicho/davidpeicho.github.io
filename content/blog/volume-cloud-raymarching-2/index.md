@@ -1,10 +1,10 @@
 ---
 title: "(2/2) Behind The Scene: Cloud Raymarching Demo"
-date: 2020-10-08
+date: 2020-10-19
 slug: "cloud-raymarching-walkthrough-part2"
 description: "Walthrough to understand how to visualize clouds using raymarching"
 keywords: [ "volume rendering", "raymarching", "cloud", "three.js", "webgl" ]
-tags: [ "graphics", "three.js" ]
+tags: [ "graphics", "volume-rendering", "webgl", "three.js" ]
 images: [ "/images/homepage.jpg" ]
 draft: false
 math: true
@@ -706,8 +706,12 @@ You may or may not have noticed, but it's possible to see some sampling artefact
 
 ![Sampling Artefacts](./artefacts.jpg)
 
-Those artefacts are due to undersampling. In other words, when sampling the
-texture, we may miss some important data due to the size of our fixed marching step.
+Those artefacts are due to undersampling. When marching the ray, the sampling
+may be incomplete if the dataset is made up of high frequencies. In other words,
+we may miss some important data due to the size of our fixed marching step.
+The drawing below will help you understand the issue:
+
+![Sampling Artefacts Fixed Step](./marching-miss.jpg)
 
 Performing _"good"_ sampling is an advanced topic, **way** beyond the scope
 of this little blog post. I can re-direct curious readers to:
@@ -716,14 +720,18 @@ of this little blog post. I can re-direct curious readers to:
 
 There is a really easy trick that can help transform those artefacts into
 noisier artefacts. That doesn't sound appealing stated like that, but low-frequency
-noise is something that is easily "canceled-out" by the humain brain.
+noise is something that is easily _"canceled-out"_ by the humain brain.
 
 The trick is to use Stochastic Jittering [[Engel K. et al, 03]](https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf),
 which consists in slightling moving the ray origin before marching the volume.
 
+Adding a random offset to the ray origin will help catch those "missed" data points.
+Stochastic Jittering being random, the points of interest **may** be missed, or **may not** be.
+This is this concept of random offset that introduces visual noise.
+
 The good thing with Stochastic Jittering is that it's extremely easy to implement.
 Let's first modify our material to receive the current frame number. This number
-will be used to get a random number in the shader:
+will be used to get a _"new"_ random number in the shader at every frame:
 
 _material.js_
 
@@ -816,11 +824,11 @@ main()
 
 I used the [Wang Hash](http://web.archive.org/web/20060507103516/http://www.cris.com/~Ttwang/tech/inthash.htm) generator
 to create a random number in the range `[0; 1]`. There are other RNG, feel free
-to try them.
+to try them. There is actually a nice [ShaderToy](https://www.shadertoy.com/view/XlGcRh)
+that compares several hash functions on the GPU.
 
 The last three lines of code do exactly what we talked about: they are used
-to slightly offset the ray origin. This should significantly reduce the visible
-artefacts we had.
+to slightly offset the ray origin.
 
 The line
 
@@ -828,21 +836,22 @@ The line
 dist += randNum * delta;
 ```
 
-is super important, or you may add new visual artefacts. As we modified the
-ray origin, we also need to change the original distance traveled.
+is **super** important. As we modified the ray origin, we also need to change
+the original distance traveled. If you forget this line, the ray may oversample
+or undersample the volume.
 
 {{< hint info >}}
 
-**To Remember:** Stochastic Jittering transforms a type of artefact into noise.
-Technically, we now have noise as artefact. However, low-frequency noise appear
-less visible, and is also more visually pleasant than the wood-grain artefacts.
+**To Remember:** Stochastic Jittering transforms wood-grain artefacts into noise.
+Technically, we now have a new type of artefact: noise. However, low-frequency noise appears
+less visible, and is also more visually acceptable.
 
 {{< /hint >}}
 
 {{< hint warning >}}
 
 Adding randmoness to texture fetch affects negatively performance. Randomized
-memory access leads to cache miss, which leads to performance drop.
+memory access leads to **cache misses**, which lead to performance drop.
 
 {{< /hint >}}
 
@@ -941,8 +950,8 @@ onmessage = (event) => {
 
 This function works by computing the gradient value at every location $ (x, y, z) $
 in the volume texture. We can't save negative values in a normalized texture,
-we thus need to map the gradient from the range $ [ -1; 1 ] $ to $ [0 ; 1] $,
-which is achieved with the line:
+we thus map the gradient from the range `[-1; 1]` to `[0; 1]`, which is achieved
+with the line:
 
 ```js
 ...multiplyScalar(0.5).addScalar(0.5);
@@ -976,7 +985,7 @@ computeGradient(vec3 position, float step)
 }
 ```
 
-I used preprocessor macros to either compute the gradient directly in the shader,
+The `USE_GRADIENT_MAP` macro is used to either compute the gradient directly in the shader,
 or fetch it from the texture. Each time we switch from real-time gradient computation
 to texture-based computation, we need to recompile the shader.
 
@@ -1126,22 +1135,26 @@ computeIrradiance(vec3 originViewSpace, vec3 normalViewSpace)
 
   #if ( NUM_POINT_LIGHTS > 0 )
 
-	PointLight p;
+  PointLight p;
   vec3 posToLight;
   float len = 0.0;
   float NdotL = 1.0;
 
-	#pragma unroll_loop_start
-	for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {
-		p = pointLights[ i ];
+  #pragma unroll_loop_start
+  for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {
+    p = pointLights[ i ];
     posToLight = p.position - originViewSpace;
     len = length(posToLight);
-    NdotL = dot(gradient, normalize(posToLight));
-    if (NdotL < 0.0) NdotL = -NdotL;
-    NdotL = max(0.2, NdotL);
-    acc += p.color * pow(saturate( -len / p.distance + 1.0 ), p.decay) * NdotL;
-	}
-	#pragma unroll_loop_end
+    NdotL = dot(normalViewSpace, normalize(posToLight));
+    NdotL = max(0.1, NdotL);
+
+    // I removed the `dimming` variable for readability here.
+    acc +=
+      p.color *
+      pow(saturate( -len / p.distance + 1.0 ), p.decay) *
+      NdotL;
+  }
+  #pragma unroll_loop_end
 
   #endif
 
@@ -1153,26 +1166,32 @@ If you have two lights, this will get transformed to:
 
 ```glsl
 #if ( 2 > 0 )
-  PointLight p;
-  vec3 posToLight;
-  float len = 0.0;
-  float NdotL = 1.0;
 
-  p = pointLights[ 0 ];
-  posToLight = p.position - originViewSpace;
-  len = length(posToLight);
-  NdotL = dot(normalViewSpace, normalize(posToLight));
-  if (NdotL < 0.0) NdotL = -NdotL;
-  NdotL = max(0.2, NdotL);
-  acc += p.color * pow(saturate( -len / p.distance + 1.0 ), p.decay) * NdotL;
+PointLight p;
+vec3 posToLight;
+float len = 0.0;
+float NdotL = 1.0;
 
-  p = pointLights[ 1 ];
-  posToLight = p.position - originViewSpace;
-  len = length(posToLight);
-  NdotL = dot(normalViewSpace, normalize(posToLight));
-  if (NdotL < 0.0) NdotL = -NdotL;
-  NdotL = max(0.2, NdotL);
-  acc += p.color * pow(saturate( -len / p.distance + 1.0 ), p.decay) * NdotL;
+p = pointLights[ 0 ];
+posToLight = p.position - originViewSpace;
+len = length(posToLight);
+NdotL = dot(normalViewSpace, normalize(posToLight));
+NdotL = max(0.1, NdotL);
+acc +=
+  p.color *
+  pow(saturate( -len / p.distance + 1.0 ), p.decay) *
+  NdotL;
+
+p = pointLights[ 1 ];
+posToLight = p.position - originViewSpace;
+len = length(posToLight);
+NdotL = dot(normalViewSpace, normalize(posToLight));
+NdotL = max(0.1, NdotL);
+acc +=
+  p.color *
+  pow(saturate( -len / p.distance + 1.0 ), p.decay) *
+  NdotL;
+
 #endif
 ```
 
@@ -1198,16 +1217,17 @@ that would handle delays and scaling.
 
 #### Performance Improvements
 
-There are several potential performance improvements that could be made. For
-instance, it would be better to transform all lights into the cloud local space
-before ray marching. This would allow us to perform the lighting in model space
-instead of transforming the light at each step.
+There are several potential performance improvements that could be made. It would
+be better to transform all lights into the cloud local space before ray marching.
+This would allow us to perform the lighting in model space instead of transforming
+the light at each step.
 
 #### More Tweaking!
 
-Again, don't hesitate to tweak the result even more! Make the cloud rotate, change
-its scale smoothly, change the light intensity and color, etc... Do not hesitate
-to try out stuff to see what could bring some sparks!
+Again, don't hesitate to tweak the result! Make the cloud rotate, change scale smoothly,
+change the light intensity, color, etc...
+
+Do not hesitate to try out stuff to see what could bring some sparks!
 
 ## Final Note
 
@@ -1216,7 +1236,8 @@ having fun making this could your own!
 
 I don't have yet support for any commenting module. In the meantime, if you want
 to ask me anything, or if you found errors that need correction, please:
-* Contact my on Twitter ([@DavidPeicho](https://twitter.com/DavidPeicho))
+
+* Contact me on Twitter ([@DavidPeicho](https://twitter.com/DavidPeicho))
 * Fill an issue on my [blog GitHub](https://github.com/DavidPeicho/davidpeicho.github.io).
 
 ## References
