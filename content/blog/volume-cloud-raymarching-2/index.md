@@ -10,30 +10,32 @@ draft: false
 math: true
 ---
 
-Second part of [Behind The Scene: Cloud Raymarching Demo]({{<ref "/blog/volume-cloud-raymarching" >}}), in which we will go through how to improving
-the lighting and how to create the burning effect.
+Second part of [Behind The Scene: Cloud Raymarching Demo]({{<ref "/blog/volume-cloud-raymarching" >}}),
+in which we will go through how to improve the lighting and how to create the burning effect.
 
 <!--more-->
 
 ![Demo](/images/homepage.jpg)
 
 This blog post will be a lot less driven by theory, and a lot more by
-experimentation, tweaking, trial and error :)
+experimentation, tweaking, trial & error :)
 
-We will see how to sample light in the shader, how to add some eye candy
-(light color, absorption, etc...) and how to improve performance as well
-as reducing the visual artefacts.
+In this post, we will have a look at:
+* How to sample lights in the shader;
+* How to add some eye candy (light color, absorption, etc...);
+* how to improve performance;
+* As well as how to reduce visual artefacts.
 
 ## Light Support
 
-Right now, the light is hardcoded in the shader. It's not user friendly and
-our shader doesn't interact with Three.js lights.
+Right now, light contribution is hardcoded in the shader. It's not user
+friendly and our shader doesn't interact with the scene lights.
 
 Using a `ShaderMaterial`, it's possible to directly re-use the lights added
-in the scene. For simplicity, we are only going to handle [PointLights](https://threejs.org/docs/#api/en/lights/PointLight).
+in the scene. For simplicity, we are only going to focus on the [PointLight](https://threejs.org/docs/#api/en/lights/PointLight) type.
 
 Let's modify our material and our shader to receive the lights information
-from the scene;
+from the scene:
 
 _material.js_
 
@@ -62,8 +64,8 @@ export class CloudMaterial extends ShaderMaterial {
   }
 ```
 
-And that's it! Three.js is now aware we want our shader to be supplied with
-light information. We can modify the shader as well:
+Three.js is now aware we want our shader to be supplied with light data. We can
+modify the shader as well:
 
 _cloud.frag.glsl_
 
@@ -81,11 +83,11 @@ uniform PointLight pointLights[ NUM_POINT_LIGHTS ];
 
 This code will compile the `uniform` line only if point lights are available
 in the scene. Three.js`THREE.WebGLRenderer` replaces the `NUM_POINT_LIGHTS` string
-by the number of lights visible. This is done in the method '[replaceLightNums()](https://github.com/mrdoob/three.js/blob/dev/src/renderers/webgl/WebGLProgram.js)' from the framework codebase.
+by the number of lights visible. This is done in the method [replaceLightNums()](https://github.com/mrdoob/three.js/blob/dev/src/renderers/webgl/WebGLProgram.js).
 
 With the lights available in the shader, we can compute the lighting contribution
-while sampling. Let's create a new function in charge of computing the
-diffuse:
+at each sample position. Let's create a new function in charge of computing the
+irradiance coming from a given point:
 
 _cloud.frag.glsl_
 
@@ -129,7 +131,7 @@ computeIrradiance(vec3 originViewSpace, vec3 gradient)
 }
 ```
 
-The loop goes though the list of lights, and computes the irradiance at the sample
+The loop goes through the list of lights, and computes the irradiance at the sample
 position. Let's decompose this function together to understand it bit by bit.
 
 _cloud.frag.glsl_
@@ -152,7 +154,7 @@ for (int i = 0; i < NUM_POINT_LIGHTS; ++i) {
 
 We first retrieve the light data, and we compute the classic [Lambert's Cosine Law](https://en.wikipedia.org/wiki/Lambert%27s_cosine_law#:~:text=In%20optics%2C%20Lambert's%20cosine%20law,light%20and%20the%20surface%20normal.). When the normal is parallel to the
 direction from the sample to the light, the diffusion is **maximized**.
-At the opposite, when both are perpendicular and/or opposed, the light is diffusion
+At the opposite, when both are perpendicular and/or opposed, the light diffusion
 is closer to **zero**.
 
 For the final part of the loop body:
@@ -163,13 +165,13 @@ acc += p.color * dimming * NdotL;
 ```
 
 This applies a non-linear light dimming. The closer the sample is from
-the point light position, the more intense the light contribute to the diffuse.
-The energy received by the sample is thus inversely proportional to the distance
+the point light position, the more intense the light contribution will be.
+The energy received by the sample is thus **inversely proportional** to the **distance**
 between the sample and the light.
 
 {{< hint warning >}}
-I assume that the light **always** as a distance set. Otherwise, this equation
-is obviously wrong.
+I assume that the light **always** has a `distance` set. Otherwise,
+this equation is obviously wrong.
 {{< /hint >}}
 
 We can then call this function while sampling the volume:
@@ -189,8 +191,14 @@ for (int i = 0; i < NB_STEPS; ++i)
   // change rate.
   // The cloud is built with higher values at center.
   // Thus, we negate the gradient to get the normal pointing outward.
-  vec3 viewSpaceNormal = transformDir(modelViewMatrix, - gradient);
-  vec3 originViewSpace = transformPoint(modelViewMatrix, ray.origin);
+  vec3 viewSpaceNormal = transformDir(
+    modelViewMatrix,
+    - gradient
+  );
+  vec3 originViewSpace = transformPoint(
+    modelViewMatrix,
+    ray.origin
+  );
 
   vec3 diffuse = computeIrradiance(
     originViewSpace,
@@ -210,20 +218,21 @@ for (int i = 0; i < NB_STEPS; ++i)
   ...
 ```
 
-There is an important thing to note here. Three.js sends the light position in
-**View Space**. Thus, we **have to** perform our lighting in view space, or
-we need to transform the light in the **Model Space**.
+Three.js sends the light position in **View Space**. However, the ray origin
+is expressed in **Model Space**. In order to be consistent, we can either:
+* Transform the ray and normal into **View Space**, and perform computations in **View Space**;
+* Transform the light into **Model Space**, and perform computations in **Model Space**;
 
-{{< hint warning >}}
 It would be more efficient to have all lights in **Model Space** transformed
-at the beggining of the fragment shader.
+at the beggining of the fragment shader. This way, we wouldn't need to perform
+any change of basis while sampling the volume.
 
-However, it adds some complexity that isn't really needed here for
-almost no performance gain on a small amount of lights.
-{{< /hint >}}
+However, it adds some complexity that isn't really needed here for almost
+no performance gain on a small amount of lights. Thus, I will just go for
+the lazy route and transform the ray / normal into **View Space**.
 
-`transformDir` and `transformPoint` respectively transform a direction or a point
-into a given space (basically, it applies a `mat4` to the vector):
+The `transformDir()` and `transformPoint()` functions respectively transform a direction
+and a point into a given space (basically, it applies a `mat4` to the vector):
 
 ```glsl
 vec3
@@ -240,17 +249,19 @@ transformDir(mat4 transform, vec3 dir)
 }
 ```
 
-One last thing: you may have notice the negated gradient
+One last thing, you may have notice the negated gradient:
 
 ```glsl
 // The gradient is negated here.
-vec3 viewSpaceNormal = transformDir(modelViewMatrix, - gradient);
+vec3 viewSpaceNormal = transformDir(
+  modelViewMatrix,
+  - gradient
+);
 ```
 
 The gradient **is not** comparable to a normal to the surface.
-The gradient follows the positive rate change. However, our cloud is actually
-defined with smaller values going outward. The normal can thus be
-approximated by taking the opposite of the gradient.
+The gradient follows the positive rate of change. However, our cloud is defined
+with smaller values going outward. The normal can thus be approximated by taking the opposite of the gradient.
 
 Finally, we can check that we did everything right by adding a light to the scene:
 
@@ -316,10 +327,10 @@ to prevent the light from going too far away from the visible front part of the 
 ## Animate Volume Properties
 
 Modulating temporally the volume attributes will make the demo more dynamic.
-Right now, nothing moves except the light, and we are going to change that!
+Everything is static except the light, and we are going to change that!
 
-We can create a new material parameter which will be the absorption. It's going
-to be a simple factor applied to every sample.
+We can create a new material parameter that will represents the cloud absorption.
+It's going to be a simple factor applied to every sample.
 
 As usual, let's modify the material and the shader to add a new uniform.
 
@@ -412,14 +423,15 @@ function render() {
 We first re-map the `sin()` value into the range `[0; 1]`, and we then map the
 normalized range to `[0.05; 0.35]`.
 
-The absorption will as a transparency parameter. However, we do not simply
+The absorption is used as a transparency parameter. However, we do not simply
 modify the final alpha value of the fragment. By modifying every sample, we can
 obtain a nice "fuzzy" look for low absorption values.
 
 <video autoplay loop muted playsinline src="absorption.mp4"></video>
 
-If you had a look at [the code](https://github.com/DavidPeicho/davidpeicho.github.io/tree/master/src) running on this blog, you may have seen that I exposed more uniforms to the
-user. Those uniforms allow me to change more parameters to create more dynamism.
+If you had a look at [the final code](https://github.com/DavidPeicho/davidpeicho.github.io/tree/master/src),
+you may have seen that I exposed more uniforms to the user.
+Those uniforms allow me to change more parameters to create more dynamism.
 
 This is one of my favorite part to code. Don't be afraid of modifying properties,
 changing colors, etc... With all those parameters, you can make
@@ -429,18 +441,22 @@ the cloud look **exactly** the way you want it to look!
 
 In the [demo](/), the burning effect works this way:
 
-1. User mouse click is detected, burning starts;
-2. The light intensity and the cloud base color are interpolated during
-a short time period;
-3. When it's considered "burnt", the cloud slowly retrieves its original color.
+1. The user performs a click that starts the burning effect;
+2. The light intensity and the cloud color are interpolated over a short period of time;
+3. When the cloud is considered "burnt", it slowly retrieves its original color.
 
 We already added everything we need in the shader, and thus there is no
-addition needed to achieve this!
+modification needed to achieve this!
 
-Let's first work on a gross (but working!) version together, and I will let
-the refactoring as an exercise (please don't call me lazy).
+We are going to change the light intensity and color over time. The code can be
+improved and refactored. I will let the refactoring as an exercise
+(please don't call me lazy).
 
-We will create **3** states: **Idle**, **Burning**, and **Recovering**.
+We will create 3 states:
+
+1. **Idle**
+2. **Burning**
+3. **Recovering**
 
 _index.js_
 
@@ -467,9 +483,10 @@ function render() {
 ```
 
 The code should speak by itself. When the mouse is down, we change the color
-of the light to something orange, and we set the state to **Burning**.
+of the light to something orangish, and we set the state to **Burning**.
 
-Let's modulate the intensity of the light to create a smooth transition:
+We also need to increase the intensity of the light to saturate the color. The
+insensity needs to be smoothly (but quickly) interpolated:
 
 _index.js_
 
@@ -503,12 +520,12 @@ function render() {
 
 ```
 
-This code may seem complicated, but actually only changes the intensity up
+The code may seem complicated, but actually only changes the intensity up
 to **15** in `burningTime * 0.5` seconds, and then goes down to **0** during
 another `burningTime * 0.5` seconds.
 
-We will do exactly the same thing for the recovery. We want to wait a little
-bit, and then smoothly retrieve the original light intensity.
+We will do the same thing for the recovery. However, let's add small delay before
+starting to recover to the original light intensity:
 
 _index.js_
 
@@ -547,7 +564,7 @@ function render() {
 
 If you leave your browser tab, the `delta` time will be really high.
 This will completely mess up our light intensity. In order to
-fix that, you are advised to clamp the intensity values obtained when
+fix that, you are advised to **clamp** the intensity values obtained when
 interpolating.
 
 {{< /hint >}}
@@ -693,13 +710,13 @@ Those artefacts are due to undersampling. In other words, when sampling the
 texture, we may miss some important data due to the size of our fixed marching step.
 
 Performing _"good"_ sampling is an advanced topic, **way** beyond the scope
-of this little blog post. I can re-direct curious reader to:
+of this little blog post. I can re-direct curious readers to:
 * [[Pharr M. et al., Physically Based Rendering: From Theory To Implementation, Chapter 'Sampling Theory']](http://www.pbr-book.org/3ed-2018/Sampling_and_Reconstruction/Sampling_Theory.html)
 * [Engel K. et al, Real-Time Volume Graphics, Chapter 'Sampling Artifacts'](https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf)
 
 There is a really easy trick that can help transform those artefacts into
-noisier artefacts. That doesn't sound appealing stated like that, but small noise
-is something that is easily "canceled-out" by the humain brain.
+noisier artefacts. That doesn't sound appealing stated like that, but low-frequency
+noise is something that is easily "canceled-out" by the humain brain.
 
 The trick is to use Stochastic Jittering [[Engel K. et al, 03]](https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf),
 which consists in slightling moving the ray origin before marching the volume.
@@ -797,7 +814,9 @@ main()
 }
 ```
 
-I used the [Wang Hash](http://web.archive.org/web/20060507103516/http://www.cris.com/~Ttwang/tech/inthash.htm) generator to create a random number in the range `[0; 1]`.
+I used the [Wang Hash](http://web.archive.org/web/20060507103516/http://www.cris.com/~Ttwang/tech/inthash.htm) generator
+to create a random number in the range `[0; 1]`. There are other RNG, feel free
+to try them.
 
 The last three lines of code do exactly what we talked about: they are used
 to slightly offset the ray origin. This should significantly reduce the visible
@@ -812,23 +831,32 @@ dist += randNum * delta;
 is super important, or you may add new visual artefacts. As we modified the
 ray origin, we also need to change the original distance traveled.
 
-{{< hint warning >}}
-Remember: Stochastic Jittering transforms a type of artefact into noise.
+{{< hint info >}}
+
+**To Remember:** Stochastic Jittering transforms a type of artefact into noise.
 Technically, we now have noise as artefact. However, low-frequency noise appear
 less visible, and is also more visually pleasant than the wood-grain artefacts.
+
+{{< /hint >}}
+
+{{< hint warning >}}
+
+Adding randmoness to texture fetch affects negatively performance. Randomized
+memory access leads to cache miss, which leads to performance drop.
+
 {{< /hint >}}
 
 ## Improving Performance
 
 ### Performance: Gradient Cache
 
-To compute the gradients, we used the [Finite-difference](https://en.wikipedia.org/wiki/Finite_difference_method) technique and we ended up with **6** extra fetches.
-Texture fetch is an expensive operation. We want to minimize the number of
-fetches as much as possible.
+To compute the gradients, we used the [Finite-difference](https://en.wikipedia.org/wiki/Finite_difference_method)
+method and we ended up with **6** extra fetches. Texture fetch is an expensive operation.
+We want to minimize the number of fetches as much as possible.
 
 The good news is that our volume is **static**. The voxels are generated when
 we create our 3D texture (section [Generating a Volume]({{<ref "/blog/volume-cloud-raymarching#generating-a-volume">}})). It's thus possible to
-pre-compute all the gradients save them into another 3D texture.
+pre-compute all the gradients and save them into another 3D texture.
 
 For performance purposes, I decided to generate the gradient texture in a background
 thread using a [Worker](https://www.w3schools.com/html/html5_webworkers.asp).
@@ -948,12 +976,12 @@ computeGradient(vec3 position, float step)
 }
 ```
 
-I used pre-processor macros to either compute the gradient directly in the shader,
-or fetch them from the texture. We will need to re-compile the shader whenever
-a gradient texture is used or not.
+I used preprocessor macros to either compute the gradient directly in the shader,
+or fetch it from the texture. Each time we switch from real-time gradient computation
+to texture-based computation, we need to recompile the shader.
 
 Let's modify the material to accept a gradient texture, and programmatically
-set the `USE_GRADIENT_MAP` `define` if a texture is used.
+set the `USE_GRADIENT_MAP` macro if a texture is used.
 
 _material.js_
 
@@ -998,8 +1026,8 @@ export class CloudMaterial extends ShaderMaterial {
 }
 ```
 
-The setter `gradientMap` first updates the uniform, and then to ask
-Three.js to re-compile our shader. Using:
+The setter `gradientMap` first updates the uniform, and then notifies Three.js
+to re-compile our shader. Using:
 
 ```js
 this.needsUpdate = (
@@ -1008,11 +1036,10 @@ this.needsUpdate = (
 ```
 
 The shader will only be re-compiled when using a texture or not using any. Using the setter
-with two different textures for instance **will not** re-trigger the compilation,
-which is exact what we want.
+with two different textures for instance **will not** re-trigger the compilation.
 
 Using a worker, we can start to render the cloud without the gradients texture.
-Whenever the result is available, we can re-compile our shader and assign the uniform.
+Whenever the texture is available, we can re-compile our shader and assign it to the uniform.
 
 _index.js_
 
@@ -1058,20 +1085,17 @@ window.onload = function () {
 {{< hint info >}}
 
 I use [worker-loader](https://webpack.js.org/loaders/worker-loader/) to seamlessly
-import the worker. This simply do all the manual work for you. If you don't use
+import the worker. This package does all the manual work for you. If you don't use
 anything to import the worker, you will need to set it up [manually](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers).
 
 {{< /hint >}}
 
 To be honest, I compared the speed of the sychronous and asynchronous version,
-and it's not really faster using a Worker. Spawning a worker and
-transfering data from the host to it are slow operations.
+and it's not really faster using a worker. Spawning it and
+transfering data from the host are slow operations.
 
 A better idea would be to use a worker only when the volume to generate
-has a higher dimensions, and use a synchronous version on slower volumes.
-
-For learning purposes, I still thought it was a good idea to create a custom
-worker.
+has higher dimensions, and use a synchronous version on slower volumes.
 
 ### Performance: Loop Unrolling
 
@@ -1080,16 +1104,16 @@ loop unrolling, i.e., removing a loop and copy pasting the code the number
 of times the loop runs.
 
 Obviously, loop unrolling is **only** possible when you can find the bounds of
-you loop at compile time.
+the loop at compile time.
 
-When Three.js compile a shader, it also looks for patterns such as:
+When Three.js compiles a shader, it also looks for patterns such as:
 * `#pragma unroll_loop_start`
-* `#pragma unroll_loop_end` patterns.
+* and `#pragma unroll_loop_end`
 
-Those patterns, when found, get replaced and the content of the loop they
-encircle is duplicated as **many times as specified**.
+Those patterns, when found, get replaced by the content of the loop they
+encircle, as **many times as specified**.
 
-Let's modify our `computeIrradiance` to add loop unrolling:
+Let's modify our `computeIrradiance()` function to add loop unrolling:
 
 _cloud.frag.glsl_
 
@@ -1156,7 +1180,7 @@ If you have two lights, this will get transformed to:
 If you look closely, you will see that `p`, `posToLight`, and basically all
 variables defined in the loop have been moved out of the loop when using
 unrolling. Once unrolled, Three.js doesn't keep the scope of the loop, you thus
-can't add definition in the loop or you will get a compile time re-definition error.
+can't add definition in the loop or you will get a compile time re-definition **error**.
 {{< /hint >}}
 
 ## Going Further
@@ -1168,7 +1192,7 @@ doing. I don't think it helps to understand what's going on. A good idea would
 be to clean a bit the code and make it more customizable. You don't need to
 overengineer it, just improve it for your own use case :)
 
-For instance, as there are a lot of values to interpolate, I decided to make
+For example, there are a lot of values we interpolate. I decided to make
 a simple [interpolator](https://github.com/DavidPeicho/davidpeicho.github.io/blob/master/src/frontpage/math.js)
 that would handle delays and scaling.
 

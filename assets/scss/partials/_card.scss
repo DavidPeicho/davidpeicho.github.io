@@ -19,6 +19,17 @@
 
     @media screen and (max-width: $medium) {
       flex-direction: column !important;
+      margin-bottom: 3rem;
+
+      &::before {
+        background: linear-gradient(180deg,#e6e6e6 0,#e6e6e6 48%,#fff);
+        position: absolute;
+        content: "";
+        top: -1rem;
+        height: .0625rem;
+        width: 50%;
+        left: 25%;
+      }
     }
 
     .blog_content {
@@ -29,6 +40,10 @@
         position: relative;
         height: 100%;
         padding: $cardInnerPadding;
+
+        @media screen and (max-width: $medium) {
+          padding: $cardInnerPaddingSmall;
+        }
       }
 
       .link_box {
