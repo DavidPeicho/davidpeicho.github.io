@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© {year}</copyright>
-    <lastBuildDate>Thu, 08 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 19 Oct 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://davidpeicho.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -47,7 +47,7 @@ as well as a &lt;b&gt;WPF editor&lt;/b&gt; to build the levels.&lt;/p&gt;</descr
     <item>
       <title>(2/2) Behind The Scene: Cloud Raymarching Demo</title>
       <link>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/</link>
-      <pubDate>Thu, 08 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 19 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/</guid>
       <description>&lt;p&gt;Second part of &lt;a href=&#34;https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/&#34;&gt;Behind The Scene: Cloud Raymarching Demo&lt;/a&gt;,

@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© {year}</copyright>
-    <lastBuildDate>Thu, 08 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 19 Oct 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://davidpeicho.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>graphics</title>
       <link>https://davidpeicho.github.io/tags/graphics/</link>
-      <pubDate>Thu, 08 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 19 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>https://davidpeicho.github.io/tags/graphics/</guid>
       <description></description>
@@ -24,7 +24,7 @@
     <item>
       <title>three.js</title>
       <link>https://davidpeicho.github.io/tags/three.js/</link>
-      <pubDate>Thu, 08 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 19 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>https://davidpeicho.github.io/tags/three.js/</guid>
       <description></description>
@@ -33,7 +33,7 @@
     <item>
       <title>volume-rendering</title>
       <link>https://davidpeicho.github.io/tags/volume-rendering/</link>
-      <pubDate>Thu, 24 Sep 2020 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 19 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>https://davidpeicho.github.io/tags/volume-rendering/</guid>
       <description></description>
@@ -42,7 +42,7 @@
     <item>
       <title>webgl</title>
       <link>https://davidpeicho.github.io/tags/webgl/</link>
-      <pubDate>Thu, 24 Sep 2020 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 19 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>https://davidpeicho.github.io/tags/webgl/</guid>
       <description></description>

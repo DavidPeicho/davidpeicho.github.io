@@ -117,10 +117,10 @@
       "accountablePerson" : "",
       "copyrightHolder" : "",
       "copyrightYear" : "2020",
-      "datePublished": "2020-10-08 00:00:00 \x2b0000 UTC",
-      "dateModified" : "2020-10-08 00:00:00 \x2b0000 UTC",
+      "datePublished": "2020-10-19 00:00:00 \x2b0000 UTC",
+      "dateModified" : "2020-10-19 00:00:00 \x2b0000 UTC",
       "url" : "https:\/\/davidpeicho.github.io\/blog\/cloud-raymarching-walkthrough-part2\/",
-      "wordCount" : "4692",
+      "wordCount" : "4742",
       "keywords" : ["volume rendering", "raymarching", "cloud", "three.js", "webgl", "Blog"]
     }
   
@@ -184,8 +184,8 @@ if (!doNotTrack) {
         <div class="post">
           <header class="post__header">
             <h1 id="post__title">(2/2) Behind The Scene: Cloud Raymarching Demo</h1>
-            <time datetime="2020-10-08 00:00:00 &#43;0000 UTC" class="post__date"
-            >Oct 8 2020</time>
+            <time datetime="2020-10-19 00:00:00 &#43;0000 UTC" class="post__date"
+            >Oct 19 2020</time>
           </header>
           <article class="post__content">
               
@@ -794,8 +794,11 @@ click on it to inspect the code.</p>
 <h2 id="reducing-artefacts">Reducing Artefacts<a class="anchor" href="#reducing-artefacts">#</a></h2>
 <p>You may or may not have noticed, but it&rsquo;s possible to see some sampling artefacts.</p>
 <p><img src="./artefacts.jpg" alt="Sampling Artefacts"></p>
-<p>Those artefacts are due to undersampling. In other words, when sampling the
-texture, we may miss some important data due to the size of our fixed marching step.</p>
+<p>Those artefacts are due to undersampling. When marching the ray, the sampling
+may be incomplete if the dataset is made up of high frequencies. In other words,
+we may miss some important data due to the size of our fixed marching step.
+The drawing below will help you understand the issue:</p>
+<p><img src="./marching-miss.jpg" alt="Sampling Artefacts Fixed Step"></p>
 <p>Performing <em>&ldquo;good&rdquo;</em> sampling is an advanced topic, <strong>way</strong> beyond the scope
 of this little blog post. I can re-direct curious readers to:</p>
 <ul>
@@ -804,12 +807,15 @@ of this little blog post. I can re-direct curious readers to:</p>
 </ul>
 <p>There is a really easy trick that can help transform those artefacts into
 noisier artefacts. That doesn&rsquo;t sound appealing stated like that, but low-frequency
-noise is something that is easily &ldquo;canceled-out&rdquo; by the humain brain.</p>
+noise is something that is easily <em>&ldquo;canceled-out&rdquo;</em> by the humain brain.</p>
 <p>The trick is to use Stochastic Jittering <a href="https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf">[Engel K. et al, 03]</a>,
 which consists in slightling moving the ray origin before marching the volume.</p>
+<p>Adding a random offset to the ray origin will help catch those &ldquo;missed&rdquo; data points.
+Stochastic Jittering being random, the points of interest <strong>may</strong> be missed, or <strong>may not</strong> be.
+This is this concept of random offset that introduces visual noise.</p>
 <p>The good thing with Stochastic Jittering is that it&rsquo;s extremely easy to implement.
 Let&rsquo;s first modify our material to receive the current frame number. This number
-will be used to get a random number in the shader:</p>
+will be used to get a <em>&ldquo;new&rdquo;</em> random number in the shader at every frame:</p>
 <p><em>material.js</em></p>
 <pre><code class="language-js">export class CloudMaterial extends ShaderMaterial {
 
@@ -893,24 +899,25 @@ main()
 </code></pre>
 <p>I used the <a href="http://web.archive.org/web/20060507103516/http://www.cris.com/~Ttwang/tech/inthash.htm">Wang Hash</a> generator
 to create a random number in the range <code>[0; 1]</code>. There are other RNG, feel free
-to try them.</p>
+to try them. There is actually a nice <a href="https://www.shadertoy.com/view/XlGcRh">ShaderToy</a>
+that compares several hash functions on the GPU.</p>
 <p>The last three lines of code do exactly what we talked about: they are used
-to slightly offset the ray origin. This should significantly reduce the visible
-artefacts we had.</p>
+to slightly offset the ray origin.</p>
 <p>The line</p>
 <pre><code class="language-glsl">dist += randNum * delta;
 </code></pre>
-<p>is super important, or you may add new visual artefacts. As we modified the
-ray origin, we also need to change the original distance traveled.</p>
+<p>is <strong>super</strong> important. As we modified the ray origin, we also need to change
+the original distance traveled. If you forget this line, the ray may oversample
+or undersample the volume.</p>
 <blockquote class="hint info">
-  <strong>To Remember:</strong> Stochastic Jittering transforms a type of artefact into noise.
-Technically, we now have noise as artefact. However, low-frequency noise appear
-less visible, and is also more visually pleasant than the wood-grain artefacts.
+  <strong>To Remember:</strong> Stochastic Jittering transforms wood-grain artefacts into noise.
+Technically, we now have a new type of artefact: noise. However, low-frequency noise appears
+less visible, and is also more visually acceptable.
 </blockquote>
 
 <blockquote class="hint warning">
   Adding randmoness to texture fetch affects negatively performance. Randomized
-memory access leads to cache miss, which leads to performance drop.
+memory access leads to <strong>cache misses</strong>, which lead to performance drop.
 </blockquote>
 
 <h2 id="improving-performance">Improving Performance<a class="anchor" href="#improving-performance">#</a></h2>
@@ -1007,8 +1014,8 @@ onmessage = (event) =&gt; {
 
 <p>This function works by computing the gradient value at every location $ (x, y, z) $
 in the volume texture. We can&rsquo;t save negative values in a normalized texture,
-we thus need to map the gradient from the range $ [ -1; 1 ] $ to $ [0 ; 1] $,
-which is achieved with the line:</p>
+we thus map the gradient from the range <code>[-1; 1]</code> to <code>[0; 1]</code>, which is achieved
+with the line:</p>
 <pre><code class="language-js">...multiplyScalar(0.5).addScalar(0.5);
 </code></pre>
 <p>We can update the shader to support reading gradients directly from a texture:</p>
@@ -1036,7 +1043,7 @@ computeGradient(vec3 position, float step)
   #endif // USE_GRADIENT_MAP
 }
 </code></pre>
-<p>I used preprocessor macros to either compute the gradient directly in the shader,
+<p>The <code>USE_GRADIENT_MAP</code> macro is used to either compute the gradient directly in the shader,
 or fetch it from the texture. Each time we switch from real-time gradient computation
 to texture-based computation, we need to recompile the shader.</p>
 <p>Let&rsquo;s modify the material to accept a gradient texture, and programmatically
@@ -1163,22 +1170,26 @@ computeIrradiance(vec3 originViewSpace, vec3 normalViewSpace)
 
   #if ( NUM_POINT_LIGHTS &gt; 0 )
 
-	PointLight p;
+  PointLight p;
   vec3 posToLight;
   float len = 0.0;
   float NdotL = 1.0;
 
-	#pragma unroll_loop_start
-	for ( int i = 0; i &lt; NUM_POINT_LIGHTS; i ++ ) {
-		p = pointLights[ i ];
+  #pragma unroll_loop_start
+  for ( int i = 0; i &lt; NUM_POINT_LIGHTS; i ++ ) {
+    p = pointLights[ i ];
     posToLight = p.position - originViewSpace;
     len = length(posToLight);
-    NdotL = dot(gradient, normalize(posToLight));
-    if (NdotL &lt; 0.0) NdotL = -NdotL;
-    NdotL = max(0.2, NdotL);
-    acc += p.color * pow(saturate( -len / p.distance + 1.0 ), p.decay) * NdotL;
-	}
-	#pragma unroll_loop_end
+    NdotL = dot(normalViewSpace, normalize(posToLight));
+    NdotL = max(0.1, NdotL);
+
+    // I removed the `dimming` variable for readability here.
+    acc +=
+      p.color *
+      pow(saturate( -len / p.distance + 1.0 ), p.decay) *
+      NdotL;
+  }
+  #pragma unroll_loop_end
 
   #endif
 
@@ -1187,26 +1198,32 @@ computeIrradiance(vec3 originViewSpace, vec3 normalViewSpace)
 </code></pre>
 <p>If you have two lights, this will get transformed to:</p>
 <pre><code class="language-glsl">#if ( 2 &gt; 0 )
-  PointLight p;
-  vec3 posToLight;
-  float len = 0.0;
-  float NdotL = 1.0;
 
-  p = pointLights[ 0 ];
-  posToLight = p.position - originViewSpace;
-  len = length(posToLight);
-  NdotL = dot(normalViewSpace, normalize(posToLight));
-  if (NdotL &lt; 0.0) NdotL = -NdotL;
-  NdotL = max(0.2, NdotL);
-  acc += p.color * pow(saturate( -len / p.distance + 1.0 ), p.decay) * NdotL;
+PointLight p;
+vec3 posToLight;
+float len = 0.0;
+float NdotL = 1.0;
 
-  p = pointLights[ 1 ];
-  posToLight = p.position - originViewSpace;
-  len = length(posToLight);
-  NdotL = dot(normalViewSpace, normalize(posToLight));
-  if (NdotL &lt; 0.0) NdotL = -NdotL;
-  NdotL = max(0.2, NdotL);
-  acc += p.color * pow(saturate( -len / p.distance + 1.0 ), p.decay) * NdotL;
+p = pointLights[ 0 ];
+posToLight = p.position - originViewSpace;
+len = length(posToLight);
+NdotL = dot(normalViewSpace, normalize(posToLight));
+NdotL = max(0.1, NdotL);
+acc +=
+  p.color *
+  pow(saturate( -len / p.distance + 1.0 ), p.decay) *
+  NdotL;
+
+p = pointLights[ 1 ];
+posToLight = p.position - originViewSpace;
+len = length(posToLight);
+NdotL = dot(normalViewSpace, normalize(posToLight));
+NdotL = max(0.1, NdotL);
+acc +=
+  p.color *
+  pow(saturate( -len / p.distance + 1.0 ), p.decay) *
+  NdotL;
+
 #endif
 </code></pre>
 <blockquote class="hint warning">
@@ -1226,21 +1243,21 @@ overengineer it, just improve it for your own use case :)</p>
 a simple <a href="https://github.com/DavidPeicho/davidpeicho.github.io/blob/master/src/frontpage/math.js">interpolator</a>
 that would handle delays and scaling.</p>
 <h4 id="performance-improvements">Performance Improvements</h4>
-<p>There are several potential performance improvements that could be made. For
-instance, it would be better to transform all lights into the cloud local space
-before ray marching. This would allow us to perform the lighting in model space
-instead of transforming the light at each step.</p>
+<p>There are several potential performance improvements that could be made. It would
+be better to transform all lights into the cloud local space before ray marching.
+This would allow us to perform the lighting in model space instead of transforming
+the light at each step.</p>
 <h4 id="more-tweaking">More Tweaking!</h4>
-<p>Again, don&rsquo;t hesitate to tweak the result even more! Make the cloud rotate, change
-its scale smoothly, change the light intensity and color, etc&hellip; Do not hesitate
-to try out stuff to see what could bring some sparks!</p>
+<p>Again, don&rsquo;t hesitate to tweak the result! Make the cloud rotate, change scale smoothly,
+change the light intensity, color, etc&hellip;</p>
+<p>Do not hesitate to try out stuff to see what could bring some sparks!</p>
 <h2 id="final-note">Final Note<a class="anchor" href="#final-note">#</a></h2>
 <p>I hope you liked this mini serie! I also hope you learnt something new while
 having fun making this could your own!</p>
 <p>I don&rsquo;t have yet support for any commenting module. In the meantime, if you want
 to ask me anything, or if you found errors that need correction, please:</p>
 <ul>
-<li>Contact my on Twitter (<a href="https://twitter.com/DavidPeicho">@DavidPeicho</a>)</li>
+<li>Contact me on Twitter (<a href="https://twitter.com/DavidPeicho">@DavidPeicho</a>)</li>
 <li>Fill an issue on my <a href="https://github.com/DavidPeicho/davidpeicho.github.io">blog GitHub</a>.</li>
 </ul>
 <h2 id="references">References<a class="anchor" href="#references">#</a></h2>
@@ -1269,6 +1286,12 @@ to ask me anything, or if you found errors that need correction, please:</p>
     
     <li class="tag__item">
         <a class="tag__link" href="https://davidpeicho.github.io/tags/graphics/">graphics</a>
+    </li>
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/volume-rendering/">volume-rendering</a>
+    </li>
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/webgl/">webgl</a>
     </li>
     <li class="tag__item">
         <a class="tag__link" href="https://davidpeicho.github.io/tags/three.js/">three.js</a>
