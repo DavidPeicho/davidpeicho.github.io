@@ -16,6 +16,8 @@ shares my solution to the problem hoping it can help others.
 
 <!--more-->
 
+<video autoplay loop muted playsinline src="result.mp4" style="max-height: 800px; display: block; margin: auto"></video>
+
 ## Introduction
 
 This blog post will be less graphics-oriented than the usual ones. However, it's
@@ -241,9 +243,10 @@ struct MyViewController: UIViewControllerRepresentable {
 ...
 ```
 
+{{< image src="unity-with-overlay.jpg" >}}
+
 Okay, you may think that this is **gross** and you are right. A hack like this
-doesn't seem right, and I feel you: I do not want anything near production with
-that.
+doesn't seem right, and I feel you: I don't want anything like that in production.
 
 For my use case, this isn't too much of an issue. Basically, I need to expose
 an API from Unity that would allow the native iOS app to query vertices, to
@@ -252,7 +255,7 @@ the appropriate GameObjects are instanciated and ready to be queried / modified.
 
 This is where my simple solution to this problem comes from. Instead of using
 a made up delay like that, I am going to only assumes Unity is ready when my
-scene and all the gameobjects I need are ready. When they are, the code on th
+scene and all the gameobjects are ready. When they are, the code on th
 Unity side will notify the native app that it can start showing and that the API
 is available.
 
@@ -261,7 +264,7 @@ Unity scripts to native code.
 
 ## Communication: Unity to Native
 
-Calling some native code from Unity can be done easily using
+Calling some native code from Unity can be done using
 [Foreign Function Interface (FFI)](https://en.wikipedia.org/wiki/Foreign_function_interface).
 
 All we have to do is to expose a function. Fortunately for us, the Unity code
@@ -306,6 +309,12 @@ id<NativeCallsProtocol> api = NULL;
 
 extern "C" {
 
+  // Functions listed here are available to Unity. When called,
+  // they forward the call to the `api` delegate.
+  //
+  // You should also perform data transformation here, from
+  // C data struct to Objective-C **if needed**.
+
   void
   sendUnityStateUpdate(const char* state)
   {
@@ -320,7 +329,7 @@ The function `registerAPIforNativeCalls()` saves the reference of an object
 implementing the `NativeCallProtocol`. It means that we have a reference to
 an object that has the method `onUnityStateChange()`.
 
-On the opposite, the function `sendUnityStateUpdate()` is in charge of forwarding
+The `sendUnityStateUpdate()` function is in charge of forwarding
 the call to the object containing the `onUnityStateChange()` method.
 
 On the Unity side, our code will thus call `sendUnityStateUpdate()`, that will
@@ -380,6 +389,16 @@ For now, this script calls the `sendUnityStateUpdate()` functions that will
 then forward that to a listener.
 
 Congratulations, you just made your first native call from a Unity script!
+
+{{< hint info >}}
+
+Alternatively, you could also just export functions that will be
+available to the Unity side, without going through all the `FrameworkLibAPI` code.
+
+However, I like this implementation so I can add glue code between the
+C data and the Objective-C one.
+
+{{< /hint >}}
 
 ## Communication: Native to Unity
 
