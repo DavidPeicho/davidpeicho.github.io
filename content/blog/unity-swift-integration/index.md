@@ -1,17 +1,17 @@
 ---
-title: "Unity 2020 In SwiftUI App"
+title: "Unity 2020 Integration With SwiftUI"
 date: 2021-01-22
-slug: "unity-swiftui-integration"
+slug: "unity-integration-swiftui"
 description: "How to integrate Unity 2020 into a SwiftUI iOS application"
 keywords: [ "unity", "graphics", "ios", "swiftui", "swift" ]
 tags: [ "unity", "ios", "swiftui" ]
-images: [ "/images/posts/raymarching-2.jpg" ]
+images: [ "/images/posts/unityswiftui.jpg" ]
 draft: false
 math: false
 ---
 
-At the time of writing, there is no available sample that demonstrates how
-to integrate Unity as library into an iOS application based on SwiftUI. This blog post
+At the time of writing, there is currently no available example that demonstrates how
+to integrate Unity as library into an iOS application using SwiftUI. This blog post
 shares [my solution](https://github.com/DavidPeicho/unity-swiftui-example) to the problem hoping it can help others.
 
 <!--more-->
@@ -20,16 +20,22 @@ shares [my solution](https://github.com/DavidPeicho/unity-swiftui-example) to th
 
 ## Introduction
 
-This blog post will be less graphics-oriented than the usual ones. However, it's
-still related to rendering and I believe it could help the community, so why
-shouldn't I write it :)
+{{< hint info >}}
 
-When I first tried to integrate Unity into an iOS native app, I had a few goals in mind that needed a little more than what I could at the time on StackOverflow and public samples.
+The solution given in this blog post works with **Unity 2020.2.1f1** and
+**XCode 12.3**.
 
-This article will describe how to:
+{{< /hint >}}
 
-* Integrate Unity with the SwiftUI framework
-* Add native UI views overlaying Unity's rendering
+This blog post will be less graphics-oriented than the usual ones. I am anyway
+hoping that this writing can help the community!
+
+When I first tried to integrate Unity into an iOS native application, I had a few goals in mind that needed more information than what I could at the time on StackOverflow and public repositories.
+
+This article will show you how to:
+
+* Integrate Unity in an application using the SwiftUI lifecycle
+* Add native views overlaying Unity's rendering
 * Communicate **efficiently** data from Unity to the native side
 * Communicate **efficiently** data from the native side to Unity
 
@@ -40,25 +46,30 @@ Spoiler alert: the last bullet point doesn't use [sendMessageToGOWithName()](hht
 ### iOS Example App
 
 Let's build an iOS application that will host your Unity game. You can either
-start from scratch, or skip this step to directly integrate Unity in an existing
+start it from scratch, or skip this step to directly integrate Unity in an existing
 app.
 
-Open XCode and create a new iOS application using SwiftUI. Don't forget to
-choose the `SwiftUI App` lifecycle.
+If you decide to create a new application, please remember to select the
+`SwiftUI App` lifecycle.
 
 {{< hint info >}}
 
-You can use any lifecycle you prefer. Obviously, the integration may be slightly
-different, but the overall code should remain identical.
+You can use any lifecycle you prefer. Obviously, the integration may be
+different than what is show here, but the overall code should remain identical.
 
 {{< /hint >}}
 
 ### Unity Project Generation
 
-We need to generate a XCode project from Unity. This project will generate the `UnityFramework` framework described in the [doc](https://docs.unity3d.com/Manual/UnityasaLibrary-iOS.html).
+Let's build our Unity project. Building for iOS will generate the `UnityFramework` framework described in the
+[doc](https://docs.unity3d.com/Manual/UnityasaLibrary-iOS.html).
 
-In my [available sample](https://github.com/DavidPeicho/unity-swiftui-example),
-I exported the project at `unityapp/Build/iOS`.
+{{< hint info >}}
+
+If you want to strictly follow my example respository, I exported the project
+at `unityapp/Build/iOS`.
+
+{{< /hint >}}
 
 ### Workspace
 
@@ -71,26 +82,19 @@ as a dependendcy, please have a look at the [example](https://github.com/Unity-T
 
 {{< hint info >}}
 
-You don't **have** to create a workspace. You can just add the the Unity framework as a dependency to your native application.
+This step isn't mandatory but matches the example from the Unity team. You can
+directly add the the Unity framework as a dependency to your native application.
 
 {{< /hint >}}
 
 ## Integrate Unity
 
-Now that our projects are linked together, we would like to start Unity from
-the native application. The process is highly detailed in the
-[Unity as a library integration repository](https://github.com/Unity-Technologies/uaal-example/blob/master/NativeiOSApp/NativeiOSApp/MainViewController.mm).
-
-{{< hint warning >}}
-
-Note that only one instance can live in your entire process. If you completely
-kill this instance, there will be no way to start it again.
-
-{{< /hint >}}
+Getting into the interesting stuff. The process I will describe here is
+similar to the one from the [Unity example repository](https://github.com/Unity-Technologies/uaal-example/blob/master/NativeiOSApp/NativeiOSApp/MainViewController.mm).
 
 Let's start first by writing a singleton that will manage the Unity instance:
 
-_UnityBridge.swift_
+{{< expand UnityBridge.swift >}}
 
 ```swift
 class UnityBridge: UIResponder, UIApplicationDelegate, UnityFrameworkListener {
@@ -169,6 +173,8 @@ class UnityBridge: UIResponder, UIApplicationDelegate, UnityFrameworkListener {
 }
 ```
 
+{{< /expand >}}
+
 {{< hint info >}}
 
 Thanks to _Simon Tysland_ for sharing the original `UnityEmbeddedSwift.swift`
@@ -183,8 +189,15 @@ and get the exported instance
 * Run the Unity instance
 * Show the Unity instance on the phone
 
+{{< hint warning >}}
+
+Note that only one instance can live in your entire process. If you completely
+kill this instance, there will be no way to start it again.
+
+{{< /hint >}}
+
 Just keep in mind that the `unityDidUnload()` method is triggered by Unity when the
-framework is unloaded. This is possible because we first register our `UnityBridge`
+framework is unloaded. This is possible because we first registered our `UnityBridge`
 object as a delegate with the call:
 
 ```swift
@@ -193,8 +206,6 @@ ufw.register(self)
 
 Let's try our wrapper to ensure it's properly working. We are going to display
 our game in the background, and overlay some text made with the SwiftUI framework.
-
-Let's first modify the default `ContentView.swift` file:
 
 _ContentView.swift_
 
@@ -237,9 +248,8 @@ Let's run the native app and appreciate the result:
 As you can see, Unity doesn't display **anything**. However, looking at the
 console we can see it running.
 
-It looks like Unity needs some delay before we can show it. I haven't figure
-out why yet. Maybe the framework re-create a view asynchroneously. I can't tell for
-now. I will definitely update this blog post whenever I find the answer.
+It looks like Unity needs some delay after it's instanciaed and before it
+can show up. I haven't figure out why yet; maybe the framework re-create a view asynchroneously. I will definitely update this blog post whenever I have the answer.
 
 In the meantime, you can fix this issue by adding a small delay on the main thread:
 
@@ -263,34 +273,28 @@ struct MyViewController: UIViewControllerRepresentable {
 
 {{< image src="unity-with-overlay.jpg" >}}
 
-Okay, you may think that this is **gross** and you are right. A hack like this
-doesn't seem right, and I feel you: I don't want anything like that in production.
+Right now, you may be thinking that this is a **gross** hack. You are **right**.
 
-For my use case, this isn't too much of an issue. Basically, I need to expose
-an API from Unity that would allow the native iOS app to query vertices, to
-update some meshes, etc... Obviously, such an API shouldn't be available before
-the appropriate GameObjects are instanciated and ready to be queried / modified.
+For my use case, this isn't too much of an issue. I need to expose an API from
+Unity that would allow the native iOS app to query vertices, to update some meshes, etc... Such an API shouldn't be available before the appropriate GameObjects are instanciated and ready to be queried.
 
-This is where my simple solution to this problem comes from. Instead of using
-a made up delay like that, I am going to only assumes Unity is ready when my
-scene and all the GameObjects are ready. When they are, the code on th
-Unity side will notify the native app that it can start showing and that the API
-is available.
+Instead of using a made up delay like that, I am going to only assumes Unity is ready when my scene and all the GameObjects are ready. When they are, a Unity script
+will notify the native app that it can start showing Unity.
 
-Before looking at [my solution](#unity-not-showing-up-fix), let's look at how we can communicate data from
-Unity scripts to native code.
+Before looking at the code for the solution, let's look into how we can create
+a communication system to transfer data from Unity to the native code.
 
 ## Communication: Unity to Native
 
-Calling some native code from Unity can be done using
-[Foreign Function Interface (FFI)](https://en.wikipedia.org/wiki/Foreign_function_interface).
-
-All we have to do is to expose the functions we want to call. In order to be sure our functions don't get mangled, we will need to annotate them as `extern C`.
+Calling native code from Unity can be done using
+[Foreign Function Interface (FFI)](https://en.wikipedia.org/wiki/Foreign_function_interface). To ensure our functions don't get mangled, we will
+need to annotate them as `extern C`.
 
 Let's create two new files in the Unity app, in the folder `Assets/Plugins/iOS/`.
-After updating those files, you will need to re-build the Unity app.
 
 {{< hint info >}}
+
+Each time you update those files, you will need to re-build the Unity app.
 
 For debugging purposes, I would advised to directly modify the XCode generated
 project if you want to iterate faster.
@@ -350,9 +354,6 @@ extern "C" {
 }
 ```
 
-On the Unity side, our code will call `sendUnityStateUpdate()`. We will specify in
-Unity where to find the symbol.
-
 Let's create a new C# script that will demonstrate how to call this function:
 
 _API.cs_
@@ -391,8 +392,7 @@ public class API : MonoBehaviour
 
 {{< hint info >}}
 
-Don't forget to add this script component to an empty gameobject. This gameobject
-will be in charge of registering your global API.
+Don't forget to add this script component to an empty gameobject.
 
 {{< /hint >}}
 
@@ -405,21 +405,21 @@ The line:
 Let the compiler knows that this function symbol will be available in the binary
 after linking.
 
-Consequently, the `sendUnityStateUpdate()` function is in charge of forwarding
-the call to the object containing the `onUnityStateChange()` method.
+The `sendUnityStateUpdate()` function will be in charge of forwarding the call
+to an object that implements the `onUnityStateChange()` method prototype.
 
 The last thing we haven't talked about yet is `registerAPIforNativeCalls()`. This
 function saves the reference of an object implementing the `NativeCallProtocol`
 protocol. This allows us to transfer the calls to an object pointed to by a
 user (i.e., developer integrating the Unity app). Every call performed on the
-Unity side is forward to this delegate object.
+Unity side is forwarded to this delegate object.
 
 {{< hint info >}}
 
 The code provided above is taken from the [Unity example](https://github.com/Unity-Technologies/uaal-example/blob/master/UnityProject/Assets/Plugins/iOS/NativeCallProxy.mm). This is the way they decided to forward the call.
 
 Alternatively, you could also just export functions that will be
-available to the Unity side, without going through all the `FrameworkLibAPI` code.
+available on the Unity side, without going through all the `FrameworkLibAPI` code.
 
 However, I like this implementation so I can add glue code between the
 C data and the Objective-C one.
@@ -428,7 +428,7 @@ C data and the Objective-C one.
 
 Congratulations, you just made your first native call from a Unity script!
 
-All you have to now is to create this delegate that will receives the calls from
+All you have to now is to create a delegate that will receives the calls from
 Unity. The delegate should implement the `NativeCallProtocol`, and should be
 registered on the native side using:
 
@@ -436,8 +436,8 @@ registered on the native side using:
 FrameworkLibAPI.registerAPIforNativeCalls(delegateToRegister)
 ```
 
-We will anyway create this delegate together in a few sections, as it will be
-needed to fix the issue with Unity not showing up.
+We will create it together in a few sections, and it will be used to fix
+the issue we had with Unity not showing up.
 
 ## Communication: Native to Unity
 
@@ -445,20 +445,23 @@ The native side may need to get data from Unity as well.
 However, the only API exposed by the Unity framework is the
 [sendMessageToGOWithName()](https://docs.unity3d.com/Manual/UnityasaLibrary-iOS.html) method.
 
-This is **not** good. It only take a string argument.
-
-What happens if I need to send a vertex buffer? Something heavy?
+This is **not good**. It only take a string argument. What happens if we need
+to send a vertex buffer? Something heavy?
 
 For my use case, I have a lot of heavy data I want Unity to access
 without any copy. I decided to re-use what we did in the
 [Unity to native section](#communication-unity-to-native) to achieve that.
 
-The idea is simple. We call a function from the native app, and we give it as
-an argument a function pointer on the Unity side. The native app can save this
-function pointer and call it later.
+The idea is simple: we call a function declared in the native app with a function
+pointer declared in the Unity side. The native app can save this function pointer
+and call it later.
 
-Obviously, Unity and the native app can only communicate using C data structures:
-raw pointers, struct, etc...
+{{< hint info >}}
+
+Obviously, you will only be able to exchange C data structure between Unity
+scripts and the native app: raw pointers, struct, etc...
+
+{{< /hint >}}
 
 Let's modify the Objective-C code to expose such a function:
 
@@ -538,10 +541,10 @@ public class API : MonoBehaviour
 }
 ```
 
-Let's finish by modifying our `API` class to save the function pointer, and
-provide a nice API to our developers:
+And finally, our `API` class to save the function pointer and expose a nice API
+to our developers:
 
-__UnityBridge.swift__
+_UnityBridge.swift_
 
 ```csharp
 class API: NativeCallsProtocol {
@@ -564,23 +567,19 @@ You can give it a try to ensure everything is working:
 UnityBridge.getInstance().api.test("this works so well!");
 ```
 
-What we achieved here is powerful. You can now create more advanced
-functions that will share information between both sides.
-
-As an example, your `API` could read vertices using an [UnsafePointer](https://developer.apple.com/documentation/swift/unsafepointer), but return an array of float for your developers.
-
-## Unity Not Showing Up: "Fix"
+## Fix Unity Not Showing Up
 
 Coming back to the issue about how I _"fixed"_ the Unity view not showing up.
 
 I decided to use the `sendUnityStateUpdate()` function to inform the native
 app when Unity was ready to show up. This way, I can ensure that there is a
-delay between the loading of the framework and the display. Moreover, this also
-ensures that developers will not attempt to use the API before it's fully initialized.
+delay between the time I instanciate the framework and the time I display it.
+Moreover, this also ensures that developers will not attempt to use the API
+before it's fully initialized.
 
-Let's finally create the delegate that receives call coming from Unity:
+Let's update the delegate to react to Unity being ready:
 
-_UnityBridge.swift_
+{{< expand UnityBridge.swift >}}
 
 ```swift
 class API: NativeCallsProtocol {
@@ -644,6 +643,8 @@ class UnityBridge: UIResponder, UIApplicationDelegate, UnityFrameworkListener {
 }
 ```
 
+{{< /expand >}}
+
 _ContentView.swift_
 
 ```swift
@@ -659,11 +660,9 @@ struct MyViewController: UIViewControllerRepresentable {
 }
 ```
 
-The above code is an extension of everything we have been doing so far. When
-our Unity GameObject API is ready, it will trigger the method `onUnityStateChange()`
-of our delegate. This method is used to call the `onReady` callback. Finally,
-the callback is used to show Unity. Thus, we separated the instanciation of the
-framework and the call to display the Unity view by a delay.
+When our Unity GameObject API is ready, it will trigger the method `onUnityStateChange()`
+of our delegate. It will trigger the `onReady` callback used to display Unity and
+append the Unity view in the hierarchy.
 
 In addition to that, as I said in the beginning of this post, it's important for
 me to expose an API to the user only when everything is fully ready on Unity's
@@ -672,21 +671,20 @@ side.
 ## Going Further
 
 You made it! Don't forget that the entire code presented here is available
-in [this repository](https://github.com/DavidPeicho/unity-swiftui-example). Check it out if you have any issue that isn't clear in this post.
+in [this repository](https://github.com/DavidPeicho/unity-swiftui-example).
 
 I hope this post can help people struggling with integration issues. Some of the
 ideas presented here can still be a bit rough on the edges.
 
-I would recommend readers to improve some parts. For instance, the `UnityBridge`
-object could directly be exported from your Unity app. Anyone integrating your Unity app could directly build it and access the API.
+I would recommend readers to make the code their own and improve it. For instance, the `UnityBridge` class could directly be exported from your Unity app. Anyone integrating your Unity app could directly build it and access the API.
 
-There are also corner cases I didn't care to fix for now:
+There are also corner cases needs to be taken care of:
 
-* It's technically possible for a developer to use the api before it's available.
+* It's technically possible for a developer to use the api before it's available
 * `[DllImport ("__Internal")]` will not work properly on some platform where
 plugins linking is different. For cross-platform implementation, you will need
 specific code path (`#if`)
 
-If you have any issues, or if you think this post contain mistake, please either:
-* Open an issue on my [GitHub repository](https://github.com/DavidPeicho/davidpeicho.github.io)
-* Or contact me via [Twitter](https://twitter.com/DavidPeicho)
+If you have any issues, or if you think this post contain mistakes, please either:
+* Open an issue on my [GitHub repository](https://github.com/DavidPeicho/davidpeicho.github.io);
+* Contact me via [Twitter](https://twitter.com/DavidPeicho)
