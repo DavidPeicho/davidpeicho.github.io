@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© {year}</copyright>
-    <lastBuildDate>Wed, 01 Jan 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://davidpeicho.github.io/projects/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 01 Jan 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://davidpeicho.github.io/projects/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Cuda Pathtracer</title>
       <link>https://davidpeicho.github.io/projects/cuda-pathtracer/</link>
@@ -39,7 +35,7 @@ ArtFlow was made to finalize my Master&amp;rsquo;s Degree at EPITA.&lt;/p&gt;</d
       <pubDate>Sun, 01 Jun 2014 00:00:00 +0000</pubDate>
       
       <guid>https://davidpeicho.github.io/projects/fps-designer/</guid>
-      <description>&lt;p&gt;FPSDesigner is a &lt;i&gt;&amp;quot;Unity-like&amp;quot;&lt;/i&gt; editor to help build FPS games.
+      <description>&lt;p&gt;FPSDesigner is a &lt;i&gt;&amp;ldquo;Unity-like&amp;rdquo;&lt;/i&gt; editor to help build FPS games.
 It&amp;rsquo;s designed into two parts, a C# &lt;b&gt;Core Engine&lt;/b&gt; running on top of XNA,
 as well as a &lt;b&gt;WPF editor&lt;/b&gt; to build the levels.&lt;/p&gt;</description>
     </item>

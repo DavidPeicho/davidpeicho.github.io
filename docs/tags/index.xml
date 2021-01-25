@@ -7,10 +7,33 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© {year}</copyright>
-    <lastBuildDate>Mon, 19 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 22 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://davidpeicho.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ios</title>
+      <link>https://davidpeicho.github.io/tags/ios/</link>
+      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/tags/ios/</guid>
+      <description></description>
+    </item>
     
-	<atom:link href="https://davidpeicho.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>swiftui</title>
+      <link>https://davidpeicho.github.io/tags/swiftui/</link>
+      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/tags/swiftui/</guid>
+      <description></description>
+    </item>
     
+    <item>
+      <title>unity</title>
+      <link>https://davidpeicho.github.io/tags/unity/</link>
+      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/tags/unity/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>graphics</title>
