@@ -1,0 +1,11 @@
+{{ $src := .Get "src" }}
+{{ $width := default "inherit" (.Get "width") }}
+{{ $height := default "inherit" (.Get "height") }}
+<p>
+  <img
+    src="{{ $src }}"
+    class="centered"
+    style="width: {{ $width }}; height: {{ $height }}"
+  >
+  </img>
+</p>
