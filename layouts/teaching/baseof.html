@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+
+{{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/teaching.scss" "dest" "css/teaching.css") }}
+
+{{ with ( .Params.images ) }}
+  {{ with ( index . 0 ) }}
+    {{ $.Scratch.Set "pageThumbnail" ( . | absURL ) }}
+  {{ end }}
+{{ end }}
+{{ with ( .Params.videos ) }}
+  {{ with (index . 0) }}
+    {{ $.Scratch.Set "pageVideo" ( . | absURL ) }}
+  {{ end }}
+{{ end }}
+
+{{ block "seo_variables" . }} {{ end }}
+{{ partial "head.html" . }}
+
+<body>
+  {{ partial "burger.html" .}}
+  {{ partial "nav.html" .}}
+
+  <main>
+    <div class="content">
+
+      {{ .Content | safeHTML }}
+
+      <div>
+        <h2>Real-Time Rendering</h2>
+        <div>
+          <div class="course">
+            <h3>Rendering Theory</h3>
+            <div class="sub">
+              <!--<span>EPITA</span>-->
+              <div class="icon" style="background-image: url('/images/icons/location.svg')"></div>
+              <span>Paris</span>
+            </div>
+            <div class="sub">
+              <!--<span>EPITA</span>-->
+              <div class="icon" style="background-image: url('/images/icons/school.svg')"></div>
+              <span>EPITA</span>
+            </div>
+            <p>Course</p>
+            <p>Assignment</p>
+          </div>
+          <div>
+            <h3>Physically Based Rendering</h3>
+            <span>EPITA</span>
+            <span>Paris</span>
+            <p>Course</p>
+            <p>Assignment</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  {{ block "footer" . }} {{ end }}
+
+</body>
+
+</html>

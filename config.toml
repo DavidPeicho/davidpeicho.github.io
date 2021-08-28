@@ -69,3 +69,10 @@ googleAnalytics = "UA-142103532-1"
   title = "Blog"
   url = "/blog"
   weight = 4
+
+[[menu.main]]
+  identifier = "teaching"
+  name = "teaching"
+  title = "Teaching"
+  url = "/teaching"
+  weight = 5
