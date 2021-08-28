@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf resources && rm -rf docs",
-    "dev": "hugo server",
+    "dev": "yarn build:js && hugo server",
     "dev:js": "cross-env NODE_ENV=development webpack -w",
     "build:js": "cross-env NODE_ENV=production webpack",
     "build": "npm run build:js && hugo -d ./docs",
