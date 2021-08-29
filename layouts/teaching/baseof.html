@@ -3,17 +3,6 @@
 
 {{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/teaching.scss" "dest" "css/teaching.css") }}
 
-{{ with ( .Params.images ) }}
-  {{ with ( index . 0 ) }}
-    {{ $.Scratch.Set "pageThumbnail" ( . | absURL ) }}
-  {{ end }}
-{{ end }}
-{{ with ( .Params.videos ) }}
-  {{ with (index . 0) }}
-    {{ $.Scratch.Set "pageVideo" ( . | absURL ) }}
-  {{ end }}
-{{ end }}
-
 {{ block "seo_variables" . }} {{ end }}
 {{ partial "head.html" . }}
 
@@ -24,47 +13,77 @@
   <main>
     <div class="content">
 
-      {{ .Content | safeHTML }}
+      <!-- {{ .Content | safeHTML }} -->
 
-      <div>
-        <h2>Real-Time Rendering</h2>
-        <div>
-          <div class="course">
-            <h3>Rendering Theory</h3>
-            <div class="header">
-              <div class="sub">
-                <!--<span>EPITA</span>-->
-                <div class="icon icon-left" style="background-image: url('/images/icons/school.svg')"></div>
-                <span>EPITA</span>
+      {{ range $group := $.Params.courses }}
+        <div class="course-group">
+          <h2>{{ $group.name }}</h3>
+          {{ range $course := $group.courses }}
+            <div class="course">
+              <h3>
+                <a class="anchor" href="{{ $course.courseLink }}" target="_blank">#</a>
+                {{ $course.title }}
+              </h3>
+              <div class="header">
+                <div class="sub">
+                  <div
+                    class="icon icon-left"
+                    style="background-image: url('/images/icons/school.svg')"
+                  ></div>
+                  <span>{{ $course.schools }}</span>
+                </div>
+                <div class="sub">
+                  <div
+                    class="icon icon-left"
+                    style="background-image: url('/images/icons/location.svg')"
+                  ></div>
+                  <span>{{ $course.location }}</span>
+                </div>
               </div>
-              <div class="sub">
-                <!--<span>EPITA</span>-->
-                <div class="icon icon-left" style="background-image: url('/images/icons/location.svg')"></div>
-                <span>Paris</span>
+              <div class="inner">
+                {{ with ( $course.courseLink ) }}
+                  <a href="{{ $course.courseLink }}" target="_blank">
+                    <div class="sub indent">
+                    <p>Course</p>
+                      <div
+                        class="icon icon-right"
+                        style="background-image: url('/images/icons/url.svg')"
+                      ></div>
+                    </div>
+                  </a>
+                {{ end }}
+                {{ with ( $course.assignmentLink ) }}
+                  <a href="{{ . }}" target="_blank">
+                    <div class="sub indent">
+                      <p>Assignment</p>
+                      <div
+                        class="icon icon-right"
+                        style="background-image: url('/images/icons/url.svg')"
+                      ></div>
+                    </div>
+                  </a>
+                {{ end }}
               </div>
             </div>
-            <div class="inner">
-              <a href="">
-                <div class="sub indent">
-                <p>Course</p>
-                  <div class="icon icon-right" style="background-image: url('/images/icons/url.svg')"></div>
-                </div>
-              </a>
-              <a href="">
-                <div class="sub indent">
-                  <p>Assignment</p>
-                  <div class="icon icon-right" style="background-image: url('/images/icons/url.svg')"></div>
-                </div>
-              </a>
-            </div>
-          </div>
+          {{ end }}
         </div>
-      </div>
+      {{ end }}
+
+      {{ .Content | safeHTML }}
 
     </div>
   </main>
 
   {{ block "footer" . }} {{ end }}
+
+  {{ $script := resources.Get "js/index.js" | minify | fingerprint }}
+  <script
+    src="{{ $script.RelPermalink }}"
+    integrity="{{ $script.Data.Integrity | safeHTMLAttr }}"
+    crossorigin="anonymous"
+  >
+  </script>
+  {{ block "scripts" . }} {{ end }}
 
 </body>
 
