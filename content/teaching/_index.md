@@ -11,7 +11,7 @@
           "title": "Rendering Theory",
           "schools": "EPITA",
           "location": "Paris",
-          "courseLink": ""
+          "courseLink": "/teaching/rendering/rendering-theory.pdf"
         }
       ]
     },
