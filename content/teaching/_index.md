@@ -22,7 +22,7 @@
           "title": "Physically-Based Rendering",
           "schools": "EPITA",
           "location": "Paris",
-          "courseLink": "",
+          "courseLink": "/teaching/rendering/pbr.pdf",
           "assignmentLink": "https://github.com/DavidPeicho/Teaching/tree/main/pbr"
         }
       ]
