@@ -6,8 +6,8 @@ printf "\033[0;32mDeploying to GitHub...\033[0m\n"
 
 npm run clean
 
-git checkout gh-pages
-git rebase master
+git branch -D gh-pages
+git checkout -b gh-pages
 
 npm run lint && npm run build
 
@@ -18,5 +18,4 @@ if [ -n "$*" ]; then
 fi
 git commit -m "$msg"
 
-git pull origin gh-pages
-git push origin gh-pages
+git push origin gh-pages -f
