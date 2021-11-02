@@ -52,6 +52,17 @@
                     </div>
                   </a>
                 {{ end }}
+                {{ with ( $course.courseLinkSlides ) }}
+                  <a href="{{ $course.courseLinkSlides }}" target="_blank">
+                    <div class="sub indent">
+                    <p>Course (Slides)</p>
+                      <div
+                        class="icon icon-right"
+                        style="background-image: url('/images/icons/url.svg')"
+                      ></div>
+                    </div>
+                  </a>
+                {{ end }}
                 {{ with ( $course.assignmentLink ) }}
                   <a href="{{ . }}" target="_blank">
                     <div class="sub indent">

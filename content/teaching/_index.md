@@ -35,6 +35,7 @@
           "schools": "EPITA",
           "location": "Paris",
           "courseLink": "",
+          "courseLinkSlides": "https://docs.google.com/presentation/d/1NgRkEfVRSwWHHNMjXEyPTC0M_dIO5zSl0aOi5qgoZC8/edit?usp=sharing",
           "assignmentLink": ""
         }
       ]
