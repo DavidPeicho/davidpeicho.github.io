@@ -647,11 +647,15 @@ Last step missing: scaling the ray direction!
 You could either ask the user to choose for a **sampling ratio**, or simply
 compute a minimal one, by using the smallest component in the ray direction.
 
-You could als sample the volume from `near` to `far`, using a step
+You could also sample the volume from `near` to `far`, using a step
 size of `(far - near) / NB_STEPS`. However, I don't want the step size to be
 different for each ray, so I decided to go for the classic:
 
 ```glsl
+// You can define this in the `.defines` object on your
+// `ShaderMaterial` in Three.js
+#define NB_STEPS 100
+
 vec3 inc = 1.0 / abs( ray.dir );
 // Step size between two samples
 float delta = min(inc.x, min(inc.y, inc.z)) / float(NB_STEPS);
