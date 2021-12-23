@@ -42,18 +42,17 @@ If you think there is a better way to do that, please reach out to me so I can
 update this blog post, as well as my own integration code :)
 {{< /hint >}}
 
+## Demo
+
+The integration demo is available [here](https://github.com/DavidPeicho/unity-swiftui-example/tree/main).
+
+The [README.md](https://github.com/DavidPeicho/unity-swiftui-example/blob/main/README.md) file is
+super detailed and will guide you through how to run the demo.
+
 ## SwiftUI + Unity: Problem
 
-The Unity integration into the SwiftUI lifecycle can be sumarized by:
-
-* Keep the **Unity** view on its own window in the background
-* Do the entire **SwiftUI** hiearchy on a foreground window
-
-If you have a more complex use case than that, I would suggest thinking twice
-about using Unity, or simply designing your app around those limitations.
-
-The problem is that by default, the window created by the Unity Objective-C
-code will basically overlay the `UIWindow` created by SwiftUI:
+If you try to run Unity the way the initial sample did, you might end up with the window created by Unity
+on top of the `UIWindow` created by SwiftUI:
 
 {{< image src="unity-covering-ui.png" >}}
 
