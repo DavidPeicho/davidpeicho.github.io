@@ -12,11 +12,17 @@ math: false
 
 At the time of writing, there is currently no available example that demonstrates how
 to integrate Unity as library into an iOS application using SwiftUI. This blog post
-shares [my solution](https://github.com/DavidPeicho/unity-swiftui-example) to the problem hoping it can help others.
+shares [my solution](https://github.com/DavidPeicho/unity-swiftui-example/tree/old/unity2020) to the problem hoping it can help others.
 
 <!--more-->
 
 <video autoplay loop muted playsinline src="result.mp4" style="max-height: 800px; display: block; margin: auto"></video>
+
+{{< hint warning >}}
+
+I have now an improved integration sample, with a [blog post]({{<ref "/blog/unity-swift-integration-revisited" >}}) detailing how it works.
+
+{{< /hint >}}
 
 ## Introduction
 
@@ -39,7 +45,7 @@ This article will show you how to:
 * Communicate **efficiently** data from Unity to the native side
 * Communicate **efficiently** data from the native side to Unity
 
-Spoiler alert: the last bullet point doesn't use [sendMessageToGOWithName()](hhttps://docs.unity3d.com/Manual/UnityasaLibrary-iOS.html)!
+Spoiler alert: the last bullet point doesn't use [sendMessageToGOWithName()](https://docs.unity3d.com/Manual/UnityasaLibrary-iOS.html)!
 
 ## Build
 
@@ -671,7 +677,7 @@ side.
 ## Going Further
 
 You made it! Don't forget that the entire code presented here is available
-in [this repository](https://github.com/DavidPeicho/unity-swiftui-example).
+in [this repository](https://github.com/DavidPeicho/unity-swiftui-example/tree/old/unity2020).
 
 I hope this post can help people struggling with integration issues. Some of the
 ideas presented here can still be a bit rough on the edges.
@@ -688,3 +694,12 @@ specific code path (`#if`)
 If you have any issues, or if you think this post contain mistakes, please either:
 * Open an issue on my [GitHub repository](https://github.com/DavidPeicho/davidpeicho.github.io);
 * Contact me via [Twitter](https://twitter.com/DavidPeicho)
+
+{{< hint warning >}}
+
+As mentionned at the beginning, I have now an improved integration sample, with a [blog post]({{<ref "/blog/unity-swift-integration-revisited" >}}) detailing how it works.
+
+The new solution for the integration is a mix of what's presented here, with some
+new flavor making everything sweeter!
+
+{{< /hint >}}
