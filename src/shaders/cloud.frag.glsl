@@ -5,7 +5,6 @@ precision highp sampler3D;
 
 #define EPSILON 0.0000001
 #define EPSILON_ONE 1.0000001
-#define saturate(a) clamp(a, 0.0, 1.0)
 
 struct PointLight {
   vec3 position;
@@ -235,5 +234,7 @@ main()
     if (dist > far) { break; }
   }
 
-  pc_fragColor.rgba = acc;
+  gl_FragColor = acc;
+  #include <tonemapping_fragment>
+  #include <encodings_fragment>
 }

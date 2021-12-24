@@ -1,4 +1,5 @@
 import {
+  ACESFilmicToneMapping,
   Color,
   Clock,
   DataTexture3D,
@@ -9,7 +10,8 @@ import {
   Scene,
   WebGLRenderer,
   PointLight,
-  RGBFormat, MeshNormalMaterial, Vector3
+  RGBFormat, MeshNormalMaterial, Vector3,
+  sRGBEncoding
 } from 'three';
 
 import { Cloud, createPerlinTexture } from './cloud';
@@ -40,7 +42,7 @@ const BURNING_LIGHT_COLOR = (new Color(0xe67e22)).convertSRGBToLinear();
 /** Minimum time with no interaction before the light is auto controlled. */
 const AUTO_LIGHT_TIMEOUT = 1.25;
 /** Default intensity of the point light. */
-const LIGHT_INTENSITY = 2.0;
+const LIGHT_INTENSITY = 0.5;
 /** Speed factor for the automatic light rotation. */
 const LIGHT_SPEED = 1.3;
 
@@ -83,7 +85,7 @@ class CloudDemo {
       }),
       burning: new Interpolator({
         min: 0.0,
-        max: 13,
+        max: 15.0,
         time: 3.0,
         outTime: 1.0,
         easingFunction: easeQuadraticOut,
@@ -254,6 +256,10 @@ class App {
 
   constructor(canvas) {
     this.renderer = new WebGLRenderer({ canvas, antialias: true });
+    this.renderer.toneMapping = ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 0.5;
+
+    // this.renderer.outputEncoding = sRGBEncoding;
     const supportWebGL2 = this.renderer.capabilities.isWebGL2;
 
     this.camera = new PerspectiveCamera();
@@ -349,12 +355,17 @@ class App {
     /* Automatic Light Rotation */
 
     if (this.autoLightTimeout >= AUTO_LIGHT_TIMEOUT) {
+      const xBaseScale = 1.15;
+      const yBaseScale = 0.95;
+      const zBaseScale = 1.3;
       const scaledElapsed = elapsed * LIGHT_SPEED;
       gPoint.set(
-        Math.sin(scaledElapsed * 1.15),
-        Math.cos(scaledElapsed * 0.95 + PI_OVER_2),
-        Math.cos(scaledElapsed * 1.3)
-      ).normalize().multiplyScalar(1.15);
+        Math.sin(scaledElapsed * xBaseScale),
+        Math.cos(scaledElapsed * yBaseScale + PI_OVER_2),
+        Math.cos(scaledElapsed * zBaseScale)
+      )
+      .normalize()
+      .multiplyScalar(1.5);
 
       const t = saturate(
         (this.autoLightTimeout - AUTO_LIGHT_TIMEOUT) / AUTO_LIGHT_TIMEOUT

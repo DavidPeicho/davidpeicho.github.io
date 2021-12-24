@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "eslint": "^7.18.0",
+    "eslint": "^8.5.0",
     "prettier": "^2.2.1",
     "raw-loader": "^4.0.2",
     "webpack": "^5.17.0",
@@ -23,7 +23,7 @@
     "worker-loader": "^3.0.7"
   },
   "dependencies": {
-    "three": "^0.125.0"
+    "three": "^0.135.0"
   },
   "browserslist": [
     "last 2 version",

@@ -55,7 +55,7 @@ export class CloudMaterial extends ShaderMaterial {
     // after all opaque meshes are rendered.
     this.transparent = true;
 
-    this.toneMapped = false;
+    this.toneMapped = true;
     this.fog = false;
     this.lights = true;
 
@@ -76,7 +76,7 @@ export class CloudMaterial extends ShaderMaterial {
 
     // Use a global variable to perform in-place inverse. This is much faster
     // that allocating a matrix (obviously also reducw GC).
-    gMatrix4.getInverse(object3d.matrixWorld);
+    gMatrix4.copy(object3d.matrixWorld).invert();
     // Copies the camera world position into `uLocalSpaceCameraOrigin`.
     // NOTE: the camera world matrix **must be** up-to-date!
     camera.getWorldPosition(localOriginUniform);
