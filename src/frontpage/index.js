@@ -363,9 +363,7 @@ class App {
         Math.sin(scaledElapsed * xBaseScale),
         Math.cos(scaledElapsed * yBaseScale + PI_OVER_2),
         Math.cos(scaledElapsed * zBaseScale)
-      )
-      .normalize()
-      .multiplyScalar(1.5);
+      ).normalize().multiplyScalar(1.5);
 
       const t = saturate(
         (this.autoLightTimeout - AUTO_LIGHT_TIMEOUT) / AUTO_LIGHT_TIMEOUT
