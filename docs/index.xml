@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>David Peicho&#39;s Blog</title>
+    <link>https://davidpeicho.github.io/</link>
+    <description>Recent content on David Peicho&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© {year}</copyright>
+    <lastBuildDate>Wed, 22 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://davidpeicho.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cuda Pathtracer</title>
+      <link>https://davidpeicho.github.io/projects/cuda-pathtracer/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/projects/cuda-pathtracer/</guid>
+      <description>&lt;p&gt;First hobby pathtracer written in CUDA. Contains a limited amount of features,
+including &lt;b&gt;Texturing&lt;/b&gt;, &lt;b&gt;Normal Mapping&lt;/b&gt;, &lt;b&gt;IBL&lt;/b&gt;, and &lt;b&gt;Depth Of Field&lt;/b&gt;.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>ArtFlow</title>
+      <link>https://davidpeicho.github.io/projects/artflow/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/projects/artflow/</guid>
+      <description>&lt;p&gt;&lt;b&gt;WebVR&lt;/b&gt; experience in which users can draw and build a world
+in the same way they would do it in Tilt Brush or Quill.
+ArtFlow was made to finalize my Master&amp;rsquo;s Degree at EPITA.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>FPSDesigner</title>
+      <link>https://davidpeicho.github.io/projects/fps-designer/</link>
+      <pubDate>Sun, 01 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/projects/fps-designer/</guid>
+      <description>&lt;p&gt;FPSDesigner is a &lt;i&gt;&amp;ldquo;Unity-like&amp;rdquo;&lt;/i&gt; editor to help build FPS games.
+It&amp;rsquo;s designed into two parts, a C# &lt;b&gt;Core Engine&lt;/b&gt; running on top of XNA,
+as well as a &lt;b&gt;WPF editor&lt;/b&gt; to build the levels.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Unity 2021 - SwiftUI Integration, Revisited!</title>
+      <link>https://davidpeicho.github.io/blog/unity-swiftui-integration-revisited/</link>
+      <pubDate>Wed, 22 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/blog/unity-swiftui-integration-revisited/</guid>
+      <description>&lt;p&gt;Earlier this year, I wrote a &lt;a href=&#34;https://davidpeicho.github.io/blog/unity-integration-swiftui/&#34;&gt;first blog post&lt;/a&gt; explaining how to integrate easily &lt;strong&gt;Unity&lt;/strong&gt; in a &lt;strong&gt;SwiftUI&lt;/strong&gt; application.&lt;/p&gt;
+&lt;p&gt;I am now back with a &lt;strong&gt;(much)&lt;/strong&gt; better &lt;a href=&#34;https://github.com/DavidPeicho/unity-swiftui-example/tree/main&#34;&gt;solution&lt;/a&gt; than what I introduced earlier.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Unity 2020 Integration With SwiftUI</title>
+      <link>https://davidpeicho.github.io/blog/unity-integration-swiftui/</link>
+      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/blog/unity-integration-swiftui/</guid>
+      <description>&lt;p&gt;At the time of writing, there is currently no available example that demonstrates how
+to integrate Unity as library into an iOS application using SwiftUI. This blog post
+shares &lt;a href=&#34;https://github.com/DavidPeicho/unity-swiftui-example/tree/old/unity2020&#34;&gt;my solution&lt;/a&gt; to the problem hoping it can help others.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>(2/2) Behind The Scene: Cloud Raymarching Demo</title>
+      <link>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/</link>
+      <pubDate>Mon, 19 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/</guid>
+      <description>&lt;p&gt;Second part of &lt;a href=&#34;https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/&#34;&gt;Behind The Scene: Cloud Raymarching Demo&lt;/a&gt;,
+in which we will go through how to improve the lighting and how to create the burning effect.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>(1/2) Behind The Scene: Cloud Raymarching Demo</title>
+      <link>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/</link>
+      <pubDate>Thu, 24 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/</guid>
+      <description>&lt;p&gt;This blog post will walk you through how I created the volume rendering visualization
+available on the &lt;a href=&#34;https://davidpeicho.github.io/&#34;&gt;Home page&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Swizzler</title>
+      <link>https://davidpeicho.github.io/projects/swizzler/</link>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/projects/swizzler/</guid>
+      <description>&lt;p&gt;Say hi to &lt;b&gt;Swizzler&lt;/b&gt;, a Rust CLI to swizzle multiple texture channels into a single output.
+The CLI can be run on a directory tree and convert textures automatically
+using a JSON configuration. Useful to pack textures for game development.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Welcome!</title>
+      <link>https://davidpeicho.github.io/blog/welcome/</link>
+      <pubDate>Sun, 22 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/blog/welcome/</guid>
+      <description>&lt;p&gt;This is my first blog ever. It&amp;rsquo;s going to be an extra short blog post introducing me, this website, and why I decided to create it.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s go!&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

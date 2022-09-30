@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>games on David Peicho&#39;s Blog</title>
+    <link>https://davidpeicho.github.io/tags/games/</link>
+    <description>Recent content in games on David Peicho&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© {year}</copyright>
+    <lastBuildDate>Sun, 01 Jun 2014 00:00:00 +0000</lastBuildDate><atom:link href="https://davidpeicho.github.io/tags/games/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>FPSDesigner</title>
+      <link>https://davidpeicho.github.io/projects/fps-designer/</link>
+      <pubDate>Sun, 01 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/projects/fps-designer/</guid>
+      <description>&lt;p&gt;FPSDesigner is a &lt;i&gt;&amp;ldquo;Unity-like&amp;rdquo;&lt;/i&gt; editor to help build FPS games.
+It&amp;rsquo;s designed into two parts, a C# &lt;b&gt;Core Engine&lt;/b&gt; running on top of XNA,
+as well as a &lt;b&gt;WPF editor&lt;/b&gt; to build the levels.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

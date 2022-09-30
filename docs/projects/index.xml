@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects on David Peicho&#39;s Blog</title>
+    <link>https://davidpeicho.github.io/projects/</link>
+    <description>Recent content in Projects on David Peicho&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© {year}</copyright>
+    <lastBuildDate>Wed, 01 Jan 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://davidpeicho.github.io/projects/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cuda Pathtracer</title>
+      <link>https://davidpeicho.github.io/projects/cuda-pathtracer/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/projects/cuda-pathtracer/</guid>
+      <description>&lt;p&gt;First hobby pathtracer written in CUDA. Contains a limited amount of features,
+including &lt;b&gt;Texturing&lt;/b&gt;, &lt;b&gt;Normal Mapping&lt;/b&gt;, &lt;b&gt;IBL&lt;/b&gt;, and &lt;b&gt;Depth Of Field&lt;/b&gt;.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>ArtFlow</title>
+      <link>https://davidpeicho.github.io/projects/artflow/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/projects/artflow/</guid>
+      <description>&lt;p&gt;&lt;b&gt;WebVR&lt;/b&gt; experience in which users can draw and build a world
+in the same way they would do it in Tilt Brush or Quill.
+ArtFlow was made to finalize my Master&amp;rsquo;s Degree at EPITA.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>FPSDesigner</title>
+      <link>https://davidpeicho.github.io/projects/fps-designer/</link>
+      <pubDate>Sun, 01 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/projects/fps-designer/</guid>
+      <description>&lt;p&gt;FPSDesigner is a &lt;i&gt;&amp;ldquo;Unity-like&amp;rdquo;&lt;/i&gt; editor to help build FPS games.
+It&amp;rsquo;s designed into two parts, a C# &lt;b&gt;Core Engine&lt;/b&gt; running on top of XNA,
+as well as a &lt;b&gt;WPF editor&lt;/b&gt; to build the levels.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Swizzler</title>
+      <link>https://davidpeicho.github.io/projects/swizzler/</link>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidpeicho.github.io/projects/swizzler/</guid>
+      <description>&lt;p&gt;Say hi to &lt;b&gt;Swizzler&lt;/b&gt;, a Rust CLI to swizzle multiple texture channels into a single output.
+The CLI can be run on a directory tree and convert textures automatically
+using a JSON configuration. Useful to pack textures for game development.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
