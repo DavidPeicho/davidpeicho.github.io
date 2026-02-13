@@ -1,6 +1,5 @@
 {
   "title": "Teaching",
-  "headless": true,
   "keywords": [ "graphics", "rendering", "3D", "teaching" ],
   "description": "Teaching materials",
   "courses": [

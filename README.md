@@ -25,13 +25,6 @@ nav bar and the ordering of its content.
 You can add / modify / remove any files from `./content/blog/`. This is
 basically where you have to write your articles.
 
-#### Projects Folder
-
-I use the `./content/projects` to list my projects in the website. The projects
-**aren't** really supposed to have a route and more details, they are simply
-reference and link to GitHub for more information.
-
-
 ## Development
 
 You can start the development server using:
