@@ -6,6 +6,18 @@
   "images": [ "/images/me.jpg" ],
   "teaching": [
     {
+      "title": "Real-Time Rendering",
+      "course": "Rendering theory, PBR",
+      "school": "EPITA",
+      "date": "2022-2023"
+    },
+    {
+      "title": "Three.js",
+      "course": "Fundamentals, Lighting, PBR, Postprocessing",
+      "school": "EPITA",
+      "date": "2022"
+    },
+    {
       "title": "Teaching Assistant",
       "course": "C, Unix, Shell, and Algorithms",
       "school": "EPITA",
@@ -26,32 +38,75 @@
   ]
 }
 
-## Hi
+## Hi!
 
-I am David Peicho, a Research Scientist within the visualization team at
-[Siemens Healthineers](https://www.siemens-healthineers.com/).
+I am David Peicho, a Senior Rendering Engineer working on the [Wonderland Engine](https://wonderlandengine.com/), with strong interests in computer graphics and game development, using C++, Rust, and TypeScript.
 
-My current job consists of pushing 3D Medical Visualization
-capabilities in the Web, mostly using WebGL. My goal is to achieve **real-time** or close to **real-time** medical visualization.
+I spent the past decade focused on WebGL, and more recently WebGPU.
 
-I graduated from [EPITA (Ecole des Ingénieurs en Intelligence Informatique)](https://www.epita.fr/en) in 2018,
-where I obtained a Master's degree in Computer Science, and specialized in Artificial Intelligence.
+{{< socials >}}
 
-My up-to-date resume is available →
-{{< document_link href="/documents/resume.pdf" target="_blank">}}
-here
-{{< /document_link >}}
+## Open-Source Contributions
 
-## Interests
+> * [Albedo](https://github.com/DavidPeicho/albedo)
+> * [Wonderland Engine community](https://github.com/wonderlandEngine)
+> * [Three.js](https://github.com/mrdoob/three.js/)
+> * [wgpu-native](https://github.com/gfx-rs/wgpu-native/)
+> * [WebGL](https://github.com/KhronosGroup/WebGL)
+> * [OSG.js](https://github.com/cedricpinson/osgjs)
 
-* Computer Graphics
-* Game Development
-* C++, JavaScript / TypeScript, Rust
-* Programming in general :)
+## Work
 
-## Open-Source contributions
+### Wonderland Engine (2022-Current)
 
-* [Three.js](https://github.com/mrdoob/three.js/)
-* [OSG.js](https://github.com/cedricpinson/osgjs)
-* [WebGL](https://github.com/KhronosGroup/WebGL)
-* [wgpu-native](https://github.com/gfx-rs/wgpu-native/)
+Senior Rendering Engineer on the [Wonderland Engine](https://wonderlandengine.com/),
+a C++ game engine compiled to WebAssembly running in the browser.
+
+{{< image src="clear-coat.webp" alt="Clear-Coat implementation made for Wonderland Engine" >}}
+
+Rendering contributions include:
+* Engine architecture
+* Sparse probes volume for GI (voxelization, baking)
+* PBR workflows (colorspace, shading, baking)
+* GTAO
+
+<iframe
+  src="https://wonderlandengine.github.io/wonderland-engine-examples/sponza.html"
+  allow="xr-spatial-tracking https://wonderlandengine.github.io; cross-origin-isolated https://wonderlandengine.github.io"
+  style="width: 100%; aspect-ratio: 1.77;"
+  loading="lazy"
+  allowfullscreen="">
+</iframe>
+
+Being in a startup also gives the chance to work on a broad range of topics scuch as prefabs, or nodejs embedding for user plugins.
+
+### Siemens Healthineers (2018-2022)
+
+Research scientist and lead developer of a **real-time** WebGL medical data visualization library.
+
+{{< image src="cinematic-rendering-heart.webp" alt="Cinematic Rendering heart example from Siemens Healthineers page" >}}
+
+* Multibounce Volume Pathracing with
+    * Mesh merging
+    * Masking
+    * Volume Editing
+* Multiplanar reconstruction
+
+While none of the work is public, the library was producing images such as the [Cinematic Rendering](https://www.siemens-healthineers.com/en-us/digital-health-solutions/cinematic-rendering) ones:
+
+{{< image src="cinematic-rendering.webp" alt="Cinematic Rendering example from Siemens Healthineers page" >}}
+
+### Sketchfab (2016)
+
+6 months internship in the Sketchfab 3D team.
+
+{{< image src="sponza-ssao.webp" >}}
+
+Some of the features I shipped are live on [Sketchfab](https://sketchfab.com/):
+* ASTC software decompression in JavaScript
+* glTF loading in [OSG.js](https://github.com/cedricpinson/osgjs)
+* SSAO
+
+## Education
+
+I graduated from EPITA (Ecole des Ingénieurs en Intelligence Informatique) in 2018, where I obtained a Master’s degree in Computer Science, specialized in “Advanced" Computer Science and Artificial Intelligence.
