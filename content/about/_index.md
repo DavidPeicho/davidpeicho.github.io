@@ -49,11 +49,9 @@ here
 * C++, JavaScript / TypeScript, Rust
 * Programming in general :)
 
-
 ## Open-Source contributions
 
 * [Three.js](https://github.com/mrdoob/three.js/)
 * [OSG.js](https://github.com/cedricpinson/osgjs)
 * [WebGL](https://github.com/KhronosGroup/WebGL)
 * [wgpu-native](https://github.com/gfx-rs/wgpu-native/)
-
