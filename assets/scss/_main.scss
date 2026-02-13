@@ -25,6 +25,15 @@ main {
     }
   }
 
+  blockquote {
+    background-color: $lightGrey;
+
+    ul {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+  }
+
   @media screen and (min-width: $medium) {
     padding-left: calc(1.5rem + #{$navWidth});
   }
