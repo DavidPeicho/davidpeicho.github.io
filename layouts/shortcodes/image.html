@@ -1,9 +1,11 @@
 {{ $src := .Get "src" }}
+{{ $alt := .Get "alt" }}
 {{ $width := default "100%" (.Get "width") }}
 {{ $height := default "inherit" (.Get "height") }}
 <p>
   <img
     src="{{ $src }}"
+    alt="{{ $alt }}"
     class="centered"
     style="max-width: {{ $width }}; max-height: {{ $height }}; width: auto; height: auto"
   >
