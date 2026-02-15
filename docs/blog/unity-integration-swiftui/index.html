@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+
+    
+
+
+
+  
+    
+  
+
+
+
+ 
+
+<head>
+  
+  
+    
+    
+  
+
+  
+
+  
+  
+    
+  
+
+  <title>
+    
+      Unity 2020 Integration With SwiftUI | David Peicho&#39;s Blog
+    
+  </title>
+
+  <meta charset="UTF-8">
+  <meta name="language" content="en">
+  <meta
+    name="description"
+    content="How to integrate Unity 2020 into a SwiftUI iOS application"
+  >
+  <meta name="keywords" content="unity , graphics , ios , swiftui , swift">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Unity 2020 Integration With SwiftUI | David Peicho&#39;s Blog" />
+  <meta
+    name="twitter:description"
+    content="How to integrate Unity 2020 into a SwiftUI iOS application"
+  />
+  <meta name="twitter:site" content="@https://twitter.com/DavidPeicho" />
+  <meta name="twitter:creator" content="@https://twitter.com/DavidPeicho" />
+
+  
+
+  
+
+  <meta property="og:title" content="Unity 2020 Integration With SwiftUI | David Peicho&#39;s Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://davidpeicho.github.io/blog/unity-integration-swiftui/" />
+  <meta property="og:description" content="How to integrate Unity 2020 into a SwiftUI iOS application" />
+  <meta property="og:site_name" content="David Peicho&#39;s Blog" />
+
+  
+
+  
+    
+    
+    <meta name="twitter:image" content="https://davidpeicho.github.io/images/posts/unityswiftui.jpg" />
+    <meta property="og:image" content="https://davidpeicho.github.io/images/posts/unityswiftui.jpg" />
+    <meta property="og:image:secure_url" content="https://davidpeicho.github.io/images/posts/unityswiftui.jpg" />
+  
+
+  
+
+  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+
+  
+
+  
+  
+
+  
+
+  
+    
+    <link rel="stylesheet" href="/css/post.min.29a0cc079378d3f6d77ed439911265b811b7e7d5bb7151400a17332393a6326f.css" integrity="sha256-KaDMB5N40/bXftQ5kRJluBG359W7cVFAChczI5OmMm8="/>
+  
+
+  
+   
+  
+
+<script type="application/ld+json">
+  
+    {
+      "@context" : "http://schema.org",
+      "@type" : "BlogPosting",
+      "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/davidpeicho.github.io\/"
+      },
+      "articleSection" : "blog",
+      "name" : "Unity 2020 Integration With SwiftUI",
+      "headline" : "Unity 2020 Integration With SwiftUI",
+      "description" : "How to integrate Unity 2020 into a SwiftUI iOS application",
+      "inLanguage" : "en-US",
+      "author" : "",
+      "creator" : "",
+      "publisher": "",
+      "accountablePerson" : "",
+      "copyrightHolder" : "",
+      "copyrightYear" : "2021",
+      "datePublished": "2021-01-22 00:00:00 \u002b0000 UTC",
+      "dateModified" : "2021-01-22 00:00:00 \u002b0000 UTC",
+      "url" : "https:\/\/davidpeicho.github.io\/blog\/unity-integration-swiftui\/",
+      "wordCount" : "2541",
+      "keywords" : ["unity", "graphics", "ios", "swiftui", "swift", "Blog"]
+    }
+  
+  </script>
+
+
+</head>
+
+
+<body class=" ">
+  <div class="burger__container">
+  <div class="burger" aria-controls="navigation" aria-label="Menu">
+    <div class="burger__meat burger__meat--1"></div>
+    <div class="burger__meat burger__meat--2"></div>
+    <div class="burger__meat burger__meat--3"></div>
+  </div>
+</div>
+
+  <nav class="nav" role="navigation">
+  <ul class="nav__list">
+    
+    
+      <li>
+        <a  href="/">home</a>
+      </li>
+    
+      <li>
+        <a  href="/about">about</a>
+      </li>
+    
+      <li>
+        <a  class="active"
+         href="/blog">blog</a>
+      </li>
+    
+      <li>
+        <a  href="/teaching">teaching</a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+   
+
+  <main>
+    
+    
+
+    <div class="flex-wrapper">
+      <div class="post__container">
+        <div class="post">
+          <header class="post__header">
+            <h1 id="post__title">Unity 2020 Integration With SwiftUI</h1>
+            <time datetime="2021-01-22 00:00:00 &#43;0000 UTC" class="post__date"
+            >Jan 22 2021</time>
+          </header>
+          <article class="post__content">
+              
+<p>At the time of writing, there is currently no available example that demonstrates how
+to integrate Unity as library into an iOS application using SwiftUI. This blog post
+shares <a href="https://github.com/DavidPeicho/unity-swiftui-example/tree/old/unity2020">my solution</a> to the problem hoping it can help others.</p>
+<p><video autoplay loop muted playsinline src="result.mp4" style="max-height: 800px; display: block; margin: auto"></video></p>
+<blockquote class="hint warning">
+  I have now an improved integration sample, with a <a href="https://davidpeicho.github.io/blog/unity-swiftui-integration-revisited/">blog post</a> detailing how it works.
+</blockquote>
+
+<h2 id="introduction">Introduction<a class="anchor" href="#introduction">#</a></h2>
+<blockquote class="hint info">
+  The solution given in this blog post works with <strong>Unity 2020.2.1f1</strong> and
+<strong>XCode 12.3</strong>.
+</blockquote>
+
+<p>This blog post will be less graphics-oriented than the usual ones. I am anyway
+hoping that this writing can help the community!</p>
+<p>When I first tried to integrate Unity into an iOS native application, I had a few goals in mind that needed more information than what I could at the time on StackOverflow and public repositories.</p>
+<p>This article will show you how to:</p>
+<ul>
+<li>Integrate Unity in an application using the SwiftUI lifecycle</li>
+<li>Add native views overlaying Unity&rsquo;s rendering</li>
+<li>Communicate <strong>efficiently</strong> data from Unity to the native side</li>
+<li>Communicate <strong>efficiently</strong> data from the native side to Unity</li>
+</ul>
+<p>Spoiler alert: the last bullet point doesn&rsquo;t use <a href="https://docs.unity3d.com/Manual/UnityasaLibrary-iOS.html">sendMessageToGOWithName()</a>!</p>
+<h2 id="build">Build<a class="anchor" href="#build">#</a></h2>
+<h3 id="ios-example-app">iOS Example App<a class="anchor" href="#ios-example-app">#</a></h3>
+<p>Let&rsquo;s build an iOS application that will host your Unity game. You can either
+start it from scratch, or skip this step to directly integrate Unity in an existing
+app.</p>
+<p>If you decide to create a new application, please remember to select the
+<code>SwiftUI App</code> lifecycle.</p>
+<blockquote class="hint info">
+  You can use any lifecycle you prefer. Obviously, the integration may be
+different than what is show here, but the overall code should remain identical.
+</blockquote>
+
+<h3 id="unity-project-generation">Unity Project Generation<a class="anchor" href="#unity-project-generation">#</a></h3>
+<p>Let&rsquo;s build our Unity project. Building for iOS will generate the <code>UnityFramework</code> framework described in the
+<a href="https://docs.unity3d.com/Manual/UnityasaLibrary-iOS.html">doc</a>.</p>
+<blockquote class="hint info">
+  If you want to strictly follow my example respository, I exported the project
+at <code>unityapp/Build/iOS</code>.
+</blockquote>
+
+<h3 id="workspace">Workspace<a class="anchor" href="#workspace">#</a></h3>
+<p>In order to easily share code between those two projects, we are going to
+create an XCode workspace. Create a workspace and reference your Unity project
+as well as your example.</p>
+<p>For more information about how to create a workspace and add the <code>UnityFramework</code>
+as a dependendcy, please have a look at the <a href="https://github.com/Unity-Technologies/uaal-example/blob/master/docs/ios.md">example</a> from Unity Technologies.</p>
+<blockquote class="hint info">
+  This step isn&rsquo;t mandatory but matches the example from the Unity team. You can
+directly add the the Unity framework as a dependency to your native application.
+</blockquote>
+
+<h2 id="integrate-unity">Integrate Unity<a class="anchor" href="#integrate-unity">#</a></h2>
+<p>Getting into the interesting stuff. The process I will describe here is
+similar to the one from the <a href="https://github.com/Unity-Technologies/uaal-example/blob/master/NativeiOSApp/NativeiOSApp/MainViewController.mm">Unity example repository</a>.</p>
+<p>Let&rsquo;s start first by writing a singleton that will manage the Unity instance:</p>
+<div class="expand">
+  <label>
+    <div class="expand-head">
+      <span>UnityBridge.swift</span>
+      <span>↕</span>
+    </div>
+    <input type="checkbox" style="display: none;" />
+    <div class="expand-content">
+      <pre><code class="language-swift">class UnityBridge: UIResponder, UIApplicationDelegate, UnityFrameworkListener {
+    private static var instance: UnityBridge?
+
+    /// UnityFramework instance
+    private let ufw: UnityFramework
+
+    /// UnityFramework root view
+    public var view: UIView? { ufw.appController()?.rootView }
+
+    public static func getInstance() -&gt; UnityBridge {
+        if UnityBridge.instance == nil {
+            UnityBridge.instance = UnityBridge()
+        }
+        return UnityBridge.instance!
+    }
+
+    /// Loads the UnityFramework  from the bundle path
+    ///
+    /// - Returns: The UnityFramework instance
+    private static func loadUnityFramework() -&gt; UnityFramework? {
+        let bundlePath: String = Bundle.main.bundlePath + &quot;/Frameworks/UnityFramework.framework&quot;
+        let bundle = Bundle(path: bundlePath)
+        if bundle?.isLoaded == false {
+            bundle?.load()
+        }
+
+        let ufw = bundle?.principalClass?.getInstance()
+        if ufw?.appController() == nil {
+            let machineHeader = UnsafeMutablePointer&lt;MachHeader&gt;.allocate(capacity: 1)
+            machineHeader.pointee = _mh_execute_header
+            ufw!.setExecuteHeader(machineHeader)
+        }
+        return ufw
+    }
+
+    override internal init() {
+        ufw = UnityBridge.loadUnityFramework()!
+        ufw.setDataBundleId(&quot;com.unity3d.framework&quot;)
+        api = API()
+        super.init()
+
+        ufw.register(self)
+        FrameworkLibAPI.registerAPIforNativeCalls(api)
+
+        ufw.runEmbedded(withArgc: CommandLine.argc, argv: CommandLine.unsafeArgv, appLaunchOpts: nil)
+    }
+
+    /// Notifies the UnityFramework to show the window, and append the Unity view
+    /// to the given controller
+    ///
+    /// - Parameter controller: Controller that will host the Unity view
+    public func show(controller: UIViewController) {
+        ufw.showUnityWindow()
+        if let view = self.view {
+            controller.view?.addSubview(view)
+        }
+    }
+
+    /// Unloads the Unity framework
+    ///
+    /// ## Notes
+    ///
+    /// * Unloading doesn't seem to free memory, or it's not picked up by the XCode dev tools.
+    /// * Unloading isn't synchronous, and this object will be notified in the `unityDidUnload` method
+    public func unload() {
+        ufw.unloadApplication()
+    }
+
+    /// Triggered by Unity via `UnityFrameworkListener` when the framework unloaded
+    internal func unityDidUnload(_: Notification!) {
+        ufw.unregisterFrameworkListener(self)
+        UnityBridge.instance = nil
+    }
+}
+</code></pre>
+
+    </div>
+  </label>
+</div>
+
+<blockquote class="hint info">
+  Thanks to <em>Simon Tysland</em> for sharing the original <code>UnityEmbeddedSwift.swift</code>
+file that was wrapping the Unity framework management in Swift
+</blockquote>
+
+<p>The <code>UnityBridge</code> class is used to:</p>
+<ul>
+<li>Load the UnityFramework at runtime, i.e., open the <code>UnityFramework.framework</code> file,
+and get the exported instance</li>
+<li>Run the Unity instance</li>
+<li>Show the Unity instance on the phone</li>
+</ul>
+<blockquote class="hint warning">
+  Note that only one instance can live in your entire process. If you completely
+kill this instance, there will be no way to start it again.
+</blockquote>
+
+<p>Just keep in mind that the <code>unityDidUnload()</code> method is triggered by Unity when the
+framework is unloaded. This is possible because we first registered our <code>UnityBridge</code>
+object as a delegate with the call:</p>
+<pre><code class="language-swift">ufw.register(self)
+</code></pre>
+<p>Let&rsquo;s try our wrapper to ensure it&rsquo;s properly working. We are going to display
+our game in the background, and overlay some text made with the SwiftUI framework.</p>
+<p><em>ContentView.swift</em></p>
+<pre><code class="language-swift">import SwiftUI
+
+struct MyViewController: UIViewControllerRepresentable {
+    func makeUIViewController(context _: Context) -&gt; UIViewController {
+        let vc = UIViewController()
+        let unity = UnityBridge.getInstance()
+        unity.show(controller: vc)
+        return vc
+    }
+
+    func updateUIViewController(_: UIViewController, context _: Context) {
+      // Empty.
+    }
+}
+
+struct ContentView: View {
+    var body: some View {
+        ZStack {
+            MyViewController()
+            Text(&quot;This text overlays Unity!&quot;)
+        }
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+</code></pre>
+<p>Let&rsquo;s run the native app and appreciate the result:</p>
+
+
+
+
+<p>
+  <img
+    src="unity-integration-fail.jpg"
+    alt=""
+    class="centered"
+    style="max-width: 100%; max-height: inherit; width: auto; height: auto"
+  >
+  </img>
+</p>
+
+<p>As you can see, Unity doesn&rsquo;t display <strong>anything</strong>. However, looking at the
+console we can see it running.</p>
+<p>It looks like Unity needs some delay after it&rsquo;s instanciaed and before it
+can show up. I haven&rsquo;t figure out why yet; maybe the framework re-create a view asynchroneously. I will definitely update this blog post whenever I have the answer.</p>
+<p>In the meantime, you can fix this issue by adding a small delay on the main thread:</p>
+<p><em>ContentView.swift</em></p>
+<pre><code class="language-swift">struct MyViewController: UIViewControllerRepresentable {
+    func makeUIViewController(context _: Context) -&gt; UIViewController {
+        let vc = UIViewController()
+        let unity = UnityBridge.getInstance()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            unity.show(controller: vc)
+        }
+        return vc
+    }
+    ...
+}
+
+...
+</code></pre>
+
+
+
+
+<p>
+  <img
+    src="unity-with-overlay.jpg"
+    alt=""
+    class="centered"
+    style="max-width: 100%; max-height: inherit; width: auto; height: auto"
+  >
+  </img>
+</p>
+
+<p>Right now, you may be thinking that this is a <strong>gross</strong> hack. You are <strong>right</strong>.</p>
+<p>For my use case, this isn&rsquo;t too much of an issue. I need to expose an API from
+Unity that would allow the native iOS app to query vertices, to update some meshes, etc&hellip; Such an API shouldn&rsquo;t be available before the appropriate GameObjects are instanciated and ready to be queried.</p>
+<p>Instead of using a made up delay like that, I am going to only assumes Unity is ready when my scene and all the GameObjects are ready. When they are, a Unity script
+will notify the native app that it can start showing Unity.</p>
+<p>Before looking at the code for the solution, let&rsquo;s look into how we can create
+a communication system to transfer data from Unity to the native code.</p>
+<h2 id="communication-unity-to-native">Communication: Unity to Native<a class="anchor" href="#communication-unity-to-native">#</a></h2>
+<p>Calling native code from Unity can be done using
+<a href="https://en.wikipedia.org/wiki/Foreign_function_interface">Foreign Function Interface (FFI)</a>. To ensure our functions don&rsquo;t get mangled, we will
+need to annotate them as <code>extern C</code>.</p>
+<p>Let&rsquo;s create two new files in the Unity app, in the folder <code>Assets/Plugins/iOS/</code>.</p>
+<blockquote class="hint info">
+  <p>Each time you update those files, you will need to re-build the Unity app.</p>
+<p>For debugging purposes, I would advised to directly modify the XCode generated
+project if you want to iterate faster.</p>
+<p>You can edit the files in <code>unityapp/Build/iOS/Libraries/Plugins/iOS</code>. Those
+files are copied by Unity when generating the XCode project.</p>
+
+</blockquote>
+
+<p><em>NativeCallProxy.h</em></p>
+<pre><code class="language-objectivec">@protocol NativeCallsProtocol
+@required
+- (void) onUnityStateChange:(const NSString*) state;
+// other methods
+@end
+
+__attribute__ ((visibility(&quot;default&quot;)))
+@interface FrameworkLibAPI : NSObject
++(void) registerAPIforNativeCalls:(id&lt;NativeCallsProtocol&gt;) aApi;
+
+@end
+</code></pre>
+<p><em>NativeCallProxy.mm</em></p>
+<pre><code class="language-objectivec">#import &lt;Foundation/Foundation.h&gt;
+#import &quot;NativeCallProxy.h&quot;
+
+@implementation FrameworkLibAPI
+
+id&lt;NativeCallsProtocol&gt; api = NULL;
++(void) registerAPIforNativeCalls:(id&lt;NativeCallsProtocol&gt;) aApi
+{
+    api = aApi;
+}
+
+@end
+
+extern &quot;C&quot; {
+
+  // Functions listed here are available to Unity. When called,
+  // they forward the call to the `api` delegate.
+  //
+  // You should also perform data transformation here, from
+  // C data struct to Objective-C **if needed**.
+
+  void
+  sendUnityStateUpdate(const char* state)
+  {
+      const NSString* str = @(state);
+      [api onUnityStateChange: str];
+  }
+
+}
+</code></pre>
+<p>Let&rsquo;s create a new C# script that will demonstrate how to call this function:</p>
+<p><em>API.cs</em></p>
+<pre><code class="language-csharp">using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using UnityEngine.UI;
+using UnityEngine;
+using AOT;
+
+/// &lt;summary&gt;
+/// C-API exposed by the Host, i.e., Unity -&gt; Host API.
+/// &lt;/summary&gt;
+public class HostNativeAPI {
+    [DllImport(&quot;__Internal&quot;)]
+    public static extern void sendUnityStateUpdate(string state);
+}
+
+HostNativeAPI.sendUnityStateUpdate(string state);
+
+public class API : MonoBehaviour
+{
+    void Start()
+    {
+        #if UNITY_IOS
+        if (Application.platform == RuntimePlatform.IPhonePlayer) {
+            HostNativeAPI.sendUnityStateUpdate(&quot;ready&quot;);
+        }
+        #endif
+    }
+}
+</code></pre>
+<blockquote class="hint info">
+  Don&rsquo;t forget to add this script component to an empty gameobject.
+</blockquote>
+
+<p>The line:</p>
+<pre><code class="language-csharp">[DllImport(&quot;__Internal&quot;)]
+</code></pre>
+<p>Let the compiler knows that this function symbol will be available in the binary
+after linking.</p>
+<p>The <code>sendUnityStateUpdate()</code> function will be in charge of forwarding the call
+to an object that implements the <code>onUnityStateChange()</code> method prototype.</p>
+<p>The last thing we haven&rsquo;t talked about yet is <code>registerAPIforNativeCalls()</code>. This
+function saves the reference of an object implementing the <code>NativeCallProtocol</code>
+protocol. This allows us to transfer the calls to an object pointed to by a
+user (i.e., developer integrating the Unity app). Every call performed on the
+Unity side is forwarded to this delegate object.</p>
+<blockquote class="hint info">
+  <p>The code provided above is taken from the <a href="https://github.com/Unity-Technologies/uaal-example/blob/master/UnityProject/Assets/Plugins/iOS/NativeCallProxy.mm">Unity example</a>. This is the way they decided to forward the call.</p>
+<p>Alternatively, you could also just export functions that will be
+available on the Unity side, without going through all the <code>FrameworkLibAPI</code> code.</p>
+<p>However, I like this implementation so I can add glue code between the
+C data and the Objective-C one.</p>
+
+</blockquote>
+
+<p>Congratulations, you just made your first native call from a Unity script!</p>
+<p>All you have to now is to create a delegate that will receives the calls from
+Unity. The delegate should implement the <code>NativeCallProtocol</code>, and should be
+registered on the native side using:</p>
+<pre><code class="language-swift">FrameworkLibAPI.registerAPIforNativeCalls(delegateToRegister)
+</code></pre>
+<p>We will create it together in a few sections, and it will be used to fix
+the issue we had with Unity not showing up.</p>
+<h2 id="communication-native-to-unity">Communication: Native to Unity<a class="anchor" href="#communication-native-to-unity">#</a></h2>
+<p>The native side may need to get data from Unity as well.
+However, the only API exposed by the Unity framework is the
+<a href="https://docs.unity3d.com/Manual/UnityasaLibrary-iOS.html">sendMessageToGOWithName()</a> method.</p>
+<p>This is <strong>not good</strong>. It only take a string argument. What happens if we need
+to send a vertex buffer? Something heavy?</p>
+<p>For my use case, I have a lot of heavy data I want Unity to access
+without any copy. I decided to re-use what we did in the
+<a href="#communication-unity-to-native">Unity to native section</a> to achieve that.</p>
+<p>The idea is simple: we call a function declared in the native app with a function
+pointer declared in the Unity side. The native app can save this function pointer
+and call it later.</p>
+<blockquote class="hint info">
+  Obviously, you will only be able to exchange C data structure between Unity
+scripts and the native app: raw pointers, struct, etc&hellip;
+</blockquote>
+
+<p>Let&rsquo;s modify the Objective-C code to expose such a function:</p>
+<p><em>NativeCallProxy.h</em></p>
+<pre><code class="language-objectivec">typedef void (*TestDelegate)(const char* name);
+
+@protocol NativeCallsProtocol
+@required
+...
+- (void) onSetTestDelegate:(TestDelegate) delegate;
+@end
+
+...
+</code></pre>
+<p><em>NativeCallProxy.mm</em></p>
+<pre><code class="language-objectivec">extern &quot;C&quot; {
+
+  ...
+
+  void
+  setTestDelegate(TestDelegate delegate)
+  {
+      [api onSetTestDelegate: delegate];
+  }
+
+}
+</code></pre>
+<p>Same as before! Except here, we forward a function pointer to the native side.
+The function pointer points to a function declared in your Unity script. Isn&rsquo;t
+that amazing!</p>
+<p>Our Unity script needs to be modified accordingly:</p>
+<pre><code class="language-csharp">public class HostNativeAPI {
+
+    ...
+
+    public delegate void TestDelegate(string name);
+
+    [DllImport(&quot;__Internal&quot;)]
+    public static extern void setTestDelegate(TestDelegate cb);
+
+}
+
+/// &lt;summary&gt;
+/// C-API exposed by Unity, i.e., Host -&gt; Unity API.
+/// &lt;/summary&gt;
+public class UnityNativeAPI {
+
+    [MonoPInvokeCallback(typeof(HostNativeAPI.TestDelegate))]
+    public static void test(string name) {
+        Debug.Log(&quot;This static function has been called from iOS!&quot;);
+        Debug.Log(name);
+    }
+
+}
+
+
+public class API : MonoBehaviour
+{
+    void Start()
+    {
+        #if UNITY_IOS
+        if (Application.platform == RuntimePlatform.IPhonePlayer) {
+            HostNativeAPI.setTestDelegate(UnityNativeAPI.test);
+            HostNativeAPI.sendUnityStateUpdate(&quot;ready&quot;);
+        }
+        #endif
+    }
+}
+</code></pre>
+<p>And finally, our <code>API</code> class to save the function pointer and expose a nice API
+to our developers:</p>
+<p><em>UnityBridge.swift</em></p>
+<pre><code class="language-csharp">class API: NativeCallsProtocol {
+
+    ..
+
+    /// Function pointer pointing to a static function in Unity
+    private var testCallback: TestDelegate!
+
+    /// API simply calling the function declared in the Unity script
+    public func test(_ value: String) {
+        testCallback(value)
+    }
+}
+</code></pre>
+<p>You can give it a try to ensure everything is working:</p>
+<pre><code class="language-swift">UnityBridge.getInstance().api.test(&quot;this works so well!&quot;);
+</code></pre>
+<h2 id="fix-unity-not-showing-up">Fix Unity Not Showing Up<a class="anchor" href="#fix-unity-not-showing-up">#</a></h2>
+<p>Coming back to the issue about how I <em>&ldquo;fixed&rdquo;</em> the Unity view not showing up.</p>
+<p>I decided to use the <code>sendUnityStateUpdate()</code> function to inform the native
+app when Unity was ready to show up. This way, I can ensure that there is a
+delay between the time I instanciate the framework and the time I display it.
+Moreover, this also ensures that developers will not attempt to use the API
+before it&rsquo;s fully initialized.</p>
+<p>Let&rsquo;s update the delegate to react to Unity being ready:</p>
+<div class="expand">
+  <label>
+    <div class="expand-head">
+      <span>UnityBridge.swift</span>
+      <span>↕</span>
+    </div>
+    <input type="checkbox" style="display: none;" />
+    <div class="expand-content">
+      <pre><code class="language-swift">class API: NativeCallsProtocol {
+    internal weak var bridge: UnityBridge!
+
+    /**
+        Internal methods are called by Unity
+
+        This object is registered as a listener of those calls using `FrameworkLibAPI.registerAPIforNativeCalls(api)`.
+        Those calls are forwarded from Unity to the native app
+     */
+
+    internal func onUnityStateChange(_ state: String) {
+        switch state {
+        case &quot;ready&quot;:
+            bridge.unityGotReady()
+        default:
+            return
+        }
+    }
+}
+
+class UnityBridge: UIResponder, UIApplicationDelegate, UnityFrameworkListener {
+    public internal(set) var isReady: Bool = false
+
+    public var api: API
+
+    public var onReady: () -&gt; Void = {}
+
+    ...
+
+    override internal init() {
+        ufw = UnityBridge.loadUnityFramework()!
+        ufw.setDataBundleId(&quot;com.unity3d.framework&quot;)
+        api = API()
+
+        super.init()
+
+        api.bridge = self
+        ufw.register(self)
+        // This calls register the `api` object. Once registered, Unity call
+        // will be forwarded to the `api` instance.
+        FrameworkLibAPI.registerAPIforNativeCalls(api)
+
+        ufw.runEmbedded(withArgc: CommandLine.argc, argv: CommandLine.unsafeArgv, appLaunchOpts: nil)
+    }
+
+    public func show(controller: UIViewController) {
+        if isReady {
+            ufw.showUnityWindow()
+        }
+        if let view = self.view {
+            controller.view?.addSubview(view)
+        }
+    }
+
+    internal func unityGotReady() {
+        isReady = true
+        onReady()
+    }
+}
+</code></pre>
+
+    </div>
+  </label>
+</div>
+
+<p><em>ContentView.swift</em></p>
+<pre><code class="language-swift">struct MyViewController: UIViewControllerRepresentable {
+    func makeUIViewController(context _: Context) -&gt; UIViewController {
+        let vc = UIViewController()
+        UnityBridge.getInstance().onReady = {
+            UnityBridge.getInstance().show(controller: vc)
+        }
+        return vc
+    }
+    func updateUIViewController(_: UIViewController, context _: Context) {}
+}
+</code></pre>
+<p>When our Unity GameObject API is ready, it will trigger the method <code>onUnityStateChange()</code>
+of our delegate. It will trigger the <code>onReady</code> callback used to display Unity and
+append the Unity view in the hierarchy.</p>
+<p>In addition to that, as I said in the beginning of this post, it&rsquo;s important for
+me to expose an API to the user only when everything is fully ready on Unity&rsquo;s
+side.</p>
+<h2 id="going-further">Going Further<a class="anchor" href="#going-further">#</a></h2>
+<p>You made it! Don&rsquo;t forget that the entire code presented here is available
+in <a href="https://github.com/DavidPeicho/unity-swiftui-example/tree/old/unity2020">this repository</a>.</p>
+<p>I hope this post can help people struggling with integration issues. Some of the
+ideas presented here can still be a bit rough on the edges.</p>
+<p>I would recommend readers to make the code their own and improve it. For instance, the <code>UnityBridge</code> class could directly be exported from your Unity app. Anyone integrating your Unity app could directly build it and access the API.</p>
+<p>There are also corner cases needs to be taken care of:</p>
+<ul>
+<li>It&rsquo;s technically possible for a developer to use the api before it&rsquo;s available</li>
+<li><code>[DllImport (&quot;__Internal&quot;)]</code> will not work properly on some platform where
+plugins linking is different. For cross-platform implementation, you will need
+specific code path (<code>#if</code>)</li>
+</ul>
+<p>If you have any issues, or if you think this post contain mistakes, please either:</p>
+<ul>
+<li>Open an issue on my <a href="https://github.com/DavidPeicho/davidpeicho.github.io">GitHub repository</a>;</li>
+<li>Contact me via <a href="https://twitter.com/DavidPeicho">Twitter</a></li>
+</ul>
+<blockquote class="hint warning">
+  <p>As mentionned at the beginning, I have now an improved integration sample, with a <a href="https://davidpeicho.github.io/blog/unity-swiftui-integration-revisited/">blog post</a> detailing how it works.</p>
+<p>The new solution for the integration is a mix of what&rsquo;s presented here, with some
+new flavor making everything sweeter!</p>
+
+</blockquote>
+
+              
+          </article>
+          
+
+<ul class="tags__list">
+    
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/unity/">unity</a>
+    </li>
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/ios/">ios</a>
+    </li>
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/swiftui/">swiftui</a>
+    </li></ul>
+
+ <div class="pagination">
+  
+    <a class="pagination__item" href="https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/">
+        <span class="pagination__label">Previous Post</span>
+        <span class="pagination__title">(2/2) Behind The Scene: Cloud Raymarching Demo</span>
+    </a>
+  
+
+  
+    <a class="pagination__item" href="https://davidpeicho.github.io/blog/unity-swiftui-integration-revisited/">
+      <span class="pagination__label">Next Post</span>
+      <span class="pagination__title" >Unity 2021 - SwiftUI Integration, Revisited!</a>
+    </a>
+  
+</div>
+
+          
+          <footer class="post__footer">
+            
+
+
+<div class="social-icons">
+  
+    
+    
+    
+      <a class="social-icons__link" title="Twitter"
+         href="https://twitter.com/DavidPeicho"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/twitter.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+      <a class="social-icons__link" title="GitHub"
+         href="https://github.com/DavidPeicho"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/github.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+      <a class="social-icons__link" title="LinkedIn"
+         href="https://www.linkedin.com/in/david-peicho/"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/linkedin.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+  
+</div>
+
+            <p>© 2026</p>
+          </footer>
+          </div>
+      </div>
+      
+    </div>
+
+
+  </main>
+
+   
+
+  
+
+  
+
+  <script
+    src="/js/index.min.59f2c87279aa950472de8ffbfb4764414ce922065abf8bddb2838eab8b4690be.js"
+    integrity="sha256-WfLIcnmqlQRy3o/7&#43;0dkQUzpIgZav4vdsoOOq4tGkL4="
+    crossorigin="anonymous"
+  >
+  </script>
+
+  
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
+
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
+    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
+
+  
+
+
+
+</body>
+
+</html>

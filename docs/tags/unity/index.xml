@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Unity on David Peicho&#39;s Blog</title>
+    <link>https://davidpeicho.github.io/tags/unity/</link>
+    <description>Recent content in Unity on David Peicho&#39;s Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <copyright>© {year}</copyright>
+    <lastBuildDate>Wed, 22 Dec 2021 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://davidpeicho.github.io/tags/unity/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Unity 2021 - SwiftUI Integration, Revisited!</title>
+      <link>https://davidpeicho.github.io/blog/unity-swiftui-integration-revisited/</link>
+      <pubDate>Wed, 22 Dec 2021 00:00:00 +0000</pubDate>
+      <guid>https://davidpeicho.github.io/blog/unity-swiftui-integration-revisited/</guid>
+      <description>&lt;p&gt;Earlier this year, I wrote a &lt;a href=&#34;https://davidpeicho.github.io/blog/unity-integration-swiftui/&#34;&gt;first blog post&lt;/a&gt; explaining how to integrate easily &lt;strong&gt;Unity&lt;/strong&gt; in a &lt;strong&gt;SwiftUI&lt;/strong&gt; application.&lt;/p&gt;&#xA;&lt;p&gt;I am now back with a &lt;strong&gt;(much)&lt;/strong&gt; better &lt;a href=&#34;https://github.com/DavidPeicho/unity-swiftui-example/tree/main&#34;&gt;solution&lt;/a&gt; than what I introduced earlier.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Unity 2020 Integration With SwiftUI</title>
+      <link>https://davidpeicho.github.io/blog/unity-integration-swiftui/</link>
+      <pubDate>Fri, 22 Jan 2021 00:00:00 +0000</pubDate>
+      <guid>https://davidpeicho.github.io/blog/unity-integration-swiftui/</guid>
+      <description>&lt;p&gt;At the time of writing, there is currently no available example that demonstrates how&#xA;to integrate Unity as library into an iOS application using SwiftUI. This blog post&#xA;shares &lt;a href=&#34;https://github.com/DavidPeicho/unity-swiftui-example/tree/old/unity2020&#34;&gt;my solution&lt;/a&gt; to the problem hoping it can help others.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

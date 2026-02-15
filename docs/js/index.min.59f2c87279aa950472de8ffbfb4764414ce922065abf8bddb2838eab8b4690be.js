@@ -1,0 +1,1 @@
+function toggleMobileNavState(){const e=document.body;e.classList.toggle("nav--active")}function initBurger(){const e=document.querySelector(".burger");e.addEventListener("click",toggleMobileNavState)}initBurger()

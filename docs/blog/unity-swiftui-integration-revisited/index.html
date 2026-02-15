@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+
+    
+
+
+
+  
+    
+  
+
+
+
+ 
+
+<head>
+  
+  
+    
+    
+  
+
+  
+
+  
+  
+    
+  
+
+  <title>
+    
+      Unity 2021 - SwiftUI Integration, Revisited! | David Peicho&#39;s Blog
+    
+  </title>
+
+  <meta charset="UTF-8">
+  <meta name="language" content="en">
+  <meta
+    name="description"
+    content="How to integrate Unity 2021 into a SwiftUI iOS application in a sweet way"
+  >
+  <meta name="keywords" content="unity , graphics , ios , swiftui , swift">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Unity 2021 - SwiftUI Integration, Revisited! | David Peicho&#39;s Blog" />
+  <meta
+    name="twitter:description"
+    content="How to integrate Unity 2021 into a SwiftUI iOS application in a sweet way"
+  />
+  <meta name="twitter:site" content="@https://twitter.com/DavidPeicho" />
+  <meta name="twitter:creator" content="@https://twitter.com/DavidPeicho" />
+
+  
+
+  
+
+  <meta property="og:title" content="Unity 2021 - SwiftUI Integration, Revisited! | David Peicho&#39;s Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://davidpeicho.github.io/blog/unity-swiftui-integration-revisited/" />
+  <meta property="og:description" content="How to integrate Unity 2021 into a SwiftUI iOS application in a sweet way" />
+  <meta property="og:site_name" content="David Peicho&#39;s Blog" />
+
+  
+
+  
+    
+    
+    <meta name="twitter:image" content="https://davidpeicho.github.io/images/posts/unityswiftui-revisited.jpg" />
+    <meta property="og:image" content="https://davidpeicho.github.io/images/posts/unityswiftui-revisited.jpg" />
+    <meta property="og:image:secure_url" content="https://davidpeicho.github.io/images/posts/unityswiftui-revisited.jpg" />
+  
+
+  
+
+  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+
+  
+
+  
+  
+
+  
+
+  
+    
+    <link rel="stylesheet" href="/css/post.min.29a0cc079378d3f6d77ed439911265b811b7e7d5bb7151400a17332393a6326f.css" integrity="sha256-KaDMB5N40/bXftQ5kRJluBG359W7cVFAChczI5OmMm8="/>
+  
+
+  
+   
+  
+
+<script type="application/ld+json">
+  
+    {
+      "@context" : "http://schema.org",
+      "@type" : "BlogPosting",
+      "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/davidpeicho.github.io\/"
+      },
+      "articleSection" : "blog",
+      "name" : "Unity 2021 - SwiftUI Integration, Revisited!",
+      "headline" : "Unity 2021 - SwiftUI Integration, Revisited!",
+      "description" : "How to integrate Unity 2021 into a SwiftUI iOS application in a sweet way",
+      "inLanguage" : "en-US",
+      "author" : "",
+      "creator" : "",
+      "publisher": "",
+      "accountablePerson" : "",
+      "copyrightHolder" : "",
+      "copyrightYear" : "2021",
+      "datePublished": "2021-12-22 00:00:00 \u002b0000 UTC",
+      "dateModified" : "2021-12-22 00:00:00 \u002b0000 UTC",
+      "url" : "https:\/\/davidpeicho.github.io\/blog\/unity-swiftui-integration-revisited\/",
+      "wordCount" : "2919",
+      "keywords" : ["unity", "graphics", "ios", "swiftui", "swift", "Blog"]
+    }
+  
+  </script>
+
+
+</head>
+
+
+<body class=" ">
+  <div class="burger__container">
+  <div class="burger" aria-controls="navigation" aria-label="Menu">
+    <div class="burger__meat burger__meat--1"></div>
+    <div class="burger__meat burger__meat--2"></div>
+    <div class="burger__meat burger__meat--3"></div>
+  </div>
+</div>
+
+  <nav class="nav" role="navigation">
+  <ul class="nav__list">
+    
+    
+      <li>
+        <a  href="/">home</a>
+      </li>
+    
+      <li>
+        <a  href="/about">about</a>
+      </li>
+    
+      <li>
+        <a  class="active"
+         href="/blog">blog</a>
+      </li>
+    
+      <li>
+        <a  href="/teaching">teaching</a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+   
+
+  <main>
+    
+    
+
+    <div class="flex-wrapper">
+      <div class="post__container">
+        <div class="post">
+          <header class="post__header">
+            <h1 id="post__title">Unity 2021 - SwiftUI Integration, Revisited!</h1>
+            <time datetime="2021-12-22 00:00:00 &#43;0000 UTC" class="post__date"
+            >Dec 22 2021</time>
+          </header>
+          <article class="post__content">
+              
+<p>Earlier this year, I wrote a <a href="https://davidpeicho.github.io/blog/unity-integration-swiftui/">first blog post</a> explaining how to integrate easily <strong>Unity</strong> in a <strong>SwiftUI</strong> application.</p>
+<p>I am now back with a <strong>(much)</strong> better <a href="https://github.com/DavidPeicho/unity-swiftui-example/tree/main">solution</a> than what I introduced earlier.</p>
+<p><video autoplay loop muted playsinline src="demo.mp4" style="max-height: 800px; display: block; margin: auto"></video></p>
+<blockquote class="hint warning">
+  <p><strong>Please note</strong>: I want to stress out that I am a graphics programmer and <strong>not</strong> a
+Swift developer. The solution proposed here is what I came up with after
+investigating our Unity+SwiftUI integration.</p>
+<p>This solution might be wrong, but I am yet to find something that works better.</p>
+<p>If you think there is a better way to do that, please reach out to me so I can
+update this blog post, as well as my own integration code :)</p>
+
+</blockquote>
+
+<h2 id="demo">Demo<a class="anchor" href="#demo">#</a></h2>
+<p>I put together a sample you can use as-is. It&rsquo;s available on <a href="https://github.com/DavidPeicho/unity-swiftui-example/tree/main">here</a>, my GitHub.</p>
+<p>The <a href="https://github.com/DavidPeicho/unity-swiftui-example/blob/main/README.md">README.md</a> file is detailed and will guide you through the steps to run the demo.</p>
+<h2 id="swiftui--unity-problem">SwiftUI + Unity: Problem<a class="anchor" href="#swiftui--unity-problem">#</a></h2>
+<p>If you try to run Unity the way the initial sample did, you might end up with the window created by Unity
+on top of the <code>UIWindow</code> created by SwiftUI:</p>
+
+
+
+
+<p>
+  <img
+    src="unity-covering-ui.png"
+    alt=""
+    class="centered"
+    style="max-width: 100%; max-height: inherit; width: auto; height: auto"
+  >
+  </img>
+</p>
+
+<p>You can see above the Unity window in <strong>red</strong>, and the window for our UI in <strong>orange</strong>. As expected,
+the result is a screen with only the Unity view visible:</p>
+
+
+
+
+<p>
+  <img
+    src="unity-but-no-ui.jpg"
+    alt=""
+    class="centered"
+    style="max-width: 100%; max-height: inherit; width: auto; height: auto"
+  >
+  </img>
+</p>
+
+<p>However, you are a smart programmer! You decide to change the <strong>z-ordering</strong> of the Unity window
+to be in the background. You figure out a way, and you think it&rsquo;s really nice! (heuuu):</p>
+<pre><code class="language-swift">struct ContentView: View {
+    var body: some View {
+        ZStack {
+            Text(&quot;This text overlaps Unity!&quot;).onAppear {
+                let api = UnityBridge.getInstance()
+                api.show()
+                if let window = api.view?.window {
+                    // Yeah, that's... hacky... but you know, when
+                    // you are out of options, you do what you can :)
+                    window.windowLevel = .normal - 10000.0
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>annnnnnnnnnnnnnd&hellip;. that doesn&rsquo;t work :')</p>
+
+
+
+
+<p>
+  <img
+    src="ui-in-front-doesnt-work.jpg"
+    alt=""
+    class="centered"
+    style="max-width: 100%; max-height: inherit; width: auto; height: auto"
+  >
+  </img>
+</p>
+
+<p>But again, you are a smart programmer and you are resourceful. SwiftUI views are wrapped into
+a <code>UIHostingController</code>, and that the associated view isn&rsquo;t transparent.</p>
+<p>You have the <strong>perfect</strong> idea, why not go for another beautiful hack:</p>
+<pre><code class="language-swift">struct ContentView: View {
+    var body: some View {
+        ZStack {
+            Text(&quot;This text overlaps Unity!&quot;).onAppear {
+                let api = UnityBridge.getInstance()
+                api.show()
+                if let window = api.view?.window {
+                    // Set Unity drawing order to a lower number.
+                    window.windowLevel = .normal - 10000.0
+                    // Updates the background of the UIHostingView.
+                    let windowUI = UIApplication.shared.windows[1]
+                    if let controller = windowUI.rootViewController {
+                        controller.view.isOpaque = false
+                        controller.view.backgroundColor = UIColor(
+                            red: 0, green: 0, blue: 0, alpha: 0.0
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>Here, you are basically taking the window of our SwiftUI hierarchy, and changing the
+background of the root view to transparent.</p>
+<p>But does that even work?</p>
+
+
+
+
+<p>
+  <img
+    src="working-example.jpg"
+    alt=""
+    class="centered"
+    style="max-width: 100%; max-height: inherit; width: auto; height: auto"
+  >
+  </img>
+</p>
+
+<p>It <strong>works</strong>!</p>
+<p>Wait&hellip; the cube is supposed to stop spinning when there is a touch event&hellip; Touch events aren&rsquo;t forwarded to the Unity view!</p>
+<p>Fortunately, there might be a <strong>clean</strong> way to do all of that. Let&rsquo;s have a look together!</p>
+<h2 id="swiftui--unity-solution">SwiftUI + Unity: Solution<a class="anchor" href="#swiftui--unity-solution">#</a></h2>
+<p>To sum up our issues:</p>
+<ul>
+<li>The <code>UIHostingController</code> view isn&rsquo;t transparent by default</li>
+<li>Events aren&rsquo;t sent to the Unity window</li>
+</ul>
+<p>To fix those issues, we will need to generate our own <code>UIHostingController</code> and to
+add it to a custom <code>UIWindow</code> instance. We will override the <a href="https://developer.apple.com/documentation/uikit/uiview/1622469-hittest">hitTest</a> method of the UI window to allow events to go through it to reach the Unity window.</p>
+<p>In order to easily customize the window, we will bring back the <code>AppDelegate</code> and <code>SceneDelegate</code>!</p>
+<h3 id="uikit-lifecycle">UIKit Lifecycle<a class="anchor" href="#uikit-lifecycle">#</a></h3>
+<p>The idea is to modify the <code>SceneDelegate</code> class in to create the <code>UIHostingController</code> that makes
+the bridge between <code>UIKit</code> and <code>SwiftUI</code>.</p>
+<h4 id="delete-previous-main-entry-point">Delete previous &lsquo;main&rsquo; entry point</h4>
+<p>Start by removing the <code>main</code> annotation from your <code>App</code>:</p>
+<pre><code class="language-swift">@main
+struct sandboxApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
+</code></pre>
+<p>becomes</p>
+<pre><code class="language-swift">// Just remove it you aren't going to need it :)
+// If you want to keep it as a view, simply remove the `@main` annotation.
+</code></pre>
+<h4 id="create-the-appdelegate-class">Create the <code>AppDelegate</code> class</h4>
+<div class="expand">
+  <label>
+    <div class="expand-head">
+      <span>AppDelegate.swift</span>
+      <span>↕</span>
+    </div>
+    <input type="checkbox" style="display: none;" />
+    <div class="expand-content">
+      <pre><code class="language-swift">import UIKit
+
+@main
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -&gt; Bool {
+        return true
+    }
+
+    func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -&gt; UISceneConfiguration {
+        // You need to create the `SceneDelegate` class
+        // for this to work.
+        let sceneConfig = UISceneConfiguration(
+            name: nil,
+            sessionRole: connectingSceneSession.role
+        )
+        sceneConfig.delegateClass = SceneDelegate.self
+        return sceneConfig
+    }
+}
+</code></pre>
+
+    </div>
+  </label>
+</div>
+
+<h4 id="create-the-scenedelegate-class">Create the <code>SceneDelegate</code> class</h4>
+<div class="expand">
+  <label>
+    <div class="expand-head">
+      <span>SceneDelegate.swift</span>
+      <span>↕</span>
+    </div>
+    <input type="checkbox" style="display: none;" />
+    <div class="expand-content">
+      <pre><code class="language-swift">class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
+
+    func scene(
+        _ scene: UIScene,
+        willConnectTo session: UISceneSession,
+        options connectionOptions: UIScene.ConnectionOptions
+    ) {
+        if let windowScene = scene as? UIWindowScene {
+            // Creates the bridge between UIKit and SwiftUI.
+            // This is done automatically when not using an `App`.
+            let vc = UIHostingController(rootView: ContentView())
+            // Sets the UIHostingView to transparent so we can see
+            // the Unity window behind it.
+            vc.view.isOpaque = false
+            vc.view.backgroundColor = UIColor(
+                red: 0,
+                green: 0,
+                blue: 0,
+                alpha: 0.0
+            )
+
+            self.window = UIWindow(windowScene: windowScene)
+            self.window!.windowLevel = .normal + 100.0
+            self.window!.rootViewController = vc
+            self.window!.makeKeyAndVisible()
+        }
+    }
+
+    func sceneDidDisconnect(_ scene: UIScene) {}
+
+    func sceneDidBecomeActive(_ scene: UIScene) {}
+
+    func sceneWillResignActive(_ scene: UIScene) {}
+
+    func sceneWillEnterForeground(_ scene: UIScene) {}
+
+    func sceneDidEnterBackground(_ scene: UIScene) {}
+}
+</code></pre>
+
+    </div>
+  </label>
+</div>
+
+<p>You should now expect the same result as what we got with our hacks:</p>
+
+
+
+
+<p>
+  <img
+    src="working-example.jpg"
+    alt=""
+    class="centered"
+    style="max-width: 100%; max-height: inherit; width: auto; height: auto"
+  >
+  </img>
+</p>
+
+<blockquote class="hint warning">
+  <p>Changing the app structure like that required a full rebuild for me.</p>
+<p>If your <code>SceneDelegate</code> isn&rsquo;t triggered (and you connected it!), just try
+to delete the application and do a complete build.</p>
+
+</blockquote>
+
+<h3 id="event-forwarding">Event Forwarding<a class="anchor" href="#event-forwarding">#</a></h3>
+<p>For the events, we will mark our <code>UIHostingController</code>&rsquo;s view with a special tag (*<em>identifier</em>)
+that will be used to know when the UI window should ignore an event or not.</p>
+
+
+
+
+<p>
+  <img
+    src="passthrough.jpg"
+    alt=""
+    class="centered"
+    style="max-width: 100%; max-height: inherit; width: auto; height: auto"
+  >
+  </img>
+</p>
+
+<p>Let&rsquo;s have a look at the above screenshot. The <strong>red</strong> area represents our <code>UIHostingController</code>&rsquo;s view.
+The <strong>green</strong> area represents the normal UI views that will catch gestures. What we want is basically to
+ignore the events when they are reaching the <code>UIHostingController</code>&rsquo;s view.</p>
+<p>Let&rsquo;s create a custom <code>UIWindow</code> where we will implement this logic. Create a new class called <code>UIWindowCustom</code>:</p>
+<div class="expand">
+  <label>
+    <div class="expand-head">
+      <span>UIWindowCustom.swift</span>
+      <span>↕</span>
+    </div>
+    <input type="checkbox" style="display: none;" />
+    <div class="expand-content">
+      <pre><code class="language-swift">/// Custom Window class used to allow events to pass through
+/// depending on what view is targeted.
+///
+/// Because our application is multi-windows, this is useful to allow event
+/// to go through
+class UIWindowCustom: UIWindow {
+
+    /// The tag is used to identify the view during `hitTest`.
+    ///
+    /// - Note:
+    /// Be careful not to share this tag with other views that shouldn't act as passthroughs.
+    public static let PassthroughTag = 999999
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -&gt; UIView? {
+        guard let view = super.hitTest(point, with: event) else {
+            return nil
+        }
+        if view.tag == UIWindowCustom.PassthroughTag {
+            // Propagates event that are caught by passthrough views.
+            return nil
+        }
+        // Do not propagate events, we reached a &quot;normal&quot; view.
+        return view
+    }
+
+}
+</code></pre>
+
+    </div>
+  </label>
+</div>
+
+<p>Now, all we need to do is to use this custom window for our SwiftUI hierarchy. You will thus
+need to replace the line (in the <code>SceneDelegate</code> class):</p>
+<pre><code class="language-swift">self.window = UIWindow(windowScene: windowScene)
+</code></pre>
+<p>by</p>
+<pre><code class="language-swift">self.window = UIWindowCustom(windowScene: windowScene)
+</code></pre>
+<p>In addition, you also need to tag the background view as a passthrough:</p>
+<pre><code class="language-swift">let vc = UIHostingController(rootView: ContentView())
+
+...
+
+// Tags the background UI view in order to let event flow
+// to the Unity window.
+vc.view.tag = UIWindowCustom.PassthroughTag
+</code></pre>
+<p>And voila!</p>
+<p><video autoplay loop muted playsinline src="event-example.mp4" style="max-height: 800px; display: block; margin: auto"></video></p>
+<blockquote class="hint info">
+  I changed the text by a color picker for the demo in order
+to have a view with meaningful interactions.
+</blockquote>
+
+<ul>
+<li>The cube stops spinning on the Unity side when a touch event
+is received</li>
+<li>The color picker is done on the SwiftUI side and the events
+are processed correctly</li>
+</ul>
+<h2 id="improved-build">Improved Build<a class="anchor" href="#improved-build">#</a></h2>
+<p>We have seen how to fix our drawing and gesture issues, but we haven&rsquo;t talked
+about smoothing our build workflow.</p>
+<p>If you read the previous blog post, you must already be annoyed with something: Each time we make a new build, we have to manually update the visible of our bridging header <strong>and</strong> the target membership of the data folder.</p>
+<p>This is okay if you build twice, but it&rsquo;s absolutely not okay in any real world scenario.</p>
+<p>We will fix that by using a <code>BuildPostprocessor</code>. Let&rsquo;s create a file called <code>AutoBuilder.cs</code>:</p>
+
+
+
+
+<p>
+  <img
+    src="autobuilder-folder.jpg"
+    alt=""
+    class="centered"
+    style="max-width: 100%; max-height: inherit; width: auto; height: auto"
+  >
+  </img>
+</p>
+
+<div class="expand">
+  <label>
+    <div class="expand-head">
+      <span>AutoBuilder.cs</span>
+      <span>↕</span>
+    </div>
+    <input type="checkbox" style="display: none;" />
+    <div class="expand-content">
+      <pre><code class="language-cs">/// &lt;summary&gt;
+/// This class will update the generated XCode configuration.
+///
+/// This is used to automate some manual steps that we keep
+/// doing over-and-over when building.
+/// &lt;/summary&gt;
+public static class AutoBuilder
+{
+    private static string MODULE_MAP = &quot;UnityFramework.modulemap&quot;;
+    private static string INTERFACE_HEADER = &quot;NativeCallProxy.h&quot;;
+
+    /// &lt;summary&gt;
+    /// Retrieves the name of the project
+    /// &lt;/summary&gt;
+    static string GetProjectName()
+    {
+        string[] s = Application.dataPath.Split('/');
+        return s[s.Length - 2];
+    }
+
+    static string[] GetScenePaths()
+    {
+        string[] scenes = new string[EditorBuildSettings.scenes.Length];
+        for(int i = 0; i &lt; scenes.Length; i++)
+        {
+            scenes[i] = EditorBuildSettings.scenes[i].path;
+        }
+        return scenes;
+    }
+    [MenuItem(&quot;File/AutoBuilder/iOS&quot;)]
+    static void PerformiOSBuild()
+    {
+        EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.iOS, BuildTarget.iOS);
+        BuildPipeline.BuildPlayer(GetScenePaths(), &quot;Build/iOS&quot;, BuildTarget.iOS, BuildOptions.None);
+    }
+
+    [PostProcessBuild]
+    public static void OnPostProcessBuild(BuildTarget buildTarget, string path)
+    {
+        switch (buildTarget)
+        {
+            case BuildTarget.iOS:
+            {
+                var xcodePath = path + &quot;/Unity-Iphone.xcodeproj/project.pbxproj&quot;;
+                var proj = new PBXProject();
+                proj.ReadFromFile(xcodePath);
+
+                var targetGuid = proj.GetUnityFrameworkTargetGuid();
+
+                proj.SetBuildProperty(targetGuid, &quot;COREML_CODEGEN_LANGUAGE&quot;, &quot;Swift&quot;);
+                proj.SetBuildProperty(targetGuid, &quot;SWIFT_VERSION&quot;, &quot;5.0&quot;);
+                proj.AddBuildProperty(targetGuid, &quot;ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES&quot;, &quot;NO&quot;);
+                proj.SetBuildProperty(targetGuid, &quot;EMBEDDED_CONTENT_CONTAINS_SWIFT&quot;, &quot;YES&quot;);
+                proj.SetBuildProperty(
+                    targetGuid,
+                    &quot;FRAMERWORK_SEARCH_PATHS&quot;,
+                    &quot;$(inherited) $(PROJECT_DIR) $(PROJECT_DIR)/Frameworks&quot;
+                );
+                proj.SetBuildProperty(targetGuid, &quot;DEFINES_MODULE&quot;, &quot;YES&quot;);
+
+                // Adds the data folder to the Unity target.
+                // This is basically the manual step we were doing before!
+                var dataGUID = proj.FindFileGuidByProjectPath(&quot;Data&quot;);
+                proj.AddFileToBuild(targetGuid, dataGUID);
+
+                /**
+                 * Module Map
+                 */
+
+                var moduleFileName = &quot;UnityFramework/UnityFramework.modulemap&quot;;
+                var moduleFile = path + &quot;/&quot; + moduleFileName;
+                if (!File.Exists(moduleFile))
+                {
+                    FileUtil.CopyFileOrDirectory(&quot;Assets/Plugins/iOS/&quot; + AutoBuilder.MODULE_MAP, moduleFile);
+                    proj.AddFile(moduleFile, moduleFileName);
+                    proj.AddBuildProperty(targetGuid, &quot;MODULEMAP_FILE&quot;, &quot;$(SRCROOT)/&quot; + moduleFileName);
+                }
+
+                /**
+                 * Headers
+                 */
+
+                // Sets the visiblity of our native API header.
+                // This is basically the manual step we were doing before!
+                var unityInterfaceGuid = proj.FindFileGuidByProjectPath(&quot;Libraries/Plugins/iOS/&quot; + AutoBuilder.INTERFACE_HEADER);
+                proj.AddPublicHeaderToBuild(targetGuid, unityInterfaceGuid);
+
+                proj.WriteToFile(xcodePath);
+                break;
+            }
+        }
+    }
+}
+</code></pre>
+
+    </div>
+  </label>
+</div>
+
+<p>The code:</p>
+<ul>
+<li>Sets the appropriate Swift Compiler <strong>flags</strong></li>
+<li>Adds the <em>&lsquo;Data&rsquo;</em> folder to the Unity target</li>
+<li>Sets the visibility of the communication header to <code>public</code></li>
+</ul>
+<p>I also introduced a new file: <code>UnityFramework.modulemap</code>. This is used
+to map <code>#include</code> to a module import. For more information about what
+modulemaps are, please refer to the <a href="https://clang.llvm.org/docs/Modules.html">Clang LLVM documentation</a>. With this file,
+it&rsquo;s now possible to easily use our <code>NativeCallProxy</code> in swift without a bridging header.</p>
+<p>Because everything is automatically copied and setup during the Unity build, you should
+now remove the bridging header we created during the previous blog post. You need to:</p>
+<ul>
+<li>Remove the file <code>NativeCallProxy-Bridging-Header.h</code></li>
+<li>Remove the header entry from the XCode target <strong>Build Settings Tab</strong></li>
+</ul>
+<p>That&rsquo;s it!</p>
+<p>With this code, you basically have an already setup build, ready to be used :)</p>
+<p>From now on, each time you build your Unity project, you simply need to re-build your xcode project,
+isn&rsquo;t that futuristic? <strong>2022 is coming</strong>.</p>
+<h2 id="improved-communication">Improved Communication<a class="anchor" href="#improved-communication">#</a></h2>
+<p>For the communication, I decided to make a trade-off between
+simplicity and performance.</p>
+<p>Basically, I have two different kind of communications:</p>
+<ul>
+<li>JSON messaging</li>
+<li>Function pointers</li>
+</ul>
+<h3 id="messaging-json">Messaging: JSON<a class="anchor" href="#messaging-json">#</a></h3>
+<p>For my use case, I have a good <strong>99%</strong> of my API points that are called only one time or less per minute, with only a <strong>few kilobytes</strong> per messages.</p>
+<p>Why would I bother with FFI and wrapping those APIs when I can just exchange simple JSON data?</p>
+<p>On Unity&rsquo;s side, I have a <a href="https://github.com/DavidPeicho/unity-swiftui-example/blob/main/unityapp/Assets/Scripts/API.cs">script</a> that handles all my JSON APIs:</p>
+<div class="expand">
+  <label>
+    <div class="expand-head">
+      <span>API.cs</span>
+      <span>↕</span>
+    </div>
+    <input type="checkbox" style="display: none;" />
+    <div class="expand-content">
+      <pre><code class="language-cs">/// &lt;summary&gt;
+/// This structure holds the type of an incoming message.
+/// Based on the type, we will parse the extra provided data.
+/// &lt;/summary&gt;
+public struct Message
+{
+    public string type;
+}
+
+/// &lt;summary&gt;
+/// This structure holds the type of an incoming message, as well
+/// as some data.
+/// &lt;/summary&gt;
+public struct MessageWithData&lt;T&gt;
+{
+    [JsonProperty(Required = Newtonsoft.Json.Required.AllowNull)]
+    public string type;
+
+    [JsonProperty(Required = Newtonsoft.Json.Required.AllowNull)]
+    public T data;
+}
+
+public class API : MonoBehaviour
+{
+    public GameObject cube;
+
+    void ReceiveMessage(string serializedMessage)
+    {
+        var header = JsonConvert.DeserializeObject&lt;Message&gt;(
+            serializedMessage
+        );
+        switch (header.type) {
+            case &quot;change-color&quot;:
+                _UpdateCubeColor(serializedMessage);
+                break;
+            default:
+                Debug.LogError(
+                    &quot;Unrecognized message '&quot; + header.type + &quot;'&quot;
+                );
+                break;
+        }
+    }
+
+    private void _UpdateCubeColor(string serialized)
+    {
+        var msg = JsonConvert.DeserializeObject&lt;MessageWithData&lt;float[]&gt;&gt;(
+            serialized
+        );
+        if (msg.data != null &amp;&amp; msg.data.Length &gt;= 3)
+        {
+            var color = new Color(msg.data[0], msg.data[1], msg.data[2]);
+            var renderer = cube.GetComponent&lt;MeshRenderer&gt;();
+            renderer?.sharedMaterial?.SetColor(&quot;_Color&quot;, color);
+        }
+    }
+}
+</code></pre>
+
+    </div>
+  </label>
+</div>
+
+<p>This is really simple, but gets the job done really nicely! This script
+basically reacts to JSON sent by the native side. Those JSON have a really
+simple structure:</p>
+<pre><code class="language-json">{
+    // Used to know what action to perform when this message is received.
+    // For instance, the type could be:
+    //     * `change-color` to change the color of the cube
+    //     * `scale-mesh` to scale a mesh
+    //
+    // Anything your API support :)
+    &quot;type&quot;: &quot;message-identifier&quot;,
+
+    // Data associated with this message.
+    &quot;data&quot;: {}
+}
+</code></pre>
+<h3 id="function-pointers">Function Pointers<a class="anchor" href="#function-pointers">#</a></h3>
+<p>In the first version of this <a href="https://davidpeicho.github.io/blog/unity-integration-swiftui/">blog post</a>, I showed how to directly call a function
+from the native side.</p>
+<p>As a reminder, this was done by calling a native function and passing
+the Unity function pointer as an argument.</p>
+<p>I still make good use of those for:</p>
+<ul>
+<li><strong>Functions</strong> that exchange heavy data, such as:
+<ul>
+<li>vertices</li>
+<li>image data</li>
+<li>etc&hellip;</li>
+</ul>
+</li>
+<li><strong>Functions</strong> that are called several times per frame</li>
+</ul>
+<p>Choosing whether you should use function pointers or simple string
+messages will be on a per-feature basis.</p>
+<blockquote class="hint warning">
+  Be <strong>really</strong> careful when calling using function pointers like that.
+You might need to synchronize the call to be sure that the user is performing an action at the appropriate lifecycle instant.
+</blockquote>
+
+<h3 id="swift-abstraction">Swift Abstraction<a class="anchor" href="#swift-abstraction">#</a></h3>
+<p>We don&rsquo;t want other developers (or just ourselves!) to have to use our <code>NativeCallProxy</code> header as-is.</p>
+<p>One of the improvement I made as well was to distribute a <strong>Swift</strong> safe and friendly API wrapper via the Unity build.</p>
+<p>The API wrapper for this demo looks like:</p>
+<div class="expand">
+  <label>
+    <div class="expand-head">
+      <span>API.swift</span>
+      <span>↕</span>
+    </div>
+    <input type="checkbox" style="display: none;" />
+    <div class="expand-content">
+      <pre><code class="language-swift">
+/// Serialized structure sent to Unity.
+///
+/// This is used on the Unity side to decide what to do when a message
+/// arrives.
+struct MessageWithData&lt;T: Encodable&gt;: Encodable {
+    var type: String
+    var data: T
+}
+
+/// Swift API to handle Native &lt;&gt; Unity communication.
+///
+/// - Note:
+///   - Message passing is done via serialized JSON
+///   - Message passing is done via function pointer exchanged between Unity &lt;&gt; Native
+public class UnityAPI: NativeCallsProtocol {
+
+    // Name of the gameobject that receives the
+    // messages from the native side.
+    private static let API_GAMEOBJECT = &quot;APIEntryPoint&quot;
+    // Name of the method to call when sending
+    // messages from the native side.
+    private static let API_MESSAGE_FUNCTION = &quot;ReceiveMessage&quot;
+
+    public weak var communicator: UnityCommunicationProtocol!
+    public var ready: () -&gt; () = {}
+
+    /**
+        Function pointers to static functions declared in Unity
+     */
+
+    private var testCallback: TestDelegate!
+
+    public init() {}
+
+    /**
+     * Public API for developers.
+     */
+
+    /// Friendly wrapper arround the message passing system.
+    ///
+    /// - Note:
+    /// This wrapper is used to get friendlier API for Swift developers.
+    /// They shouldn't have to care about how the color is sent to Unity.
+    public func setColor(r: CGFloat, g: CGFloat, b: CGFloat) {
+        let data = [r, g, b]
+        sendMessage(type: &quot;change-color&quot;, data: data)
+    }
+
+    public func test(_ value: String) {
+        self.testCallback(value)
+    }
+
+    /**
+     * Internal API.
+     */
+
+    public func onUnityStateChange(_ state: String) {
+        switch (state) {
+        case &quot;ready&quot;:
+            self.ready()
+        default:
+            return
+        }
+    }
+
+    public func onSetTestDelegate(_ delegate: TestDelegate!) {
+        self.testCallback = delegate
+    }
+
+    /**
+     * Private  API.
+     */
+
+    /// Internal function sending message to Unity.
+    private func sendMessage&lt;T: Encodable&gt;(type: String, data: T) {
+        let message = MessageWithData(type: type, data: data)
+        let encoder = JSONEncoder()
+        let json = try! encoder.encode(message)
+        communicator.sendMessageToGameObject(
+            go: UnityAPI.API_GAMEOBJECT,
+            function: UnityAPI.API_MESSAGE_FUNCTION,
+            message: String(data: json, encoding: .utf8)!
+        )
+    }
+}
+
+</code></pre>
+
+    </div>
+  </label>
+</div>
+
+<p>Because it implements the <code>NativeCallsProtocol</code>, you can also directly
+use it in the bridge file:</p>
+<pre><code class="language-swift">class UnityBridge:
+    UIResponder,
+    UIApplicationDelegate,
+    UnityFrameworkListener {
+
+    ...
+
+    public let api: UnityAPI
+
+    internal override init() {
+        ...
+
+        // The `UnityAPI` is a friendly communication point
+        // available to developers that want to communicate
+        // with the Unity side!
+        self.api = UnityAPI()
+        self.api.communicator = self
+        self.ufw.register(self)
+
+        FrameworkLibAPI.registerAPIforNativeCalls(self.api)
+
+        ...
+    }
+
+    ...
+
+}
+</code></pre>
+<p>I like this method because:</p>
+<ul>
+<li>The message identifiers can be hidden from the developer</li>
+<li>The Swift wrapper can freely
+<ul>
+<li>delay calls</li>
+<li>cache calls</li>
+<li>do any intermediary step between Unity and the develop</li>
+</ul>
+</li>
+<li>We can expose method using Swift objects, like <code>UIColor</code>, etc&hellip;</li>
+</ul>
+<p>In addition, I like to have the API entirely wrapped in the Unity build instead of directly in the application. The exposed API is anyway intrinsic
+to the Unity build we are using.</p>
+<h2 id="going-further">Going Further<a class="anchor" href="#going-further">#</a></h2>
+<p>Starting from <a href="https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html">Swift 5.5</a>, the new method attributes <code>async</code> and <code>await</code>
+are available.</p>
+<p>What does it mean for us?</p>
+<p>We will be able to improve even further the Unity - Swift communication.</p>
+<p>Imagine the following use case:</p>
+<ul>
+<li>You send a message from the native side to Unity</li>
+<li>Unity performs an action</li>
+<li>Unity sends a response back</li>
+</ul>
+<p>Such a scenario can be handled right now, but the Swift code will become quickly verbose and hard to maintain.
+You will end up with a lot of callbacks, nested on potentially multiple levels.</p>
+<p>Add to the scenario a couple of calls you need to schedule in a particular
+order, and it becomes pain to manage!</p>
+<p>With <code>async</code> andc <code>await</code>, writing asynchronous code and defining the order
+of resolution will be a lot simpler. Simple idea to explore&hellip;</p>
+<h2 id="conclusion">Conclusion<a class="anchor" href="#conclusion">#</a></h2>
+<p>You made it! Don&rsquo;t forget that the entire code presented here is available
+in <a href="https://github.com/DavidPeicho/unity-swiftui-example">this repository</a>.</p>
+<p>I am fairly happy with the result I have now. It works well and nothing magical occurs in the view hierarchy behind my back.</p>
+<p>As a sidenote, in my use case the communication is <strong>almost</strong> always
+one-sided: from native side to Unity. If you need more complex scenario
+with back-and-forth messaging, you might want to spend some time designing
+a better communication system.</p>
+<p>Hopefully, this blog post is final and this solution can help you as well!</p>
+
+              
+          </article>
+          
+
+<ul class="tags__list">
+    
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/unity/">unity</a>
+    </li>
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/ios/">ios</a>
+    </li>
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/swiftui/">swiftui</a>
+    </li></ul>
+
+ <div class="pagination">
+  
+    <a class="pagination__item" href="https://davidpeicho.github.io/blog/unity-integration-swiftui/">
+        <span class="pagination__label">Previous Post</span>
+        <span class="pagination__title">Unity 2020 Integration With SwiftUI</span>
+    </a>
+  
+
+  
+</div>
+
+          
+          <footer class="post__footer">
+            
+
+
+<div class="social-icons">
+  
+    
+    
+    
+      <a class="social-icons__link" title="Twitter"
+         href="https://twitter.com/DavidPeicho"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/twitter.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+      <a class="social-icons__link" title="GitHub"
+         href="https://github.com/DavidPeicho"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/github.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+      <a class="social-icons__link" title="LinkedIn"
+         href="https://www.linkedin.com/in/david-peicho/"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/linkedin.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+  
+</div>
+
+            <p>© 2026</p>
+          </footer>
+          </div>
+      </div>
+      
+    </div>
+
+
+  </main>
+
+   
+
+  
+
+  
+
+  <script
+    src="/js/index.min.59f2c87279aa950472de8ffbfb4764414ce922065abf8bddb2838eab8b4690be.js"
+    integrity="sha256-WfLIcnmqlQRy3o/7&#43;0dkQUzpIgZav4vdsoOOq4tGkL4="
+    crossorigin="anonymous"
+  >
+  </script>
+
+  
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
+
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
+    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
+
+  
+
+
+
+</body>
+
+</html>

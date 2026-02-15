@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+
+    
+
+
+
+  
+    
+  
+
+
+
+ 
+
+<head>
+  
+  
+    
+    
+  
+
+  
+
+  
+  
+    
+  
+
+  <title>
+    
+      (1/2) Behind The Scene: Cloud Raymarching Demo | David Peicho&#39;s Blog
+    
+  </title>
+
+  <meta charset="UTF-8">
+  <meta name="language" content="en">
+  <meta
+    name="description"
+    content="Walthrough to understand how to visualize clouds using raymarching"
+  >
+  <meta name="keywords" content="volume rendering , raymarching , cloud , three.js , webgl">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="(1/2) Behind The Scene: Cloud Raymarching Demo | David Peicho&#39;s Blog" />
+  <meta
+    name="twitter:description"
+    content="Walthrough to understand how to visualize clouds using raymarching"
+  />
+  <meta name="twitter:site" content="@https://twitter.com/DavidPeicho" />
+  <meta name="twitter:creator" content="@https://twitter.com/DavidPeicho" />
+
+  
+
+  
+
+  <meta property="og:title" content="(1/2) Behind The Scene: Cloud Raymarching Demo | David Peicho&#39;s Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/" />
+  <meta property="og:description" content="Walthrough to understand how to visualize clouds using raymarching" />
+  <meta property="og:site_name" content="David Peicho&#39;s Blog" />
+
+  
+
+  
+    
+    
+    <meta name="twitter:image" content="https://davidpeicho.github.io/images/posts/raymarching-2.jpg" />
+    <meta property="og:image" content="https://davidpeicho.github.io/images/posts/raymarching-2.jpg" />
+    <meta property="og:image:secure_url" content="https://davidpeicho.github.io/images/posts/raymarching-2.jpg" />
+  
+
+  
+
+  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+
+  
+
+  
+  
+
+  
+
+  
+    
+    <link rel="stylesheet" href="/css/post.min.29a0cc079378d3f6d77ed439911265b811b7e7d5bb7151400a17332393a6326f.css" integrity="sha256-KaDMB5N40/bXftQ5kRJluBG359W7cVFAChczI5OmMm8="/>
+  
+
+  
+   
+  
+
+<script type="application/ld+json">
+  
+    {
+      "@context" : "http://schema.org",
+      "@type" : "BlogPosting",
+      "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/davidpeicho.github.io\/"
+      },
+      "articleSection" : "blog",
+      "name" : "(1\/2) Behind The Scene: Cloud Raymarching Demo",
+      "headline" : "(1\/2) Behind The Scene: Cloud Raymarching Demo",
+      "description" : "Walthrough to understand how to visualize clouds using raymarching",
+      "inLanguage" : "en-US",
+      "author" : "",
+      "creator" : "",
+      "publisher": "",
+      "accountablePerson" : "",
+      "copyrightHolder" : "",
+      "copyrightYear" : "2020",
+      "datePublished": "2020-09-24 00:00:00 \u002b0000 UTC",
+      "dateModified" : "2020-09-24 00:00:00 \u002b0000 UTC",
+      "url" : "https:\/\/davidpeicho.github.io\/blog\/cloud-raymarching-walkthrough-part1\/",
+      "wordCount" : "4505",
+      "keywords" : ["volume rendering", "raymarching", "cloud", "three.js", "webgl", "Blog"]
+    }
+  
+  </script>
+
+
+</head>
+
+
+<body class=" ">
+  <div class="burger__container">
+  <div class="burger" aria-controls="navigation" aria-label="Menu">
+    <div class="burger__meat burger__meat--1"></div>
+    <div class="burger__meat burger__meat--2"></div>
+    <div class="burger__meat burger__meat--3"></div>
+  </div>
+</div>
+
+  <nav class="nav" role="navigation">
+  <ul class="nav__list">
+    
+    
+      <li>
+        <a  href="/">home</a>
+      </li>
+    
+      <li>
+        <a  href="/about">about</a>
+      </li>
+    
+      <li>
+        <a  class="active"
+         href="/blog">blog</a>
+      </li>
+    
+      <li>
+        <a  href="/teaching">teaching</a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+   
+
+  <main>
+    
+    
+
+    <div class="flex-wrapper">
+      <div class="post__container">
+        <div class="post">
+          <header class="post__header">
+            <h1 id="post__title">(1/2) Behind The Scene: Cloud Raymarching Demo</h1>
+            <time datetime="2020-09-24 00:00:00 &#43;0000 UTC" class="post__date"
+            >Sep 24 2020</time>
+          </header>
+          <article class="post__content">
+              
+<p>This blog post will walk you through how I created the volume rendering visualization
+available on the <a href="/">Home page</a>.</p>
+<p><img src="/images/posts/raymarching-2.jpg" alt="Demo"></p>
+<h2 id="intro">Intro<a class="anchor" href="#intro">#</a></h2>
+<p>This tutorial is made for beginners and I will try to be as descriptive as possible.
+Results will be validated at each step to ensure you get the expected results.</p>
+<p>Readers will need to be familiar with:</p>
+<ul>
+<li><a href="https://threejs.org/">Three.js</a></li>
+<li>Shaders in general. Don&rsquo;t be afraid, you won&rsquo;t need to be a shader Guru</li>
+<li>Matrix transformations</li>
+</ul>
+<p>Three.js has a nice <a href="https://threejs.org/examples/?q=cloud#webgl2_volume_cloud">cloud example</a>
+from which this demo is inspired. If you want to quickly integrate something I
+recommend you to have a look at it.</p>
+<p>This tutorial will be splitted into two blog posts:</p>
+<ul>
+<li>Part 1: theory, basic setup, ray generation, and first results!</li>
+<li>Part 2: improvements, and burning effect. This part isn&rsquo;t published yet.</li>
+</ul>
+<p>If you are comfortable with graphics, it may be faster and more interesting
+for you to dive <a href="https://github.com/DavidPeicho/davidpeicho.github.io/tree/master/src">in the code</a> and simply cherry pick what you need.</p>
+<blockquote class="hint warning">
+  <p>This tutorial will use WebGL 3D textures. Unfortunately, it will only work
+in <strong>WebGL2</strong>-compatible browsers.</p>
+<p>As of October 2020, WebGL2 is landing in Safari and is available behind
+an experimental flag. You can enable it in
+<code>Develop → Experimental features → WebGL 2.0</code></p>
+
+</blockquote>
+
+<h2 id="volume-rendering-overview">Volume Rendering Overview<a class="anchor" href="#volume-rendering-overview">#</a></h2>
+<p>Volume Rendering is a vast world. There are many algorithm / techniques to
+render data called <em>&ldquo;volumes&rdquo;</em>.</p>
+<p>A <em>&ldquo;volume&rdquo;</em> is a data set spanning <strong>3</strong> dimensions. In a lot of fields
+(entertainement industry, medical imaging), a volume is represented by
+3D grid containing data samples. 3D volumes are represented as 3D textures
+where each voxel contains a given quantity, often a scalar.</p>
+<p>At the opposite of meshes, volumes aren&rsquo;t defined only by a surface. Good examples
+of data represented as volume may be smoke, clouds, medical scan data, etc&hellip;
+Volumes are often used to represent semi-transparent medium.</p>
+<p>Rendering a volume consists, just like for a mesh, into computing the <a href="https://en.wikipedia.org/wiki/Radiance">radiance</a> reaching the camera. In simple terms, the radiance
+represents the energy (the number of photons) going in a particular direction
+per unit of time.</p>
+<p>Volumes being dense (at the opposite of meshes being represented
+only by a surface), there exists other mathematical models to describe interactions
+between light and volumes. In general, those models assume that light can be:</p>
+<ul>
+<li><strong>Emitted</strong>: corresponds to a transfer of energy, from heat to radiative for instance</li>
+<li><strong>Absorbed</strong>: corresponds to a transfer of energy, from radiative to heat for instance</li>
+<li><strong>Scattered</strong>: corresponds to a collision modifying the light beam trajectory</li>
+</ul>
+<p>All those interactions are modeled by the Volume Rendering Equation. If you
+want to go further into the theory, I highly recommend you to have a look at the
+<a href="#references">References section</a>. The section contains a list of courses, books,
+or papers that will go further into the theory.</p>
+<p>For beginners, those links may seem advanced. You shouldn&rsquo;t worry If you feel like
+it&rsquo;s too much, because we are going to apply a simplified version
+of the rendering equation in this tutorial.</p>
+<h2 id="algorithm-overview">Algorithm Overview<a class="anchor" href="#algorithm-overview">#</a></h2>
+<p>We saw in the previous section that a volume isn&rsquo;t defined by a set of triangles.
+Thus, we can&rsquo;t use our classic rasterization pipeline to render them. One of the
+possible way to visualize a volume is to use <strong>Ray Marching</strong>.
+You may be familiar with <a href="https://en.wikipedia.org/wiki/Ray_casting">Ray Casting</a>,
+where rays are shot through every pixels of the screen, and checked for intersection
+with world objects. Ray Marching is similar in essence, but different during the sampling step.
+When a ray intersects a volume, it is sampled at some given interval until it goes
+out of the volume.</p>
+<p><img src="./light-volume-interactions.jpg" alt="Scattering effects, where perceived can come from multiple bounces"></p>
+<p>For our use case, simulating <strong>scattering</strong> isn&rsquo;t needed. Scattering turns the
+rendering equation into a recursion. To compute the radiance from a given direction at a given point,
+the equation needs to evaluate the radiance coming from all over.</p>
+<p>In this tutorial, we will perform rough estimate and solve an equation that
+will not be physically correct. Images we see in the world are the results
+of complex phenomenons due to scattering.</p>
+<p>It can be shown [<a href="https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf">Engel et al, 06</a>] that by <strong>neglecting</strong> scattering effect
+from the rendering equation, the radiant energy (i.e: the pixel color here) can be defined
+as:</p>
+<p>$$ R = \int_0^{L}{c(t)\exp^{-\tau(0, t)}}dt $$</p>
+<p>With:</p>
+<ul>
+<li>$ L $ the total distance traveled in the volume</li>
+<li>$ t $ the distance at which light is emitted</li>
+<li>$ c(t) $ the radiant energy emitted at $ t $, i.e: the color at distance $ t $</li>
+<li>$ k(t) $ the absorption, i.e: the absorption coefficient between the eye
+and the distance $ t $</li>
+<li>$ \tau(0, t) = \int_0^{t}{k(t)dt} $, the <a href="https://en.wikipedia.org/wiki/Optical_depth">Optical Depth</a>,
+which is more or less the energy absorption over a given distance</li>
+</ul>
+<p>We assume that the ray is sampled over a length $ L $. Let&rsquo;s discretize this
+equation into $ N $ steps, with a delta between two steps defined as
+$ \Delta_{N} = \frac{L}{N} $</p>
+<p>the Optical Depth from the eye to the distance $ L $ can be discretized using
+<a href="https://en.wikipedia.org/wiki/Riemann_sum">Riemann sum</a> as</p>
+<p>$$ \tau(0, L) \approx \sum_{i = 0}^{N}{k(i\Delta_{N})}\Delta_{N} $$</p>
+<p>We can denote $ a_i $, the absorbance (or opacity) at the <strong>i-th</strong> step, as</p>
+<p>$$ a_i = \exp^{- k(i \Delta_{N})\Delta_{N}} $$</p>
+<p>We can then further discretize the exponential part, and directly simplify
+the exponential of the sum into a product of exponential</p>
+<p>$$ \exp^{-\tau(0, L)} \approx \prod_{i = 0}^{N}{a_i} $$</p>
+<p>Using the same technique, we can also discretize the color part of the equation:</p>
+<p>$$ c_i = c(i * \Delta_N)\Delta_N $$</p>
+<p>The final equation is obtained similarly [<a href="https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf">Engel et al, 06</a>]:</p>
+<p>$$ R_{discrete} = \sum_{i=0}^N{c_i}\prod_{j=0}^{i-1}{a_j} $$</p>
+<p>Computing the color at step <strong>i</strong> is equivalent to applying alpha blending to
+the <strong>i-th</strong> sample color:</p>
+<p>$$ R_i = R_{i-1} + a_{i-1}c_i $$</p>
+<p>We can get an intuitive idea about what&rsquo;s happening. The final color of the pixel
+will basically be the composition of all colors, weighted by the transmission factor.
+That is to say, the more opaque the accumulated color is, the less a sample
+will contribute to the final result.</p>
+<p>At the beginning of the section, I said:</p>
+<blockquote>
+<p><em>we can&rsquo;t use our classic rasterization pipeline to render them</em></p>
+</blockquote>
+<p>This was a bit of a lie my friends. To generate the rays, we are going to take
+advantage of the rasterization. We are basically going to render a cube to
+represent the shape of the volume, and we will use the fragment shader to perform the
+ray marching inside the 3D texture.</p>
+<p>If we sum up, the algorithm will basically be decomposed into:</p>
+<ol>
+<li>Render cube</li>
+<li>Ray generation in vertex shader</li>
+<li>Ray sampling and shading</li>
+<li>Blending with previous color and alpha accumulation</li>
+<li>Repeat from <strong>3</strong> until ray exits the volume</li>
+</ol>
+<p>If you feel like you want to go deeper in the math and the theory, please
+have a look at the <a href="#references">References section</a>.</p>
+<h2 id="creating-a-material">Creating a Material<a class="anchor" href="#creating-a-material">#</a></h2>
+<p>Let&rsquo;s start by creating a material that will reference our shaders. We will
+make dummy shaders for now to ensure we did everything correctly.</p>
+<p><em>cloud.vert.glsl</em></p>
+<pre><code class="language-glsl">void
+main()
+{
+  gl_Position =
+    projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+</code></pre>
+<p><code>projectionMatrix</code>, and <code>modelViewMatrix</code> are two uniforms automatically
+forwarded by Three.js. <code>position</code> is the vertex attribute. You do not need
+to add those because the shader is formatted with them by the renderer.</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">precision highp float;
+
+void
+main()
+{
+  pc_fragColor.rgba = vec4(1.0, 0.0, 0.0, 1.0);
+}
+</code></pre>
+<p>We can now reference those shaders in a material. In order to expose a friendly
+API to users, we will create our own material class that will deal with uniforms
+and shader-related code.</p>
+<pre><code class="language-js">import {
+  BackSide,
+  ShaderMaterial,
+  UniformsLib,
+  UniformsUtils,
+} from 'three';
+
+import cloudVertexShader from './cloud.vert.glsl';
+import cloudFragmentShader from './cloud.frag.glsl';
+
+export class CloudMaterial extends ShaderMaterial {
+
+  constructor() {
+    super({
+      vertexShader: cloudVertexShader,
+      fragmentShader: cloudFragmentShader
+    });
+
+    // NOTE: This is super important. We want to only render
+    // the back faces so we can generate a proper ray direction.
+    this.side = BackSide;
+    // Needs to be `true` so that Three.js renders our cloud
+    // in an extra step, after all opaque meshes are rendered.
+    this.transparent = true;
+  }
+
+}
+</code></pre>
+<blockquote class="hint warning">
+  Don&rsquo;t forget to add the line <code>this.side = BackSide;</code> because the ray generation
+process relies on that. This line will make our cube only render back facing triangles.
+We are going to render the cloud using a perspective camera, it&rsquo;s thus impossible
+to generate the rays using the front faces of the cube.
+</blockquote>
+
+<h2 id="creating-a-mesh">Creating a Mesh<a class="anchor" href="#creating-a-mesh">#</a></h2>
+<p>Our volume will be first rendered as a cube, and the ray marching will happen
+in the fragment shader. So let&rsquo;s create a simple cube:</p>
+<pre><code class="language-js">import {
+  BoxBufferGeometry,
+  Mesh,
+} from 'three';
+
+export class Cloud extends Mesh {
+
+  constructor() {
+    super(Cloud.DEFAULT_GEOMETRY, new CloudMaterial());
+  }
+
+}
+/**
+ * Unit-box geometry. This is made static for performance purpose. You will
+ * not need to change the geometry of the volume.
+ */
+Cloud.DEFAULT_GEOMETRY = new BoxBufferGeometry(1, 1, 1);
+</code></pre>
+<p>There is no need for a user to mess up with the internal geometry. Thus, it&rsquo;s
+better to create a static one instead of uploading one each time a cloud is
+instanciated. The geometry s basically the position attribute and can be shared
+by every cloud.</p>
+<p>We could have simply assigned a <code>BoxBufferGeometry</code> to a <code>Mesh</code>, but it means
+the user needs to know about implement details.</p>
+<h2 id="creating-a-scene">Creating a Scene<a class="anchor" href="#creating-a-scene">#</a></h2>
+<p>We now have everything to start rendering the cube. Let&rsquo;s setup a basic Three.js
+scene with a cloud and a camera.</p>
+<pre><code class="language-js">const renderer = new WebGLRenderer();
+const camera = new PerspectiveCamera();
+camera.position.z = 2.0;
+camera.updateMatrix();
+camera.updateMatrixWorld();
+
+const cloud = new Cloud();
+
+const scene = new Scene();
+scene.background = new Color(0xf7f7f7);
+scene.add(cloud);
+
+// The observer triggers an event when the canvas is resized.
+// On resize, we can update the camera aspect ratio,
+// and update the framebuffer size using `renderer.setSize()`.
+const onResize = new ResizeObserver(entries =&gt; {
+  if (entries.length &gt; 0) {
+    const { width, height } = entries[0].contentRect;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height, false);
+  }
+});
+onResize.observe(renderer.domElement);
+
+function render() {
+  renderer.render(scene, camera);
+  window.requestAnimationFrame(render);
+}
+render();
+</code></pre>
+<blockquote class="hint warning">
+  Dont forget to add the canvas to the dom or use your own canvas in the renderer.
+</blockquote>
+
+<p>Nothing fancy yet, but our debbuging setup should be working:</p>
+<p><img src=".//scene-setup.jpg" alt="Debug Cube"></p>
+<h2 id="generating-a-volume">Generating a Volume<a class="anchor" href="#generating-a-volume">#</a></h2>
+<p>Our setup is ready, we now need a volume texture to sample. As stated,
+a volume is simply a collection of scalars (most of the time at least :)).</p>
+<p>WebGL 2 has support for <a href="">3D Textures</a>. We will thus store our volume in a
+3D Texture, and sample this texture in the shader.</p>
+<p>To generate something cloudy, we can use a <a href="https://en.wikipedia.org/wiki/Perlin_nois">Perlin Noise</a> generator.
+I am not going to go through how Perlin Noise works here, but if you are curious,
+you can have a look at <a href="https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/perlin-noise-part-2">Scratchapixel</a> that has a detail course on it. Even better, you can also
+directly have a look at <a href="https://mrl.nyu.edu/~perlin/doc/oscar.html">this website</a> linking
+to the original paper by Ken Perlin.</p>
+<p>Turns out that Three.js has the implemntation of the improved Perlin noise:</p>
+<p><em>cloud.js</em></p>
+<pre><code class="language-js">export function createPerlinTexture(options = {}) {
+
+  const {
+    width = 128,
+    height = 128,
+    depth = 128,
+    scale = 0.1
+  } = options;
+
+  const voxelPerSlice = width * height;
+  const voxelCount = voxelPerSlice * depth;
+
+  // ArrayBuffer containing the volume data. This buffer is of size
+  // `width` * `height` * `depth` to contain all the 3D data.
+  const buffer = new Uint8Array(voxelCount);
+
+  // Three.js implementation of the Improved Perlin Noise algorithm.
+  const perlin = new ImprovedNoise();
+
+  // Temporary vector used for in-place computation.
+  const point = new Vector3();
+
+  for (let i = 0; i &lt; voxelCount; ++i) {
+    const x = i % width;
+    const y = Math.floor((i % voxelPerSlice) / width);
+    const z = Math.floor(i / voxelPerSlice);
+    const p = perlin.noise(x * scale, y * scale, z * scale);
+    const rand = (p + 1.0) * 0.5;
+    buffer[i] = Math.round(rand * 255);
+  }
+
+  const texture = new DataTexture3D(
+    buffer,
+    width,
+    height,
+    depth
+  );
+  texture.format = RedFormat;
+  texture.minFilter = LinearFilter;
+  texture.magFilter = LinearFilter;
+  texture.unpackAlignment = 1;
+
+  return texture;
+}
+</code></pre>
+<p>This function generates a buffer with random values. This buffer is used to
+create a <code>DataTexture3D</code>, which is a Three.js class representing a WebGL
+texture 3D.</p>
+<p>The texture is uploaded as <code>Uint8</code>, thus the perlin noise is mapped to the
+interval <code>[0...255]</code>.</p>
+<p>In order to improve the shape of the noise and make it look more spherical,
+let&rsquo;s modify the function slightly to fade away the cloud from its center.</p>
+<p><em>cloud.js</em></p>
+<pre><code class="language-js">export function createPerlinTexture(options = {}) {
+  ...
+
+  const halfWidth = width * 0.5;
+  const halfHeight = height * 0.5;
+  const halfDepth = depth * 0.5;
+  // Temporary vector used for in-place computation.
+  // This is used to improve performance and reduce GC.
+  const point = new Vector3();
+  for (let i = 0; i &lt; voxelCount; ++i) {
+    ...
+
+    const v = point.set(
+      (x - halfWidth) / width,
+      (y - halfHeight) / height,
+      (z - halfDepth) / depth
+    );
+    // `d` goes to zero when the current sample is far from
+    // the volume center.
+    // At the opposite, `d` goes to one when the sample is close
+    // to the volume center.
+    const d = clamp(1.0 - v.length(), 0, 1);
+
+    const p = perlin.noise(x * scale, y * scale, z * scale);
+    const rand = (p + 1.0) * 0.5;
+
+    // The noise is scaled by how far it is from the center.
+    // This is used to improve the shape of the cloud and
+    // make it appear more spherical.
+    buffer[i] = Math.round(rand * d * d * 255);
+  }
+  ...
+}
+</code></pre>
+<p>Finally, we modify our <code>CloudMaterial</code> class to send the texture to the shader
+as a uniform:</p>
+<p><em>material.js</em></p>
+<pre><code class="language-js">export class CloudMaterial extends ShaderMaterial {
+
+  constructor() {
+    super({
+      vertexShader: cloudVertexShader,
+      fragmentShader: cloudFragmentShader,
+      uniforms: {
+        uVolume: { value: null }
+      }
+    });
+  }
+
+  set volume(texture) {
+    this.uniforms.uVolume.value = texture;
+  }
+
+  get volume() {
+    return this.uniforms.uVolume.value;
+  }
+
+}
+</code></pre>
+<p>We can now create the texture, and assign it to the shader:</p>
+<pre><code class="language-js">window.onload = function () {
+  ...
+
+  const cloud = new Cloud();
+  cloud.material.volume = createPerlinTexture({ scale: 0.09 });
+
+  ...
+};
+</code></pre>
+<h2 id="ray-generation">Ray Generation<a class="anchor" href="#ray-generation">#</a></h2>
+<p>We need to generate, for every fragment, a ray that will step through the volume.
+In the vertex shader, we have access to vertices position as well as the camera
+information. It&rsquo;s possible to generate a ray that will start at the camera origin,
+and go through the vertex position.</p>
+<p>For now, we will assume the cloud and the ray origin (i.e., the camera) are static.
+Let&rsquo;s see how the code looks:</p>
+<p><em>cloud.vert.glsl</em></p>
+<pre><code class="language-glsl">// We need to send the origin of the ray, as well
+// as the direction.
+struct Ray {
+  vec3 origin;
+  vec3 dir;
+};
+
+out Ray vRay;
+
+void
+main()
+{
+  // Hardcoded for now. This should the camera position.
+  vec3 cameraPosition = vec3(0.0, 0.0, 2.0);
+
+  vRay.dir = position - cameraPosition;
+  vRay.origin = cameraPosition + vec3(0.5);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+</code></pre>
+<p>As you can see, the ray <strong>isn&rsquo;t</strong> specified in World Space, but rather in
+<strong>Model Space</strong>. Let&rsquo;s continue a bit, and this will be explained later in the
+<a href="#improving-ray-generation">Improving Ray Generation</a> section.</p>
+<p>You may be wondering why the origin has an offset of <code>vec3(0.5)</code>. The <code>BoxBufferGeometry</code>
+we created is centered around <code>(0, 0, 0)</code>, but the volume texture needs to be
+sampled using normalized coordinates in the range <code>[0...1].</code></p>
+<blockquote class="hint danger">
+  <strong>Do not</strong> move the camera from the position <code>(0, 0, 2)</code> yet, and <strong>do not</strong>
+move the cloud. Otherwise, the sampling will be wrong with the current code.
+In the section <a href="#improving-ray-generation">Improving Ray Generation</a>, we will
+see how to modify the shader to generate a proper ray.
+</blockquote>
+
+<p>To validate our ray origin and direction, let&rsquo;s first display the ray direction
+in the fragment shader:</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">precision highp float;
+
+struct Ray {
+  vec3 origin;
+  vec3 dir;
+};
+
+in Ray vRay;
+
+void
+main()
+{
+  Ray ray;
+  ray.origin = vRay.origin;
+  ray.dir = normalize(vRay.dir);
+  pc_fragColor.rgba = vec4(ray.dir, 1.0);
+}
+</code></pre>
+<p>If we did everything good, we should something like that:</p>
+<p><img src="./debug-ray-dir.jpg" alt="Debugging ray directon"></p>
+<p>The result looks correct, we can start marching the volume. But before, we need
+to:</p>
+<ol>
+<li>Move the ray origin to the closest volume bound. We could step directly from
+the camera origin, but why would we do that? There is nothing to sample there.
+It&rsquo;s faster to first move the ray origin to the closest volume intersecton.</li>
+<li>Scale the ray direction by the step size we want to perform. A too small
+step size will make the ray sample several times the same voxel. At the opposite,
+a too big step size and the ray may &ldquo;miss&rdquo; important information.</li>
+</ol>
+<p>In order to find the nearest and farthest ray - volume intersection,
+we can solve a Ray-Box intersection. We know that our box will always be defined
+by <code>min = vec3(0, 0, 0)</code> and <code>max = vec3(1, 1, 1)</code>, that will simplify our
+function:</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">/**
+ * Computes the intersection between a ray and the unit box
+ * centered on (0, 0, 0).
+ *
+ * Closest intersecton distance is return in `near`, and
+ * furthest intersection is returned in `far`.
+ */
+void
+computeNearFar(Ray ray, inout float near, inout float far)
+{
+  // Ray is assumed to be in local coordinates, ie:
+  // ray = inverse(objectMatrix * invCameraMatrix) * ray
+  // Equation of ray: O + D * t
+
+  vec3 invRay = 1.0 / ray.dir;
+
+  // Shortcut here, it should be: `aabbMin - ray.origin`.
+  // As we are always using normalized AABB, we can skip the line
+  // `(0, 0, 0) - ray.origin`.
+  vec3 tbottom = - invRay * ray.origin;
+  vec3 ttop = invRay * (vec3(1.0) - ray.origin);
+
+  vec3 tmin = min(ttop, tbottom);
+  vec3 tmax = max(ttop, tbottom);
+
+  float largestMin = max(max(tmin.x, tmin.y), max(tmin.x, tmin.z));
+  float smallestMax = min(min(tmax.x, tmax.y), min(tmax.x, tmax.z));
+
+  near = largestMin;
+  far = smallestMax;
+
+  return smallestMax &gt; largestMin;
+}
+</code></pre>
+<p>As usual, let&rsquo;s be sure that this function is doing what we want by displaying
+the result. The ray position is supposed to be located in the unit box spanning
+<code>[0...1]</code>.</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">void
+main()
+{
+  Ray ray;
+  ray.origin = vRay.origin;
+  ray.dir = normalize(vRay.dir);
+
+  // Solves a ray - Unit Box equation to determine the value of the closest and
+  // furthest intersections.
+  float near = 0.0;
+  float far = 0.0;
+  computeNearFar(ray, near, far);
+
+  // Moves the ray origin to the closest intersection.
+  // We don't want to spend time sampling nothing out of the volume!
+  ray.origin = ray.origin + near * ray.dir;
+
+  pc_fragColor.rgba = vec4(ray.origin, 1.0);
+}
+</code></pre>
+<p>If the function is correct, we should see all colors nicely interpolated:</p>
+<p><img src="./near-far.jpg" alt="Debugging Ray - Unit Box parametric equation"></p>
+<p>Last step missing: scaling the ray direction!</p>
+<p>You could either ask the user to choose for a <strong>sampling ratio</strong>, or simply
+compute a minimal one, by using the smallest component in the ray direction.</p>
+<p>You could also sample the volume from <code>near</code> to <code>far</code>, using a step
+size of <code>(far - near) / NB_STEPS</code>. However, I don&rsquo;t want the step size to be
+different for each ray, so I decided to go for the classic:</p>
+<pre><code class="language-glsl">// You can define this in the `.defines` object on your
+// `ShaderMaterial` in Three.js
+#define NB_STEPS 100
+
+vec3 inc = 1.0 / abs( ray.dir );
+// Step size between two samples
+float delta = min(inc.x, min(inc.y, inc.z)) / float(NB_STEPS);
+// The ray direction is now scaled by the step size.
+ray.dir = ray.dir * delta;
+</code></pre>
+<p>Putting it all together, you get:</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">void
+main()
+{
+  Ray ray;
+  ray.origin = vRay.origin;
+  ray.dir = normalize(vRay.dir);
+
+  // Solves a ray - Unit Box equation to determine the value of the closest and
+  // furthest intersections.
+  float near = 0.0;
+  float far = 0.0;
+  computeNearFar(ray, near, far);
+
+  // Moves the ray origin to the closest intersection.
+  // We don't want to spend time sampling nothing out of the volume!
+  ray.origin = ray.origin + near * ray.dir;
+
+  vec3 inc = 1.0 / abs( ray.dir );
+  // Step size between two samples
+  float delta = min(inc.x, min(inc.y, inc.z)) / float(NB_STEPS);
+  // The ray direction is now scaled by the step size.
+  ray.dir = ray.dir * delta;
+
+  pc_fragColor.rgba = vec4(ray.origin, 1.0);
+}
+</code></pre>
+<h2 id="sampling">Sampling<a class="anchor" href="#sampling">#</a></h2>
+<p>Phew! So much things to do and we haven&rsquo;t yet sampled the volume! Don&rsquo;t give up
+now, we are almost at it!</p>
+<p>Don&rsquo;t forget to add the uniform in the fragment shader, as well as the <code>precision</code>:</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">...
+
+precision highp sampler3D;
+uniform sampler3D uVolume;
+
+...
+</code></pre>
+<p>We now need to march the volume and weight samples according to how much
+accumulation already happened.</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">// ...
+
+vec3 inc = 1.0 / abs( ray.dir );
+float delta = min(inc.x, min(inc.y, inc.z)) / float(NB_STEPS);
+ray.dir = ray.dir * delta;
+
+// Hardcoded for now: diffuse color of our cloud.
+vec3 baseColor = vec3(0.1);
+
+// Accumulation through the volume is stored in this variable.
+vec4 acc = vec4(0.0);
+
+for (int i = 0; i &lt; NB_STEPS; ++i)
+{
+  // Get the voxel at the current ray position.
+  float s = texture(uVolume, ray.origin).r;
+
+  // The more we already accumulated, the less color we apply.
+  acc.rgb += (1.0 - acc.a) * s * baseColor;
+  // The more we already accumulated, the less opacity we apply.
+  acc.a += (1.0 - acc.a) * s;
+
+  // Early termination: after this threshold, accumulating becomes insignificant.
+  if (acc.a &gt; 0.95) { break; }
+
+  ray.origin += ray.dir;
+}
+</code></pre>
+<p>This code should give you something like:</p>
+<p><img src="./first-sampling.jpg" alt="First Sampling"></p>
+<p>Not exactly what we expected.</p>
+<p>Right now, we are simply accumulating the color and the transparency. However,
+almost all rays will end up with the same color because the shading is the same
+for every directions.</p>
+<p>Let&rsquo;s modulate the color slightly by using the gradient. To compute the gradient,
+we will use th method of th <a href="">Finite Differences</a>:</p>
+<pre><code class="language-glsl">/*
+ * Computes the gradient at the given position.
+ *
+ * **NOTE**: The position must be given in Model Space.
+ */
+vec3
+computeGradient(vec3 position, float step)
+{
+  return normalize(vec3(
+    getSample(position.x + step, position.y, position.z)
+    - getSample(position.x - step, position.y, position.z),
+    getSample(position.x, position.y + step, position.z)
+    - getSample(position.x, position.y - step, position.z),
+    getSample(position.x, position.y, position.z + step)
+    - getSample(position.x, position.y, position.z - step)
+  ));
+}
+</code></pre>
+<p>Let&rsquo;s modulate the color of the sample by using a directional light
+with direction <code>(0, -1, 0)</code>. The light is going to be attenuated using a cosine
+factor:</p>
+<pre><code class="language-glsl">// ... main()
+
+vec3 lightDir = vec3(0., -1., 0.);
+
+for (int i = 0; i &lt; NB_STEPS; ++i)
+{
+  float s = texture(uVolume, ray.origin).r;
+
+  // Gradient of the sample at the ray position.
+  vec3 gradient = computeGradient(ray.origin, delta);
+  float NdotL = max(0., dot(gradient, lightDir));
+
+  // The more we already accumulated, the less color we apply.
+  acc.rgb += (1.0 - acc.a) * s * baseColor * NdotL;
+  // The more we already accumulated, the less opacity we apply.
+  acc.a += (1.0 - acc.a) * s * 0.5;
+
+  // Early termination: after this threshold,
+  // accumulating becomes insignificant.
+  if (acc.a &gt; 0.95) { break; }
+
+  ray.origin += ray.dir;
+}
+</code></pre>
+<p>And we should now obtain:</p>
+<p><img src="./sampling-with-shading.jpg" alt="Light atteunation"></p>
+<p>Okay, we are starting to get convincing results here. However, we generated our
+cloud to be empty around the edges of the cube. The sampling still
+takes into account those values.</p>
+<p>The issue arises because in some cases, the ray
+is still getting sampled outside the volume. Technically, the ray shouldn&rsquo;t
+be sampled anymore after leaving the volume. For that, let&rsquo;s check when the ray
+goes beyond the <code>far</code> value:</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">// ... main()
+
+...
+
+float dist = near;
+
+for (int i = 0; i &lt; NB_STEPS; ++i)
+{
+  ...
+  ray.origin += ray.dir;
+  dist += delta;
+
+  if (dist &gt;= far) { break; }
+}
+</code></pre>
+<p><img src="./ray-termination-far.jpg" alt="No sample outside volume"></p>
+<p>You may still think that the result isn&rsquo;t exactly what you wanted. We can
+modulate the value of the sample on the fly to change the cloud shape.
+Let&rsquo;s start by applying some <strong>windowing</strong>, i.e., shift the sample values:</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">...
+for (int i = 0; i &lt; NB_STEPS; ++i)
+{
+  float s = texture(uVolume, ray.origin).r;
+  // Clamps the sample value between `0.12` and `0.35` smoothly.
+  s = smoothstep(0.12, 0.35, s);
+  ...
+}
+</code></pre>
+<p>Just changing that should change everything:</p>
+<p><img src="./better-windowing.jpg" alt="Windowed Volume"></p>
+<h2 id="improving-ray-generation">Improving Ray Generation<a class="anchor" href="#improving-ray-generation">#</a></h2>
+<p>Right now, the camera origin is hardcoded in the shader to <code>(0, 0, 2)</code>.</p>
+<p>If you recall, we decided to generate a ray in <strong>Local Space</strong>. Thus, the ray
+was generated directly by using the <code>position</code> attribute, where each
+vertex coordinate was in the range <code>[0...1]</code>.</p>
+<p>In order for the ray origin to be expressed in <strong>Local Space</strong> no matter where
+the camera is, we can get use inverse transformation of the composition of the
+model and camera matrix. Phew! That&rsquo;s a complicated sentence. Let&rsquo;s try to find
+an intuitive way to visualize this. We can either express everything in <strong>World Space</strong>
+and sample the volume accordingly, or we can apply the inverse transformations
+and directly sample the volume:</p>
+<p><img src="./ray-world-space.jpg" alt="World Space"></p>
+<p><img src="./ray-local-space.jpg" alt="Local Space"></p>
+<p>Those two drawings are equivalent <strong>regarding volume sampling</strong>. Obviously,
+if you now want to compare the ray to another object (a light for instance),
+both will be in different space, which would result in wrong calculation.</p>
+<p>By working in <strong>Local Space</strong>, we know that our ray is always in the <code>[0...1]</code>
+range. If the ray isn&rsquo;t, it means that it&rsquo;s simply not intersecting our volume,
+and then we don&rsquo;t need to proccess it.</p>
+<p><img src="./ray-miss.jpg" alt="Ray missing volume in local space"></p>
+<p>In order to generate a proper ray, we thus only need to use the camera origin
+in the volume local space. We can thus multiply the camera world position by
+the inverse world matrix of the volume.</p>
+<p>Let&rsquo;s start by sending the camera position as a uniform to the shader:</p>
+<p><em>material.js</em></p>
+<pre><code class="language-js">export class CloudMaterial extends ShaderMaterial {
+
+  constructor() {
+    super({
+      ...
+      uniforms: {
+        ...
+        uLocalSpaceCameraOrigin: { value: new Vector3() },
+        ...
+      }
+    });
+  }
+
+  update(object3d, camera) {
+    const localOriginUniform =
+      this.uniforms.uLocalSpaceCameraOrigin.value;
+
+    // Use a global variable to perform in-place inverse.
+    // This is faster that allocating a matrix.
+    gMatrix4.getInverse(object3d.matrixWorld);
+    // Copies the camera world position into the uniform.
+    // NOTE: the camera world matrix **must be** up-to-date!
+    camera.getWorldPosition(localOriginUniform);
+    // Transform the camera world space into the volume
+    // local space using the above inverse transform.
+    localOriginUniform.applyMatrix4(gMatrix4);
+  }
+</code></pre>
+<p>We can use this position directly into the vertex shader:</p>
+<p><em>cloud.vert.glsl</em></p>
+<pre><code class="language-glsl">struct Ray {
+  vec3 origin;
+  vec3 dir;
+};
+
+out Ray vRay;
+
+uniform vec3 uLocalSpaceCameraOrigin;
+
+void
+main()
+{
+  vRay.dir = position - uLocalSpaceCameraOrigin;
+  vRay.origin = uLocalSpaceCameraOrigin + vec3(0.5);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+</code></pre>
+<p>The camera is no longer hardcoded, you can move around the volume. A nice feature
+to add would be to code camera controls, or use one of the ones
+<a href="https://threejs.org/docs/#examples/en/controls/OrbitControls">provided by Three.js</a>.</p>
+<h2 id="going-further">Going Further<a class="anchor" href="#going-further">#</a></h2>
+<p>You did it!</p>
+<p>If you took a look at the <a href="https://github.com/DavidPeicho/davidpeicho.github.io/blob/master/src/shaders/cloud.frag.glsl">code</a>, you will see a bit more stuff. The shader is customizable using uniforms
+and preprocessor directives.</p>
+<p>You can customize this tutorial in a lot of way:</p>
+<ul>
+<li>Add the base color as uniform;</li>
+<li>Send the light as a uniform and modify its properties through time;</li>
+<li>Improve the lighting, with some crazy alien stuff for instance!</li>
+<li>Basically everything you could think of :)</li>
+</ul>
+<p>In the next blog post, we will improve the rendering, and I will show you
+how I created the <em>&ldquo;fire&rdquo;-like</em> effect.</p>
+<h1 id="references">References</h1>
+<ol>
+<li><a href="https://graphics.pixar.com/library/ProductionVolumeRendering/paper.pdf">Fong J., Wrenninge M., Kulla C., &amp; Habel R., SIGGRAPH 2017, Production Volume Rendering</a></li>
+<li><a href="https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf">Engel K., Hadwiger M.,  M. Kniss J.,  Rezk-Salama, C., 2006, Real-Time Volume Graphics</a></li>
+<li><a href="http://www.pbr-book.org/3ed-2018/Volume_Scattering.html">Pharr M., Jakob .W, &amp; Humphreys .G, Physically Based Rendering: From Theory To Implementation</a></li>
+<li><a href="https://mrl.nyu.edu/~perlin/paper445.pdf">Perlin K., 97, Improving Noise</a></li>
+</ol>
+
+              
+                  
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+              
+          </article>
+          
+
+<ul class="tags__list">
+    
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/graphics/">graphics</a>
+    </li>
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/volume-rendering/">volume-rendering</a>
+    </li>
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/webgl/">webgl</a>
+    </li>
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/three.js/">three.js</a>
+    </li></ul>
+
+ <div class="pagination">
+  
+    <a class="pagination__item" href="https://davidpeicho.github.io/blog/welcome/">
+        <span class="pagination__label">Previous Post</span>
+        <span class="pagination__title">Welcome!</span>
+    </a>
+  
+
+  
+    <a class="pagination__item" href="https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/">
+      <span class="pagination__label">Next Post</span>
+      <span class="pagination__title" >(2/2) Behind The Scene: Cloud Raymarching Demo</a>
+    </a>
+  
+</div>
+
+          
+          <footer class="post__footer">
+            
+
+
+<div class="social-icons">
+  
+    
+    
+    
+      <a class="social-icons__link" title="Twitter"
+         href="https://twitter.com/DavidPeicho"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/twitter.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+      <a class="social-icons__link" title="GitHub"
+         href="https://github.com/DavidPeicho"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/github.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+      <a class="social-icons__link" title="LinkedIn"
+         href="https://www.linkedin.com/in/david-peicho/"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/linkedin.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+  
+</div>
+
+            <p>© 2026</p>
+          </footer>
+          </div>
+      </div>
+      
+    </div>
+
+
+  </main>
+
+   
+
+  
+
+  
+
+  <script
+    src="/js/index.min.59f2c87279aa950472de8ffbfb4764414ce922065abf8bddb2838eab8b4690be.js"
+    integrity="sha256-WfLIcnmqlQRy3o/7&#43;0dkQUzpIgZav4vdsoOOq4tGkL4="
+    crossorigin="anonymous"
+  >
+  </script>
+
+  
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
+
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
+    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
+
+  
+
+
+
+</body>
+
+</html>

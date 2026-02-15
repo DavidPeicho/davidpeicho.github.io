@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+
+    
+
+
+
+  
+    
+  
+
+
+
+ 
+
+<head>
+  
+  
+    
+    
+  
+
+  
+
+  
+  
+    
+  
+
+  <title>
+    
+      (2/2) Behind The Scene: Cloud Raymarching Demo | David Peicho&#39;s Blog
+    
+  </title>
+
+  <meta charset="UTF-8">
+  <meta name="language" content="en">
+  <meta
+    name="description"
+    content="Walthrough to understand how to visualize clouds using raymarching"
+  >
+  <meta name="keywords" content="volume rendering , raymarching , cloud , three.js , webgl">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="(2/2) Behind The Scene: Cloud Raymarching Demo | David Peicho&#39;s Blog" />
+  <meta
+    name="twitter:description"
+    content="Walthrough to understand how to visualize clouds using raymarching"
+  />
+  <meta name="twitter:site" content="@https://twitter.com/DavidPeicho" />
+  <meta name="twitter:creator" content="@https://twitter.com/DavidPeicho" />
+
+  
+
+  
+
+  <meta property="og:title" content="(2/2) Behind The Scene: Cloud Raymarching Demo | David Peicho&#39;s Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/" />
+  <meta property="og:description" content="Walthrough to understand how to visualize clouds using raymarching" />
+  <meta property="og:site_name" content="David Peicho&#39;s Blog" />
+
+  
+
+  
+    
+    
+    <meta name="twitter:image" content="https://davidpeicho.github.io/images/homepage.jpg" />
+    <meta property="og:image" content="https://davidpeicho.github.io/images/homepage.jpg" />
+    <meta property="og:image:secure_url" content="https://davidpeicho.github.io/images/homepage.jpg" />
+  
+
+  
+
+  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+
+  
+
+  
+  
+
+  
+
+  
+    
+    <link rel="stylesheet" href="/css/post.min.29a0cc079378d3f6d77ed439911265b811b7e7d5bb7151400a17332393a6326f.css" integrity="sha256-KaDMB5N40/bXftQ5kRJluBG359W7cVFAChczI5OmMm8="/>
+  
+
+  
+   
+  
+
+<script type="application/ld+json">
+  
+    {
+      "@context" : "http://schema.org",
+      "@type" : "BlogPosting",
+      "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/davidpeicho.github.io\/"
+      },
+      "articleSection" : "blog",
+      "name" : "(2\/2) Behind The Scene: Cloud Raymarching Demo",
+      "headline" : "(2\/2) Behind The Scene: Cloud Raymarching Demo",
+      "description" : "Walthrough to understand how to visualize clouds using raymarching",
+      "inLanguage" : "en-US",
+      "author" : "",
+      "creator" : "",
+      "publisher": "",
+      "accountablePerson" : "",
+      "copyrightHolder" : "",
+      "copyrightYear" : "2020",
+      "datePublished": "2020-10-19 00:00:00 \u002b0000 UTC",
+      "dateModified" : "2020-10-19 00:00:00 \u002b0000 UTC",
+      "url" : "https:\/\/davidpeicho.github.io\/blog\/cloud-raymarching-walkthrough-part2\/",
+      "wordCount" : "4742",
+      "keywords" : ["volume rendering", "raymarching", "cloud", "three.js", "webgl", "Blog"]
+    }
+  
+  </script>
+
+
+</head>
+
+
+<body class=" ">
+  <div class="burger__container">
+  <div class="burger" aria-controls="navigation" aria-label="Menu">
+    <div class="burger__meat burger__meat--1"></div>
+    <div class="burger__meat burger__meat--2"></div>
+    <div class="burger__meat burger__meat--3"></div>
+  </div>
+</div>
+
+  <nav class="nav" role="navigation">
+  <ul class="nav__list">
+    
+    
+      <li>
+        <a  href="/">home</a>
+      </li>
+    
+      <li>
+        <a  href="/about">about</a>
+      </li>
+    
+      <li>
+        <a  class="active"
+         href="/blog">blog</a>
+      </li>
+    
+      <li>
+        <a  href="/teaching">teaching</a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+   
+
+  <main>
+    
+    
+
+    <div class="flex-wrapper">
+      <div class="post__container">
+        <div class="post">
+          <header class="post__header">
+            <h1 id="post__title">(2/2) Behind The Scene: Cloud Raymarching Demo</h1>
+            <time datetime="2020-10-19 00:00:00 &#43;0000 UTC" class="post__date"
+            >Oct 19 2020</time>
+          </header>
+          <article class="post__content">
+              
+<p>Second part of <a href="https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/">Behind The Scene: Cloud Raymarching Demo</a>,
+in which we will go through how to improve the lighting and how to create the burning effect.</p>
+<p><img src="/images/homepage.jpg" alt="Demo"></p>
+<p>This blog post will be a lot less driven by theory, and a lot more by
+experimentation, tweaking, trial &amp; error :)</p>
+<p>In this post, we will have a look at:</p>
+<ul>
+<li>How to sample lights in the shader;</li>
+<li>How to add some eye candy (light color, absorption, etc&hellip;);</li>
+<li>how to improve performance;</li>
+<li>As well as how to reduce visual artefacts.</li>
+</ul>
+<h2 id="light-support">Light Support<a class="anchor" href="#light-support">#</a></h2>
+<p>Right now, light contribution is hardcoded in the shader. It&rsquo;s not user
+friendly and our shader doesn&rsquo;t interact with the scene lights.</p>
+<p>Using a <code>ShaderMaterial</code>, it&rsquo;s possible to directly re-use the lights added
+in the scene. For simplicity, we are only going to focus on the <a href="https://threejs.org/docs/#api/en/lights/PointLight">PointLight</a> type.</p>
+<p>Let&rsquo;s modify our material and our shader to receive the lights information
+from the scene:</p>
+<p><em>material.js</em></p>
+<pre><code class="language-js">import { ..., UniformsLib, UniformsUtils, ...} from 'three';
+
+export class CloudMaterial extends ShaderMaterial {
+
+  constructor() {
+    super({
+      vertexShader: cloudVertexShader,
+      fragmentShader: cloudFragmentShader,
+      uniforms: UniformsUtils.merge([
+        UniformsLib.lights,
+        {
+          ...
+        }
+      ])
+    });
+
+    ...
+
+    // This is where the magic happens. `true` makes the
+    // lights uniforms available to the shader.
+    this.lights = true;
+  }
+</code></pre>
+<p>Three.js is now aware we want our shader to be supplied with light data. We can
+modify the shader as well:</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">...
+precision highp float;
+precision highp sampler3D;
+
+...
+
+#if ( NUM_POINT_LIGHTS &gt; 0 )
+uniform PointLight pointLights[ NUM_POINT_LIGHTS ];
+#endif // NUM_POINT_LIGHTS &gt; 0
+</code></pre>
+<p>This code will compile the <code>uniform</code> line only if point lights are available
+in the scene. Three.js<code>THREE.WebGLRenderer</code> replaces the <code>NUM_POINT_LIGHTS</code> string
+by the number of lights visible. This is done in the method <a href="https://github.com/mrdoob/three.js/blob/dev/src/renderers/webgl/WebGLProgram.js">replaceLightNums()</a>.</p>
+<p>With the lights available in the shader, we can compute the lighting contribution
+at each sample position. Let&rsquo;s create a new function in charge of computing the
+irradiance coming from a given point:</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">/**
+ * Computes the diffuse lighting at the point `originViewSpace`
+ * with normal `normalViewSpace`.
+ *
+ * **NOTE**: For now, the lighting is done in **view** space.
+ * Be careful not to give model space / world space parameters.
+ */
+vec3
+computeIrradiance(vec3 originViewSpace, vec3 gradient)
+{
+  // Accumulated light contribution of all point lights.
+  vec3 acc = vec3(0.0);
+
+  #if ( NUM_POINT_LIGHTS &gt; 0 )
+
+  for (int i = 0; i &lt; NUM_POINT_LIGHTS; ++i) {
+    PointLight p = pointLights[ i ];
+    vec3 posToLight = p.position - originViewSpace;
+    float len = length(posToLight);
+
+    // The dot product tells us how colinear the light
+    // direction is to our normal.
+    // The more aligned, the more energy we want to reflect back.
+    float NdotL = dot(normalViewSpace, normalize(posToLight));
+    NdotL = max(0.1, NdotL);
+
+    // Non-linear light dimming with distance.
+    float dimming = pow(
+      saturate(-len / p.distance + 1.0), p.decay
+    );
+    acc += p.color * dimming * NdotL;
+  }
+
+  #endif
+
+  return acc;
+}
+</code></pre>
+<p>The loop goes through the list of lights, and computes the irradiance at the sample
+position. Let&rsquo;s decompose this function together to understand it bit by bit.</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">for (int i = 0; i &lt; NUM_POINT_LIGHTS; ++i) {
+  PointLight p = pointLights[ i ];
+  vec3 posToLight = p.position - originViewSpace;
+  float len = length(posToLight);
+
+  // The dot product tells us how colinear the light direction
+  // is to our normal. The more aligned, the more energy
+  // we want to reflect back.
+  float NdotL = dot(normalViewSpace, normalize(posToLight));
+  NdotL = max(0.1, NdotL);
+
+  ...
+}
+</code></pre>
+<p>We first retrieve the light data, and we compute the classic <a href="https://en.wikipedia.org/wiki/Lambert%27s_cosine_law#:~:text=In%20optics%2C%20Lambert's%20cosine%20law,light%20and%20the%20surface%20normal.">Lambert&rsquo;s Cosine Law</a>. When the normal is parallel to the
+direction from the sample to the light, the diffusion is <strong>maximized</strong>.
+At the opposite, when both are perpendicular and/or opposed, the light diffusion
+is closer to <strong>zero</strong>.</p>
+<p>For the final part of the loop body:</p>
+<pre><code class="language-glsl">float dimming = pow(saturate(-len / p.distance + 1.0), p.decay);
+acc += p.color * dimming * NdotL;
+</code></pre>
+<p>This applies a non-linear light dimming. The closer the sample is from
+the point light position, the more intense the light contribution will be.
+The energy received by the sample is thus <strong>inversely proportional</strong> to the <strong>distance</strong>
+between the sample and the light.</p>
+<blockquote class="hint warning">
+  I assume that the light <strong>always</strong> has a <code>distance</code> set. Otherwise,
+this equation is obviously wrong.
+</blockquote>
+
+<p>We can then call this function while sampling the volume:</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">...
+for (int i = 0; i &lt; NB_STEPS; ++i)
+{
+  float s = texture(uVolume, ray.origin).r;
+  s = smoothstep(0.12, 0.35, s);
+
+  vec3 gradient = computeGradient(ray.origin, delta);
+
+  // The gradient isn't exactly the `normal`. It's the positive
+  // change rate.
+  // The cloud is built with higher values at center.
+  // Thus, we negate the gradient to get the normal pointing outward.
+  vec3 viewSpaceNormal = transformDir(
+    modelViewMatrix,
+    - gradient
+  );
+  vec3 originViewSpace = transformPoint(
+    modelViewMatrix,
+    ray.origin
+  );
+
+  vec3 diffuse = computeIrradiance(
+    originViewSpace,
+    viewSpaceNormal
+  );
+
+  acc.rgb += (1.0 - acc.a) * s * (vec3(0.2) + diffuse);
+  acc.a += (1.0 - acc.a) * s;
+
+  if (acc.a &gt; 0.95) { break; }
+
+  ray.origin += ray.dir;
+  dist += delta;
+
+  if (dist &gt;= far) { break; }
+}
+  ...
+</code></pre>
+<p>Three.js sends the light position in <strong>View Space</strong>. However, the ray origin
+is expressed in <strong>Model Space</strong>. In order to be consistent, we can either:</p>
+<ul>
+<li>Transform the ray and normal into <strong>View Space</strong>, and perform computations in <strong>View Space</strong>;</li>
+<li>Transform the light into <strong>Model Space</strong>, and perform computations in <strong>Model Space</strong>;</li>
+</ul>
+<p>It would be more efficient to have all lights in <strong>Model Space</strong> transformed
+at the beggining of the fragment shader. This way, we wouldn&rsquo;t need to perform
+any change of basis while sampling the volume.</p>
+<p>However, it adds some complexity that isn&rsquo;t really needed here for almost
+no performance gain on a small amount of lights. Thus, I will just go for
+the lazy route and transform the ray / normal into <strong>View Space</strong>.</p>
+<p>The <code>transformDir()</code> and <code>transformPoint()</code> functions respectively transform a direction
+and a point into a given space (basically, it applies a <code>mat4</code> to the vector):</p>
+<pre><code class="language-glsl">vec3
+transformPoint(mat4 transform, vec3 point)
+{
+  vec4 projected = transform * vec4(point, 1.0);
+  return (projected.xyz / projected.w).xyz;
+}
+
+vec3
+transformDir(mat4 transform, vec3 dir)
+{
+  return normalize(transform * vec4(dir, 0.0)).xyz;
+}
+</code></pre>
+<p>One last thing, you may have notice the negated gradient:</p>
+<pre><code class="language-glsl">// The gradient is negated here.
+vec3 viewSpaceNormal = transformDir(
+  modelViewMatrix,
+  - gradient
+);
+</code></pre>
+<p>The gradient <strong>is not</strong> comparable to a normal to the surface.
+The gradient follows the positive rate of change. However, our cloud is defined
+with smaller values going outward. The normal can thus be approximated by taking the opposite of the gradient.</p>
+<p>Finally, we can check that we did everything right by adding a light to the scene:</p>
+<p><em>index.js</em></p>
+<pre><code class="language-js">...
+// Base color of the light, i.e., red
+const lightColor = (new Color(0xeb4d4b)).convertSRGBToLinear();
+const light = new PointLight(
+  lightColor,
+  2.0,
+  2.75,
+  1.25,
+  1.0
+);
+light.position.set(1.0, 1.0, 2.0);
+light.updateMatrix();
+light.updateMatrixWorld();
+...
+scene.add(cloud, light);
+</code></pre>
+<p><img src="./light-support.jpg" alt="Light Support"></p>
+<h2 id="animate-light-position">Animate Light Position<a class="anchor" href="#animate-light-position">#</a></h2>
+<p>In the demo, the light is automatically rotating around the cloud. There are
+many ways to achieve this and it&rsquo;s up to personal preferences.</p>
+<p>I decided to go for a simple modulation of the coordinates using the
+<code>sin()</code> and <code>cos()</code> functions:</p>
+<p><em>index.js</em></p>
+<pre><code class="language-js">function render() {
+  const elapsed = clock.getElapsedTime();
+
+  // Animate light position smoothly using `sin` and `cos`
+  // functions.
+  const speed = 1.5;
+  light.position.set(
+    Math.sin(elapsed * speed) * 0.75,
+    Math.cos(elapsed * speed * 1.5 + Math.PI * 0.5) * 0.5,
+    Math.cos(elapsed * speed * 1.15) * 0.5 + 1.0
+  ).normalize().multiplyScalar(1.15);
+  light.updateMatrix();
+  light.updateMatrixWorld();
+
+  cloud.material.update(cloud, camera);
+
+  renderer.render(scene, camera);
+  window.requestAnimationFrame(render);
+}
+</code></pre>
+<p>The <code>x</code> and <code>y</code> coordinates are respectively scaled by <code>0.75</code> and <code>0.5</code>
+to prevent the light from going too far away from the visible front part of the cloud.</p>
+<p><video autoplay loop muted playsinline src="light-position.mp4"></video></p>
+<h2 id="animate-volume-properties">Animate Volume Properties<a class="anchor" href="#animate-volume-properties">#</a></h2>
+<p>Modulating temporally the volume attributes will make the demo more dynamic.
+Everything is static except the light, and we are going to change that!</p>
+<p>We can create a new material parameter that will represents the cloud absorption.
+It&rsquo;s going to be a simple factor applied to every sample.</p>
+<p>As usual, let&rsquo;s modify the material and the shader to add a new uniform.</p>
+<p><em>material.js</em></p>
+<pre><code class="language-js">export class CloudMaterial extends ShaderMaterial {
+
+  constructor() {
+    super({
+      ...
+      uniforms: UniformsUtils.merge([
+        UniformsLib.lights,
+        {
+          ...
+          uAbsorption: { value: 0.5 },
+          ...
+        }
+      ])
+    });
+
+    ...
+
+  }
+
+  set absorption(value) {
+    this.uniforms.uAbsorption.value = value;
+  }
+
+  get absorption() {
+    return this.uniforms.uAbsorption.value;
+  }
+
+  ...
+</code></pre>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">precision highp float;
+precision highp sampler3D;
+
+...
+
+// Absorption of the cloud. The closer to 0.0,
+// the more transparent it appears.
+uniform float uAbsorption;
+
+...
+
+void
+main()
+{
+
+  ...
+
+  for (int i = 0; i &lt; NB_STEPS; ++i)
+  {
+    float s = texture(uVolume, ray.origin).r;
+    // Applies the absorption factor the sample.
+    s = smoothstep(0.12, 0.35, s) * uAbsorption;
+    ...
+  }
+
+  ...
+}
+
+</code></pre>
+<p>Just like we did for the light position, we will modulate the absorption using
+the <code>sin()</code> function:</p>
+<p><em>index.js</em></p>
+<pre><code class="language-js">...
+
+function render() {
+  ...
+
+  // Maps the sin value from [-1; 1] tp [0; 1].
+  const sinNorm = Math.sin(elapsed * 0.75) * 0.5 + 0.5;
+  // Maps the sin value from [0; 1] to [0.05; 0.35].
+  cloud.material.absorption = sinNorm * 0.35 + 0.05;
+
+  ...
+}
+</code></pre>
+<p>We first re-map the <code>sin()</code> value into the range <code>[0; 1]</code>, and we then map the
+normalized range to <code>[0.05; 0.35]</code>.</p>
+<p>The absorption is used as a transparency parameter. However, we do not simply
+modify the final alpha value of the fragment. By modifying every sample, we can
+obtain a nice &ldquo;fuzzy&rdquo; look for low absorption values.</p>
+<p><video autoplay loop muted playsinline src="absorption.mp4"></video></p>
+<p>If you had a look at <a href="https://github.com/DavidPeicho/davidpeicho.github.io/tree/master/src">the final code</a>,
+you may have seen that I exposed more uniforms to the user.
+Those uniforms allow me to change more parameters to create more dynamism.</p>
+<p>This is one of my favorite part to code. Don&rsquo;t be afraid of modifying properties,
+changing colors, etc&hellip; With all those parameters, you can make
+the cloud look <strong>exactly</strong> the way you want it to look!</p>
+<h2 id="burning-effect">Burning Effect<a class="anchor" href="#burning-effect">#</a></h2>
+<p>In the <a href="/">demo</a>, the burning effect works this way:</p>
+<ol>
+<li>The user performs a click that starts the burning effect;</li>
+<li>The light intensity and the cloud color are interpolated over a short period of time;</li>
+<li>When the cloud is considered &ldquo;burnt&rdquo;, it slowly retrieves its original color.</li>
+</ol>
+<p>We already added everything we need in the shader, and thus there is no
+modification needed to achieve this!</p>
+<p>We are going to change the light intensity and color over time. The code can be
+improved and refactored. I will let the refactoring as an exercise
+(please don&rsquo;t call me lazy).</p>
+<p>We will create 3 states:</p>
+<ol>
+<li><strong>Idle</strong></li>
+<li><strong>Burning</strong></li>
+<li><strong>Recovering</strong></li>
+</ol>
+<p><em>index.js</em></p>
+<pre><code class="language-js">...
+
+// Color of the light when the cloud is burning, i.e., orange
+const burningColor = (new Color(0xe67e22)).convertSRGBToLinear();
+
+// `0` ⟶ Idle, `1` ⟶ Burning, `2` ⟶ Idle
+let state = 0;
+// Used to smootly create the burning and recovery effects.
+let timer = 0.0;
+
+document.body.addEventListener('mousedown', () =&gt; {
+  light.color.copy(burningColor)
+  state = 1;
+  timer = 0.0;
+});
+
+function render() {
+  ...
+}
+</code></pre>
+<p>The code should speak by itself. When the mouse is down, we change the color
+of the light to something orangish, and we set the state to <strong>Burning</strong>.</p>
+<p>We also need to increase the intensity of the light to saturate the color. The
+insensity needs to be smoothly (but quickly) interpolated:</p>
+<p><em>index.js</em></p>
+<pre><code class="language-js">...
+
+// Total burning time, in seconds.
+const burningTime = 2.5;
+
+function render() {
+  switch (state) {
+    // Burning.
+    case 1: {
+      // Normalized value of the timer in range [0...1].
+      const t = timer / burningTime;
+      light.intensity = (
+        timer &lt; burningTime * 0.5 ? t : 1.0 - t
+      ) * 15;
+      // Checks whether the burning is over or not.
+      if (timer &gt;= burningTime) {
+        light.color.copy(lightColor);
+        timer = 0.0;
+        state = 2;
+      }
+      break;
+    }
+  }
+
+  timer += delta;
+}
+
+</code></pre>
+<p>The code may seem complicated, but actually only changes the intensity up
+to <strong>15</strong> in <code>burningTime * 0.5</code> seconds, and then goes down to <strong>0</strong> during
+another <code>burningTime * 0.5</code> seconds.</p>
+<p>We will do the same thing for the recovery. However, let&rsquo;s add small delay before
+starting to recover to the original light intensity:</p>
+<p><em>index.js</em></p>
+<pre><code class="language-js">...
+
+// Total recovery time, in seconds.
+const recoveryTime = 3.5;
+// Delay before starting to recover, in seconds.
+const recoveryDelay = 2.0;
+
+function render() {
+
+  ...
+
+  switch (state) {
+    ...
+    // Recovery
+    case 2: {
+      const t = (timer - recoveryDelay) / recoveryTime;
+      light.intensity = t &lt; 0 ? 0 : t * lightIntensity;
+      if (timer &gt;= recoveryTime + recoveryDelay) {
+        state = 0;
+      }
+      break;
+    }
+  }
+
+  ...
+
+}
+
+</code></pre>
+<blockquote class="hint warning">
+  If you leave your browser tab, the <code>delta</code> time will be really high.
+This will completely mess up our light intensity. In order to
+fix that, you are advised to <strong>clamp</strong> the intensity values obtained when
+interpolating.
+</blockquote>
+
+<p>And voilà! You made it! Appreciate the final result:</p>
+<p><video autoplay loop muted playsinline src="light-states.mp4"></video></p>
+<p>If you are stuck on something, below is the entire <code>index.js</code> file. Feel free to
+click on it to inspect the code.</p>
+<div class="expand">
+  <label>
+    <div class="expand-head">
+      <span>index.js</span>
+      <span>↕</span>
+    </div>
+    <input type="checkbox" style="display: none;" />
+    <div class="expand-content">
+      <pre><code class="language-js">window.onload = function () {
+  const canvas = document.getElementsByTagName('canvas')[0]
+  const renderer = new WebGLRenderer({ canvas });
+  const camera = new PerspectiveCamera();
+  camera.position.z = 2.0;
+  camera.updateMatrix();
+  camera.updateMatrixWorld();
+
+  /** Parameters. */
+  const lightIntensity = 1.5;
+  // Base color of the light, i.e., red
+  const lightColor = (new Color(0xeb4d4b)).convertSRGBToLinear();
+  // Color of the light when the cloud is burning, i.e., orange
+  const burningColor = (new Color(0xe67e22)).convertSRGBToLinear();
+
+  const cloud = new Cloud();
+  cloud.material.volume = createPerlinTexture({ scale: 0.09 });
+  cloud.material.baseColor = (new Color(0x7188a8)).convertSRGBToLinear();
+
+  const light = new PointLight(
+    lightColor,
+    lightIntensity,
+    2.75,
+    1.25,
+    1.0
+  );
+  light.position.set(1.0, 1.0, 2.0);
+  light.updateMatrix();
+  light.updateMatrixWorld();
+
+  const scene = new Scene();
+  scene.background = new Color(0xf7f7f7);
+  scene.add(cloud, light);
+
+  const clock = new Clock();
+  clock.start();
+
+  // The observer triggers an event when the canvas is resized.
+  // On resize, we can update the camera aspect ratio,
+  // and update the framebuffer size using `renderer.setSize()`.
+  const onResize = new ResizeObserver(entries =&gt; {
+    if (entries.length &gt; 0) {
+      const { width, height } = entries[0].contentRect;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height, false);
+    }
+  }, );
+  onResize.observe(renderer.domElement);
+
+  // Total burning time, in seconds.
+  const burningTime = 2.5;
+  // Total recovery time, in seconds.
+  const recoveryTime = 3.5;
+  // Delay before starting to recover, in seconds.
+  const recoveryDelay = 2.0;
+
+  // `0` ⟶ Idle, `1` ⟶ Burning, `2` ⟶ Idle
+  let state = 0;
+  // Used to smootly create the burning and recovery effects.
+  let timer = 0.0;
+
+  document.body.addEventListener('mousedown', () =&gt; {
+    light.color.copy(burningColor)
+    state = 1;
+    timer = 0.0;
+  });
+
+  function render() {
+    const delta = clock.getDelta();
+    const elapsed = clock.getElapsedTime();
+
+    // Animate light position smoothly using `sin` and `cos` functions.
+    const speed = 1.5;
+    light.position.set(
+      Math.sin(elapsed * speed) * 0.75,
+      Math.cos(elapsed * speed * 1.5 + Math.PI * 0.5) * 0.5,
+      Math.cos(elapsed * speed * 1.15) * 0.5 + 1.0
+    ).normalize().multiplyScalar(1.15);
+    light.updateMatrix();
+    light.updateMatrixWorld();
+
+    cloud.material.update(cloud, camera);
+    cloud.material.absorption = (Math.sin(elapsed * 0.75) * 0.5 + 0.5) * 0.35 + 0.05;
+
+    switch (state) {
+      // Burning.
+      case 1: {
+        const t = timer / burningTime;
+        light.intensity = (timer &lt; burningTime * 0.5 ? t : 1.0 - t) * 15;
+        // Checks whether the burning is over or not.
+        if (timer &gt;= burningTime) {
+          light.color.copy(lightColor);
+          timer = 0.0;
+          state = 2;
+        }
+        break;
+      }
+      // Recovery
+      case 2: {
+        const t = (timer - recoveryDelay) / recoveryTime;
+        light.intensity = t &lt; 0 ? 0 : t * lightIntensity;
+        if (timer &gt;= recoveryTime + recoveryDelay) {
+          state = 0;
+        }
+        break;
+      }
+    }
+
+    // Increases the timer using the time between two frames.
+    timer += delta;
+
+    renderer.render(scene, camera);
+    window.requestAnimationFrame(render);
+  }
+  render();
+};
+</code></pre>
+
+    </div>
+  </label>
+</div>
+
+<h2 id="reducing-artefacts">Reducing Artefacts<a class="anchor" href="#reducing-artefacts">#</a></h2>
+<p>You may or may not have noticed, but it&rsquo;s possible to see some sampling artefacts.</p>
+<p><img src="./artefacts.jpg" alt="Sampling Artefacts"></p>
+<p>Those artefacts are due to undersampling. When marching the ray, the sampling
+may be incomplete if the dataset is made up of high frequencies. In other words,
+we may miss some important data due to the size of our fixed marching step.
+The drawing below will help you understand the issue:</p>
+<p><img src="./marching-miss.jpg" alt="Sampling Artefacts Fixed Step"></p>
+<p>Performing <em>&ldquo;good&rdquo;</em> sampling is an advanced topic, <strong>way</strong> beyond the scope
+of this little blog post. I can re-direct curious readers to:</p>
+<ul>
+<li><a href="http://www.pbr-book.org/3ed-2018/Sampling_and_Reconstruction/Sampling_Theory.html">[Pharr M. et al., Physically Based Rendering: From Theory To Implementation, Chapter &lsquo;Sampling Theory&rsquo;]</a></li>
+<li><a href="https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf">Engel K. et al, Real-Time Volume Graphics, Chapter &lsquo;Sampling Artifacts&rsquo;</a></li>
+</ul>
+<p>There is a really easy trick that can help transform those artefacts into
+noisier artefacts. That doesn&rsquo;t sound appealing stated like that, but low-frequency
+noise is something that is easily <em>&ldquo;canceled-out&rdquo;</em> by the humain brain.</p>
+<p>The trick is to use Stochastic Jittering <a href="https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf">[Engel K. et al, 03]</a>,
+which consists in slightling moving the ray origin before marching the volume.</p>
+<p>Adding a random offset to the ray origin will help catch those &ldquo;missed&rdquo; data points.
+Stochastic Jittering being random, the points of interest <strong>may</strong> be missed, or <strong>may not</strong> be.
+This is this concept of random offset that introduces visual noise.</p>
+<p>The good thing with Stochastic Jittering is that it&rsquo;s extremely easy to implement.
+Let&rsquo;s first modify our material to receive the current frame number. This number
+will be used to get a <em>&ldquo;new&rdquo;</em> random number in the shader at every frame:</p>
+<p><em>material.js</em></p>
+<pre><code class="language-js">export class CloudMaterial extends ShaderMaterial {
+
+  constructor() {
+    super({
+      ...
+      uniforms: UniformsUtils.merge([
+        UniformsLib.lights,
+        {
+          ...
+          uFrame: { value: 0.0 },
+        }
+      ])
+    });
+  }
+
+  set frameNum(val) {
+    this.uniforms.uFrame.value = val;
+  }
+
+  get frameNum() {
+    return this.uniforms.uFrame.value;
+  }
+
+  ...
+}
+</code></pre>
+<p><em>index.js</em></p>
+<pre><code class="language-js">function render() {
+  ...
+
+  ++cloud.material.frameNum;
+
+  ...
+}
+</code></pre>
+<blockquote class="hint warning">
+  Don&rsquo;t forget to add the uniform as well in the shader.
+</blockquote>
+
+<pre><code class="language-glsl">...
+
+uint
+wang_hash(inout uint seed)
+{
+  seed = (seed ^ 61u) ^ (seed &gt;&gt; 16u);
+  seed *= 9u;
+  seed = seed ^ (seed &gt;&gt; 4u);
+  seed *= 0x27d4eb2du;
+  seed = seed ^ (seed &gt;&gt; 15u);
+  return seed;
+}
+
+float
+randomFloat(inout uint seed)
+{
+  return float(wang_hash(seed)) / 4294967296.;
+}
+
+void
+main()
+{
+  ...
+
+  // https://blog.demofox.org/2020/05/25/casual-shadertoy-path-tracing-1-basic-camera-diffuse-emissive/
+  uint seed =
+    uint(gl_FragCoord.x) * uint(1973) +
+    uint(gl_FragCoord.y) * uint(9277) +
+    uint(uFrame) * uint(26699);
+
+  // Random number in the range [-1; 1].
+  float randNum = randomFloat(seed) * 2.0 - 1.0;
+  // Adds a little random offset to the ray origin to reduce artefacts.
+  ray.origin += ray.dir * randNum;
+  // **NOTE**: don't forget to adapt the max distance to travel because
+  // we move the origin!
+  dist += randNum * delta;
+
+  ...
+}
+</code></pre>
+<p>I used the <a href="http://web.archive.org/web/20060507103516/http://www.cris.com/~Ttwang/tech/inthash.htm">Wang Hash</a> generator
+to create a random number in the range <code>[0; 1]</code>. There are other RNG, feel free
+to try them. There is actually a nice <a href="https://www.shadertoy.com/view/XlGcRh">ShaderToy</a>
+that compares several hash functions on the GPU.</p>
+<p>The last three lines of code do exactly what we talked about: they are used
+to slightly offset the ray origin.</p>
+<p>The line</p>
+<pre><code class="language-glsl">dist += randNum * delta;
+</code></pre>
+<p>is <strong>super</strong> important. As we modified the ray origin, we also need to change
+the original distance traveled. If you forget this line, the ray may oversample
+or undersample the volume.</p>
+<blockquote class="hint info">
+  <strong>To Remember:</strong> Stochastic Jittering transforms wood-grain artefacts into noise.
+Technically, we now have a new type of artefact: noise. However, low-frequency noise appears
+less visible, and is also more visually acceptable.
+</blockquote>
+
+<blockquote class="hint warning">
+  Adding randmoness to texture fetch affects negatively performance. Randomized
+memory access leads to <strong>cache misses</strong>, which lead to performance drop.
+</blockquote>
+
+<h2 id="improving-performance">Improving Performance<a class="anchor" href="#improving-performance">#</a></h2>
+<h3 id="performance-gradient-cache">Performance: Gradient Cache<a class="anchor" href="#performance-gradient-cache">#</a></h3>
+<p>To compute the gradients, we used the <a href="https://en.wikipedia.org/wiki/Finite_difference_method">Finite-difference</a>
+method and we ended up with <strong>6</strong> extra fetches. Texture fetch is an expensive operation.
+We want to minimize the number of fetches as much as possible.</p>
+<p>The good news is that our volume is <strong>static</strong>. The voxels are generated when
+we create our 3D texture (section <a href="https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/#generating-a-volume">Generating a Volume</a>). It&rsquo;s thus possible to
+pre-compute all the gradients and save them into another 3D texture.</p>
+<p>For performance purposes, I decided to generate the gradient texture in a background
+thread using a <a href="https://www.w3schools.com/html/html5_webworkers.asp">Worker</a>.</p>
+<p>The code to generate the texture is pretty simple, it&rsquo;s basically the
+translation of what we did in the shader in GLSL.</p>
+<p>Let&rsquo;s create a Worker in a standalone file:</p>
+<div class="expand">
+  <label>
+    <div class="expand-head">
+      <span>gradient-generator.worker.js</span>
+      <span>↕</span>
+    </div>
+    <input type="checkbox" style="display: none;" />
+    <div class="expand-content">
+      <pre><code class="language-js">
+/**
+ * This worker generates a gradient buffer  of a 3D texture.
+ *
+ * A copy of the texture is sent to the worker, so the host is still able
+ * to use the texture while the generation is ongoing.
+ */
+
+import { Vector3 } from 'three/src/math/Vector3';
+
+function clamp() {
+  return Math.min(Math.max(v, min), max);
+}
+
+/**
+ * Triggered when the host send a message to the worker.
+ *
+ * The worker assumes any message should compute the gradient texture and send
+ * it back.
+ */
+onmessage = (event) =&gt; {
+  const { width, height, depth, buffer } = event.data;
+
+  const voxelPerSlice = width * height;
+  const voxelCount = width * height * depth;
+
+  /**
+   * Computes the flattened index (0...voxelCount - 1) of a cartesian
+   * coordinates tuple
+   *
+   * @param {number} x - Cartesian x-coordinate
+   * @param {number} y - Cartesian y-coordinate
+   * @param {number} z - Cartesian z-coordinate
+   */
+  function getIndex(x, y, z) {
+    x = clamp(x, 0, width - 1);
+    y = clamp(y, 0, height - 1);
+    z = clamp(z, 0, depth - 1);
+    return x + y * width + voxelPerSlice * z;
+  }
+
+  const gradientBuffer = new Uint8Array(voxelCount * 3);
+  const gradient = new Vector3();
+
+  for (let i = 0; i &lt; voxelCount; ++i) {
+    const x = i % width;
+    const y = Math.floor((i % voxelPerSlice) / width);
+    const z = Math.floor(i / voxelPerSlice);
+
+    // Computes the gradient at position `x`, `y`, `z`.
+    // The gradient is then mapped from the range
+    // [-1; 1] to [0; 1] to be stored in a texture.
+    gradient.set(
+      buffer[getIndex(x + 1, y, z)] - buffer[getIndex(x - 1, y, z)],
+      buffer[getIndex(x, y + 1, z)] - buffer[getIndex(x, y - 1, z)],
+      buffer[getIndex(x, y, z + 1)] - buffer[getIndex(x, y, z - 1)]
+    ).normalize().multiplyScalar(0.5).addScalar(0.5);
+
+    const dst = i * 3;
+    gradientBuffer[dst] = gradient.x * 255;
+    gradientBuffer[dst + 1] = gradient.y * 255;
+    gradientBuffer[dst + 2] = gradient.z * 255;
+  }
+
+  postMessage(gradientBuffer, [ gradientBuffer.buffer ]);
+}
+</code></pre>
+
+    </div>
+  </label>
+</div>
+
+<p>This function works by computing the gradient value at every location $ (x, y, z) $
+in the volume texture. We can&rsquo;t save negative values in a normalized texture,
+we thus map the gradient from the range <code>[-1; 1]</code> to <code>[0; 1]</code>, which is achieved
+with the line:</p>
+<pre><code class="language-js">...multiplyScalar(0.5).addScalar(0.5);
+</code></pre>
+<p>We can update the shader to support reading gradients directly from a texture:</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">vec3
+computeGradient(vec3 position, float step)
+{
+  #ifdef USE_GRADIENT_MAP
+
+  // Gradients are saved in the range `[0; 1]`. We need to map it back to
+  // [-1; 1].
+  return normalize(texture(uGradientMap, position).rgb * 2.0 - 1.0);
+
+  #else // !USE_GRADIENT_MAP
+
+  return normalize(vec3(
+    getSample(position.x + step, position.y, position.z)
+    - getSample(position.x - step, position.y, position.z),
+    getSample(position.x, position.y + step, position.z)
+    - getSample(position.x, position.y - step, position.z),
+    getSample(position.x, position.y, position.z + step)
+    - getSample(position.x, position.y, position.z - step)
+  ));
+
+  #endif // USE_GRADIENT_MAP
+}
+</code></pre>
+<p>The <code>USE_GRADIENT_MAP</code> macro is used to either compute the gradient directly in the shader,
+or fetch it from the texture. Each time we switch from real-time gradient computation
+to texture-based computation, we need to recompile the shader.</p>
+<p>Let&rsquo;s modify the material to accept a gradient texture, and programmatically
+set the <code>USE_GRADIENT_MAP</code> macro if a texture is used.</p>
+<p><em>material.js</em></p>
+<pre><code class="language-js">export class CloudMaterial extends ShaderMaterial {
+
+  constructor() {
+    super({
+      ...
+      uniforms: UniformsUtils.merge([
+        UniformsLib.lights,
+        {
+          ...
+          uGradientMap: { value: null },
+          ...
+        }
+      ])
+    });
+
+    // By default, the shader is compiled to compute the
+    // gradients during the fragment shader step.
+    this.defines.USE_GRADIENT_MAP = false;
+  }
+
+  ...
+
+  set gradientMap(value) {
+    this.uniforms.uGradientMap.value = value;
+    this.needsUpdate = (!!value ^ !!this.defines.USE_GRADIENT_MAP) !== 0;
+    this.defines.USE_GRADIENT_MAP = !!value;
+  }
+
+  /**
+   * Pre-computed gradients texture used to speed
+   * up the rendering
+   */
+  get gradientMap() {
+    return this.uniforms.uGradientMap.value;
+  }
+
+  ...
+}
+</code></pre>
+<p>The setter <code>gradientMap</code> first updates the uniform, and then notifies Three.js
+to re-compile our shader. Using:</p>
+<pre><code class="language-js">this.needsUpdate = (
+  !!value ^ !!this.defines.USE_GRADIENT_MAP
+) !== 0;
+</code></pre>
+<p>The shader will only be re-compiled when using a texture or not using any. Using the setter
+with two different textures for instance <strong>will not</strong> re-trigger the compilation.</p>
+<p>Using a worker, we can start to render the cloud without the gradients texture.
+Whenever the texture is available, we can re-compile our shader and assign it to the uniform.</p>
+<p><em>index.js</em></p>
+<pre><code class="language-js">import GradientWorker from './workers/gradient-generator.worker.js';
+
+...
+
+window.onload = function () {
+  ...
+
+  cloud.material.volume = createPerlinTexture({ scale: 0.09 });
+  const {
+    width,
+    height,
+    depth,
+    data
+  } = cloud.material.volume.image;
+
+  const worker = new GradientWorker();
+  worker.postMessage({ width, height, depth, buffer: data });
+
+  // `onmessage` is triggered whenever the worker is done
+  // computing the gradient texture.
+  worker.onmessage = (e) =&gt; {
+    const texture = new DataTexture3D(
+      new Uint8Array(e.data),
+      width,
+      height,
+      depth
+    );
+    texture.format = RGBFormat;
+    texture.minFilter = LinearFilter;
+    texture.magFilter = LinearFilter;
+    texture.unpackAlignment = 1;
+
+    cloud.material.gradientMap = texture;
+    worker.terminate();
+  };
+};
+</code></pre>
+<blockquote class="hint info">
+  I use <a href="https://webpack.js.org/loaders/worker-loader/">worker-loader</a> to seamlessly
+import the worker. This package does all the manual work for you. If you don&rsquo;t use
+anything to import the worker, you will need to set it up <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers">manually</a>.
+</blockquote>
+
+<p>To be honest, I compared the speed of the sychronous and asynchronous version,
+and it&rsquo;s not really faster using a worker. Spawning it and
+transfering data from the host are slow operations.</p>
+<p>A better idea would be to use a worker only when the volume to generate
+has higher dimensions, and use a synchronous version on slower volumes.</p>
+<h3 id="performance-loop-unrolling">Performance: Loop Unrolling<a class="anchor" href="#performance-loop-unrolling">#</a></h3>
+<p>It shouldn&rsquo;t impact too much performance, but it&rsquo;s a good idea to perform
+loop unrolling, i.e., removing a loop and copy pasting the code the number
+of times the loop runs.</p>
+<p>Obviously, loop unrolling is <strong>only</strong> possible when you can find the bounds of
+the loop at compile time.</p>
+<p>When Three.js compiles a shader, it also looks for patterns such as:</p>
+<ul>
+<li><code>#pragma unroll_loop_start</code></li>
+<li>and <code>#pragma unroll_loop_end</code></li>
+</ul>
+<p>Those patterns, when found, get replaced by the content of the loop they
+encircle, as <strong>many times as specified</strong>.</p>
+<p>Let&rsquo;s modify our <code>computeIrradiance()</code> function to add loop unrolling:</p>
+<p><em>cloud.frag.glsl</em></p>
+<pre><code class="language-glsl">vec3
+computeIrradiance(vec3 originViewSpace, vec3 normalViewSpace)
+{
+  // Accumulated light contribution of all point lights.
+  vec3 acc = vec3(0.0);
+
+  #if ( NUM_POINT_LIGHTS &gt; 0 )
+
+  PointLight p;
+  vec3 posToLight;
+  float len = 0.0;
+  float NdotL = 1.0;
+
+  #pragma unroll_loop_start
+  for ( int i = 0; i &lt; NUM_POINT_LIGHTS; i ++ ) {
+    p = pointLights[ i ];
+    posToLight = p.position - originViewSpace;
+    len = length(posToLight);
+    NdotL = dot(normalViewSpace, normalize(posToLight));
+    NdotL = max(0.1, NdotL);
+
+    // I removed the `dimming` variable for readability here.
+    acc +=
+      p.color *
+      pow(saturate( -len / p.distance + 1.0 ), p.decay) *
+      NdotL;
+  }
+  #pragma unroll_loop_end
+
+  #endif
+
+  return acc;
+}
+</code></pre>
+<p>If you have two lights, this will get transformed to:</p>
+<pre><code class="language-glsl">#if ( 2 &gt; 0 )
+
+PointLight p;
+vec3 posToLight;
+float len = 0.0;
+float NdotL = 1.0;
+
+p = pointLights[ 0 ];
+posToLight = p.position - originViewSpace;
+len = length(posToLight);
+NdotL = dot(normalViewSpace, normalize(posToLight));
+NdotL = max(0.1, NdotL);
+acc +=
+  p.color *
+  pow(saturate( -len / p.distance + 1.0 ), p.decay) *
+  NdotL;
+
+p = pointLights[ 1 ];
+posToLight = p.position - originViewSpace;
+len = length(posToLight);
+NdotL = dot(normalViewSpace, normalize(posToLight));
+NdotL = max(0.1, NdotL);
+acc +=
+  p.color *
+  pow(saturate( -len / p.distance + 1.0 ), p.decay) *
+  NdotL;
+
+#endif
+</code></pre>
+<blockquote class="hint warning">
+  If you look closely, you will see that <code>p</code>, <code>posToLight</code>, and basically all
+variables defined in the loop have been moved out of the loop when using
+unrolling. Once unrolled, Three.js doesn&rsquo;t keep the scope of the loop, you thus
+can&rsquo;t add definition in the loop or you will get a compile time re-definition <strong>error</strong>.
+</blockquote>
+
+<h2 id="going-further">Going Further<a class="anchor" href="#going-further">#</a></h2>
+<h4 id="cleaning-the-code">Cleaning The Code</h4>
+<p>For this tutorial, I didn&rsquo;t want to show you all the re-factoring I have been
+doing. I don&rsquo;t think it helps to understand what&rsquo;s going on. A good idea would
+be to clean a bit the code and make it more customizable. You don&rsquo;t need to
+overengineer it, just improve it for your own use case :)</p>
+<p>For example, there are a lot of values we interpolate. I decided to make
+a simple <a href="https://github.com/DavidPeicho/davidpeicho.github.io/blob/master/src/frontpage/math.js">interpolator</a>
+that would handle delays and scaling.</p>
+<h4 id="performance-improvements">Performance Improvements</h4>
+<p>There are several potential performance improvements that could be made. It would
+be better to transform all lights into the cloud local space before ray marching.
+This would allow us to perform the lighting in model space instead of transforming
+the light at each step.</p>
+<h4 id="more-tweaking">More Tweaking!</h4>
+<p>Again, don&rsquo;t hesitate to tweak the result! Make the cloud rotate, change scale smoothly,
+change the light intensity, color, etc&hellip;</p>
+<p>Do not hesitate to try out stuff to see what could bring some sparks!</p>
+<h2 id="final-note">Final Note<a class="anchor" href="#final-note">#</a></h2>
+<p>I hope you liked this mini serie! I also hope you learnt something new while
+having fun making this could your own!</p>
+<p>I don&rsquo;t have yet support for any commenting module. In the meantime, if you want
+to ask me anything, or if you found errors that need correction, please:</p>
+<ul>
+<li>Contact me on Twitter (<a href="https://twitter.com/DavidPeicho">@DavidPeicho</a>)</li>
+<li>Fill an issue on my <a href="https://github.com/DavidPeicho/davidpeicho.github.io">blog GitHub</a>.</li>
+</ul>
+<h2 id="references">References<a class="anchor" href="#references">#</a></h2>
+<ol>
+<li><a href="https://doc.lagout.org/science/0_Computer%20Science/Real-Time%20Volume%20Graphics.pdf">Engel K., Hadwiger M.,  M. Kniss J.,  Rezk-Salama, C., 2006, Real-Time Volume Graphics</a></li>
+<li><a href="http://www.pbr-book.org/3ed-2018/Volume_Scattering.html">Pharr M., Jakob .W, &amp; Humphreys .G, Physically Based Rendering: From Theory To Implementation</a></li>
+</ol>
+
+              
+                  
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+              
+          </article>
+          
+
+<ul class="tags__list">
+    
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/graphics/">graphics</a>
+    </li>
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/volume-rendering/">volume-rendering</a>
+    </li>
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/webgl/">webgl</a>
+    </li>
+    <li class="tag__item">
+        <a class="tag__link" href="https://davidpeicho.github.io/tags/three.js/">three.js</a>
+    </li></ul>
+
+ <div class="pagination">
+  
+    <a class="pagination__item" href="https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/">
+        <span class="pagination__label">Previous Post</span>
+        <span class="pagination__title">(1/2) Behind The Scene: Cloud Raymarching Demo</span>
+    </a>
+  
+
+  
+    <a class="pagination__item" href="https://davidpeicho.github.io/blog/unity-integration-swiftui/">
+      <span class="pagination__label">Next Post</span>
+      <span class="pagination__title" >Unity 2020 Integration With SwiftUI</a>
+    </a>
+  
+</div>
+
+          
+          <footer class="post__footer">
+            
+
+
+<div class="social-icons">
+  
+    
+    
+    
+      <a class="social-icons__link" title="Twitter"
+         href="https://twitter.com/DavidPeicho"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/twitter.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+      <a class="social-icons__link" title="GitHub"
+         href="https://github.com/DavidPeicho"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/github.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+      <a class="social-icons__link" title="LinkedIn"
+         href="https://www.linkedin.com/in/david-peicho/"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/linkedin.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+  
+</div>
+
+            <p>© 2026</p>
+          </footer>
+          </div>
+      </div>
+      
+    </div>
+
+
+  </main>
+
+   
+
+  
+
+  
+
+  <script
+    src="/js/index.min.59f2c87279aa950472de8ffbfb4764414ce922065abf8bddb2838eab8b4690be.js"
+    integrity="sha256-WfLIcnmqlQRy3o/7&#43;0dkQUzpIgZav4vdsoOOq4tGkL4="
+    crossorigin="anonymous"
+  >
+  </script>
+
+  
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
+
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
+    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
+
+  
+
+
+
+</body>
+
+</html>
