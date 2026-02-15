@@ -9,7 +9,7 @@
       "title": "Real-Time Rendering",
       "course": "Rendering Theory, PBR",
       "school": "EPITA",
-      "date": "2022-2023"
+      "date": "2023"
     },
     {
       "title": "Three.js",
