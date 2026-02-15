@@ -2,12 +2,12 @@
   "title": "About",
   "heading": "David Peicho",
   "keywords": [ "graphics", "rendering", "3D", "blog", "david peicho" ],
-  "description": "David Peicho is a Graphics Programer / Research Scientist currently working in the visualization team at Siemens Healthineers ",
+  "description": "David Peicho is a Senior Rendering Engineer currently working on the Wonderland Engine",
   "images": [ "/images/me.jpg" ],
   "teaching": [
     {
       "title": "Real-Time Rendering",
-      "course": "Rendering theory, PBR",
+      "course": "Rendering Theory, PBR",
       "school": "EPITA",
       "date": "2022-2023"
     },
@@ -31,7 +31,7 @@
     },
     {
       "title": "Teaching Assistant",
-      "course": "OCAML, C#, and Algorithms",
+      "course": "OCaml, C#, and Algorithms",
       "school": "EPITA",
       "date": "2016"
     }
@@ -40,35 +40,35 @@
 
 ## Hi!
 
-I am David Peicho, a Senior Rendering Engineer working on the [Wonderland Engine](https://wonderlandengine.com/), with strong interests in computer graphics and game development, using C++, Rust, and TypeScript.
+I am David Peicho, a *Senior Rendering Engineer* working on the [Wonderland Engine](https://wonderlandengine.com/), with strong interests in computer graphics and game development, using C++, Rust, and TypeScript.
 
-I spent the past decade focused on WebGL, and more recently WebGPU.
+I have spent the past decade focusing on WebGL, and more recently, WebGPU.
 
 {{< socials >}}
 
-## Open-Source Contributions
+#### Open-Source Contributions
 
 > * [Albedo](https://github.com/DavidPeicho/albedo)
 > * [Wonderland Engine community](https://github.com/wonderlandEngine)
 > * [Three.js](https://github.com/mrdoob/three.js/)
 > * [wgpu-native](https://github.com/gfx-rs/wgpu-native/)
 > * [WebGL](https://github.com/KhronosGroup/WebGL)
-> * [OSG.js](https://github.com/cedricpinson/osgjs)
 
 ## Work
 
 ### Wonderland Engine (2022-Current)
 
-Senior Rendering Engineer on the [Wonderland Engine](https://wonderlandengine.com/),
-a C++ game engine compiled to WebAssembly running in the browser.
+*Senior Rendering Engineer* on the [Wonderland Engine](https://wonderlandengine.com/),
+a C++ game engine compiled to WebAssembly and running in the browser.
 
-{{< image src="clear-coat.webp" alt="Clear-Coat implementation made for Wonderland Engine" >}}
+{{< image src="clear-coat.webp" alt="Clear-coat implementation made for Wonderland Engine" >}}
 
 Rendering contributions include:
 * Engine architecture
 * Sparse probes volume for GI (voxelization, baking)
 * PBR workflows (colorspace, shading, baking)
 * GTAO
+* Optimization (OVR GPU Profiler, GPU queries, and Chrome DevTools)
 
 <iframe
   src="https://wonderlandengine.github.io/wonderland-engine-examples/sponza.html"
@@ -78,21 +78,20 @@ Rendering contributions include:
   allowfullscreen="">
 </iframe>
 
-Being in a startup also gives the chance to work on a broad range of topics scuch as prefabs, or nodejs embedding for user plugins.
+Being in a startup also means working on a broad range of topics. My contributions span non-rendering areas
+such as prefabs, or nodejs embedding for user plugins.
 
 ### Siemens Healthineers (2018-2022)
 
-Research scientist and lead developer of a **real-time** WebGL medical data visualization library.
+*Research Scientist* and *Lead Developer* of a **real-time** WebGL medical data visualization library.
 
 {{< image src="cinematic-rendering-heart.webp" alt="Cinematic Rendering heart example from Siemens Healthineers page" >}}
 
-* Multibounce Volume Pathracing with
-    * Mesh merging
-    * Masking
-    * Volume Editing
+* Multi-bounce Volume Pathtracer
 * Multiplanar reconstruction
+* Mobile optimization
 
-While none of the work is public, the library was producing images such as the [Cinematic Rendering](https://www.siemens-healthineers.com/en-us/digital-health-solutions/cinematic-rendering) ones:
+While none of the work is public, the library produced images such as the [Cinematic Rendering](https://www.siemens-healthineers.com/en-us/digital-health-solutions/cinematic-rendering) ones:
 
 {{< image src="cinematic-rendering.webp" alt="Cinematic Rendering example from Siemens Healthineers page" >}}
 
@@ -109,4 +108,4 @@ Some of the features I shipped are live on [Sketchfab](https://sketchfab.com/):
 
 ## Education
 
-I graduated from EPITA (Ecole des Ingénieurs en Intelligence Informatique) in 2018, where I obtained a Master’s degree in Computer Science, specialized in “Advanced" Computer Science and Artificial Intelligence.
+I graduated from EPITA (Ecole des Ingénieurs en Intelligence Informatique) in 2018, where I obtained a Master’s degree in Computer Science, specializing in “Advanced" Computer Science and Artificial Intelligence.
