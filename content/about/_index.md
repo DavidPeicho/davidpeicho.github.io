@@ -68,15 +68,10 @@ Rendering contributions include:
 * Sparse probes volume for GI (voxelization, baking)
 * PBR workflows (colorspace, shading, baking)
 * GTAO
+* Meshlets BVH8 construction and culling
 * Optimization (OVR GPU Profiler, GPU queries, and Chrome DevTools)
 
-<iframe
-  src="https://wonderlandengine.github.io/wonderland-engine-examples/sponza.html"
-  allow="xr-spatial-tracking https://wonderlandengine.github.io; cross-origin-isolated https://wonderlandengine.github.io"
-  style="width: 100%; aspect-ratio: 1.77;"
-  loading="lazy"
-  allowfullscreen="">
-</iframe>
+{{< demo_carousel "wonderland-gi" "wonderland-meshlets" >}}
 
 Being in a startup also means working on a broad range of topics. My contributions span non-rendering areas
 such as prefabs, or nodejs embedding for user plugins.

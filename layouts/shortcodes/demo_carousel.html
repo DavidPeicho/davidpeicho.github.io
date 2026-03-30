@@ -1,0 +1,86 @@
+{{ $folders := slice }}
+{{ range .Params }}
+  {{ $folder := trim . " /" }}
+  {{ if ne $folder "" }}
+    {{ $folders = $folders | append $folder }}
+  {{ end }}
+{{ end }}
+
+{{ $idBase := default .Page.RelPermalink .Page.File.UniqueID }}
+{{ $id := printf "demo-carousel-%s-%d" ($idBase | anchorize) .Ordinal }}
+
+<div
+  id="{{ $id }}"
+  class="demo-carousel"
+  data-demo-carousel
+>
+  <iframe></iframe>
+  <p data-demo-title></p>
+
+  <button
+    type="button"
+    class="demo-carousel__button demo-carousel__button--overlay demo-carousel__button--prev"
+    data-demo-prev
+    aria-label="Show previous demo"
+  >
+    <
+  </button>
+  <button
+    type="button"
+    class="demo-carousel__button demo-carousel__button--overlay demo-carousel__button--next"
+    data-demo-next
+    aria-label="Show next demo"
+  >
+    >
+  </button>
+</div>
+
+{{ if not (.Page.Scratch.Get "demo-carousel-script") }}
+  <script>
+    (function () {
+      const demos = [];
+      {{ range $folder := $folders }}
+      demos.push({{ printf $folder }});
+      {{ end }}
+
+      const setup = function () {
+        const root = document.querySelector('[data-demo-carousel]');
+
+        const activate = function(index) {
+          const id = demos[index];
+
+          const frame = root.getElementsByTagName('iframe')[0];
+          frame.className = "demo-carousel__frame";
+          frame.src = `/demo/${id}/index.html`;
+          frame.loading = "eager";
+          frame.setAttribute("allowfullscreen", "");
+          frame.referrerPolicy = "strict-origin-when-cross-origin";
+
+          const title = root.querySelector('[data-demo-title]');
+          title.innerHTML = id;
+        };
+
+        let index = 0;
+        const previousButton = root.querySelector("[data-demo-prev]");
+        previousButton.onclick = function() {
+          index = (index - 1) % demos.length;
+          activate(index);
+        };
+        const nextButton = root.querySelector("[data-demo-next]");
+        nextButton.onclick = function() {
+          index = (index + 1) % demos.length;
+          activate(index);
+        };
+
+        activate(0);
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", setup, { once: true });
+      } else {
+        setup();
+      }
+    })();
+  </script>
+  {{ .Page.Scratch.Set "demo-carousel-script" true }}
+{{ end }}

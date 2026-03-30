@@ -59,4 +59,104 @@ main {
     background-size: contain;
     background-repeat: no-repeat;
   }
+
+  .demo-carousel {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1.77;
+    margin-bottom: 1.5rem;
+  }
+
+  .demo-carousel > p {
+    margin-top: 0.5rem;
+    margin-bottom: 0rem;
+    float: right;
+    color: $grey;
+  }
+
+  .demo-carousel__frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .demo-carousel__button,
+  .demo-carousel__tab {
+    appearance: none;
+    border: 1px solid $greyTableBorder;
+    background: $white;
+    color: $black;
+    border-radius: 999px;
+    cursor: pointer;
+    transition:
+      background-color 140ms ease,
+      border-color 140ms ease,
+      color 140ms ease,
+      transform 140ms ease;
+  }
+
+  .demo-carousel__button:hover,
+  .demo-carousel__tab:hover {
+    transform: translateY(-1px);
+    border-color: darken($greyTableBorder, 10%);
+  }
+
+  .demo-carousel__button {
+    padding: 0.55rem 0.95rem;
+    font: inherit;
+    font-size: 0.95rem;
+  }
+
+  .demo-carousel__button--overlay {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    transform: translateY(-50%);
+    padding: 0.7rem 0.9rem;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 24px rgba(17, 17, 17, 0.12);
+  }
+
+  .demo-carousel__button--overlay:hover {
+    transform: translateY(calc(-50% - 1px));
+  }
+
+  .demo-carousel__button--prev {
+    left: 1rem;
+  }
+
+  .demo-carousel__button--next {
+    right: 1rem;
+  }
+
+  .demo-carousel__tabs {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.55rem;
+  }
+
+  @media screen and (max-width: $medium - 1) {
+    .demo-carousel__viewport {
+      min-height: 18rem;
+      height: var(--demo-carousel-height, 65vh);
+      max-height: 28rem;
+      border-radius: 14px;
+    }
+
+    .demo-carousel__button--overlay {
+      padding: 0.55rem 0.75rem;
+    }
+
+    .demo-carousel__button--prev {
+      left: 0.75rem;
+    }
+
+    .demo-carousel__button--next {
+      right: 0.75rem;
+    }
+  }
 }
