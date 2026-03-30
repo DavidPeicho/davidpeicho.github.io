@@ -1,0 +1,8 @@
+deploy
+
+cache/**
+!cache/**/
+!cache/**/environment-mip-*.png
+!cache/**/*.bin
+
+.editor
