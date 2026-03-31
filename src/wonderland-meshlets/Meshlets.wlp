@@ -188,9 +188,6 @@
                     "spawner": {
                         "prefab": "85"
                     }
-                },
-                {
-                    "type": "fullscreen"
                 }
             ]
         }

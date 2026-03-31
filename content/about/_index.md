@@ -72,6 +72,11 @@ Rendering contributions include:
 * Optimization (OVR GPU Profiler, GPU queries, and Chrome DevTools)
 
 {{< demo_carousel "wonderland-gi" "wonderland-meshlets" >}}
+[
+  {"url": "wonderland-gi", "title": "Sparse Volume Global Illumination"},
+  {"url": "wonderland-meshlets", "title": "Meshlets"}
+]
+{{< /demo_carousel >}}
 
 Being in a startup also means working on a broad range of topics. My contributions span non-rendering areas
 such as prefabs, or nodejs embedding for user plugins.

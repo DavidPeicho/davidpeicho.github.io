@@ -60,6 +60,10 @@ main {
     background-repeat: no-repeat;
   }
 
+  .hidden {
+    display: none;
+  }
+
   .demo-carousel {
     display: inline-block;
     position: relative;
@@ -82,9 +86,9 @@ main {
     border: 0;
   }
 
-  .demo-carousel__button,
-  .demo-carousel__tab {
+  .demo-carousel__button {
     appearance: none;
+    opacity: 0.75;
     border: 1px solid $greyTableBorder;
     background: $white;
     color: $black;
@@ -97,8 +101,7 @@ main {
       transform 140ms ease;
   }
 
-  .demo-carousel__button:hover,
-  .demo-carousel__tab:hover {
+  .demo-carousel__button:hover {
     transform: translateY(-1px);
     border-color: darken($greyTableBorder, 10%);
   }
@@ -107,6 +110,7 @@ main {
     padding: 0.55rem 0.95rem;
     font: inherit;
     font-size: 0.95rem;
+    font-weight: bold;
   }
 
   .demo-carousel__button--overlay {

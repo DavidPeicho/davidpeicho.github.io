@@ -17,7 +17,6 @@ import {MouseLookComponent} from '@wonderlandengine/components';
 import {WasdControlsComponent} from '@wonderlandengine/components';
 import {ButtonToggleGI} from './button-gi.js';
 import {ButtonLight} from './button-light.js';
-import {Fullscreen} from './fullscreen.js';
 import {Trajectory} from './trajectory.js';
 /* wle:auto-imports:end */
 
@@ -94,7 +93,6 @@ engine.registerComponent(MouseLookComponent);
 engine.registerComponent(WasdControlsComponent);
 engine.registerComponent(ButtonToggleGI);
 engine.registerComponent(ButtonLight);
-engine.registerComponent(Fullscreen);
 engine.registerComponent(Trajectory);
 /* wle:auto-register:end */
 

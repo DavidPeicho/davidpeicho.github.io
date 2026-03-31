@@ -639,12 +639,7 @@
             ]
         },
         "24": {
-            "name": "Manager",
-            "components": [
-                {
-                    "type": "fullscreen"
-                }
-            ]
+            "name": "Manager"
         }
     },
     "meshes": {

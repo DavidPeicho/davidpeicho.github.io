@@ -1,11 +1,3 @@
-{{ $folders := slice }}
-{{ range .Params }}
-  {{ $folder := trim . " /" }}
-  {{ if ne $folder "" }}
-    {{ $folders = $folders | append $folder }}
-  {{ end }}
-{{ end }}
-
 {{ $idBase := default .Page.RelPermalink .Page.File.UniqueID }}
 {{ $id := printf "demo-carousel-%s-%d" ($idBase | anchorize) .Ordinal }}
 
@@ -15,8 +7,12 @@
   data-demo-carousel
 >
   <iframe></iframe>
-  <p data-demo-title></p>
 
+  <p
+    data-demo-fullscreen
+    style="position: absolute; bottom: 24px; right: 16px; font-size: 78px; margin: 0px; color: rgb(236, 240, 241); cursor: pointer;">
+    ⛶
+  </p>
   <button
     type="button"
     class="demo-carousel__button demo-carousel__button--overlay demo-carousel__button--prev"
@@ -33,37 +29,47 @@
   >
     >
   </button>
+
+  <p data-demo-title></p>
 </div>
 
 {{ if not (.Page.Scratch.Get "demo-carousel-script") }}
   <script>
     (function () {
-      const demos = [];
-      {{ range $folder := $folders }}
-      demos.push({{ printf $folder }});
-      {{ end }}
-
+      const demos = JSON.parse({{ .Inner }});
       const setup = function () {
         const root = document.querySelector('[data-demo-carousel]');
+        const frame = root.getElementsByTagName('iframe')[0];
+
+        const fullscreen = root.querySelector('[data-demo-fullscreen]');
+        if (/iPhone/.test(navigator.userAgent)) {
+            fullscreen.style.display = 'none';
+        }
+        fullscreen.addEventListener('click', () => {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().then(() => {}).catch((err) => console.error(err))
+          } else {
+            frame.requestFullscreen();
+          }
+        });
 
         const activate = function(index) {
-          const id = demos[index];
+          const demo = demos[index];
 
-          const frame = root.getElementsByTagName('iframe')[0];
           frame.className = "demo-carousel__frame";
-          frame.src = `/demo/${id}/index.html`;
+          frame.src = `/demo/${demo.url}/index.html`;
           frame.loading = "eager";
           frame.setAttribute("allowfullscreen", "");
           frame.referrerPolicy = "strict-origin-when-cross-origin";
 
           const title = root.querySelector('[data-demo-title]');
-          title.innerHTML = id;
+          title.innerHTML = demo.title;
         };
 
         let index = 0;
         const previousButton = root.querySelector("[data-demo-prev]");
         previousButton.onclick = function() {
-          index = (index - 1) % demos.length;
+          index = (index == 0 ? demos.length : index) - 1;
           activate(index);
         };
         const nextButton = root.querySelector("[data-demo-next]");

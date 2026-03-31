@@ -13,7 +13,6 @@ import {MouseLookComponent} from '@wonderlandengine/components';
 import {VrModeActiveSwitch} from '@wonderlandengine/components';
 import {WasdControlsComponent} from '@wonderlandengine/components';
 import {Fly} from './fly.js';
-import {Fullscreen} from './fullscreen.js';
 import {Spawner} from './spawner.js';
 /* wle:auto-imports:end */
 
@@ -23,7 +22,6 @@ engine.registerComponent(MouseLookComponent);
 engine.registerComponent(VrModeActiveSwitch);
 engine.registerComponent(WasdControlsComponent);
 engine.registerComponent(Fly);
-engine.registerComponent(Fullscreen);
 engine.registerComponent(Spawner);
 /* wle:auto-register:end */
 }
