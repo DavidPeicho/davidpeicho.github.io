@@ -10,6 +10,9 @@
     "dev:js": "NODE_ENV=development webpack -w",
     "build:js": "NODE_ENV=production webpack",
     "build": "npm run build:js && hugo -d ./docs",
+    "build:demo": "npm run build:demo:gi && npm run build:demo:meshlet",
+    "build:demo:meshlet": "./scripts/wonderland-build.sh ./src/wonderland-meshlets/Meshlets.wlp",
+    "build:demo:gi": "./scripts/wonderland-build.sh ./src/wonderland-gi/Sponza.wlp",
     "lint": "eslint ./src",
     "deploy": "./scripts/publish.sh"
   },

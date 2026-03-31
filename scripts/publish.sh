@@ -12,6 +12,10 @@ if git rev-parse --verify "gh-pages" 2>/dev/null; then
 fi
 git checkout -b gh-pages
 
+# Build WonderlandEngine demos
+npm run build:demo
+
+# Build frontpage graphics demo
 npm run lint && npm run build
 
 git add -f docs
