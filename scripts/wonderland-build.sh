@@ -17,4 +17,4 @@ cp -r "$directory/deploy" "$dest"
 echo "Copied deploy folder from $directory into $dest"
 
 # Cleanup deploy
-rm $dest/*.js.map
+rm -f $dest/*.js.map
