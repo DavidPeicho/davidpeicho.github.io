@@ -63,3 +63,10 @@ copyright = "© {year}"
   title = "Teaching"
   url = "/teaching"
   weight = 4
+
+[[menu.main]]
+  identifier = "albedo"
+  name = "albedo"
+  title = "Albedo"
+  url = "/albedo"
+  weight = 5

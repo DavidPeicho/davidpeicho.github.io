@@ -13,7 +13,7 @@
     "build:demo": "npm run build:demo:gi && npm run build:demo:meshlet",
     "build:demo:meshlet": "./scripts/wonderland-build.sh ./src/wonderland-meshlets/Meshlets.wlp",
     "build:demo:gi": "./scripts/wonderland-build.sh ./src/wonderland-gi/Sponza.wlp",
-    "lint": "eslint ./src",
+    "lint": "eslint ./src/frontpage",
     "deploy": "./scripts/publish.sh"
   },
   "devDependencies": {
