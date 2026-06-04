@@ -26,25 +26,29 @@
 
       {{ .Content | safeHTML }}
 
-      <h2>Teaching</h2>
-      <div class='teaching'>
-        {{ range $experience := .Params.teaching }}
-          <div class="teaching_entry">
-            <div class="teaching_entry_title">
-            {{ partial "icon.html" ( dict "page" . "icon" "student" ) }}
-            <span style='font-weight: 800;'>
-              {{ $experience.date }} | {{ $experience.school }},
-            </span>
-            <span>{{ $experience.title }}</span><br>
+      {{ with .Params.teaching }}
+        <h2>Teaching</h2>
+        <div class='teaching'>
+          {{ range $experience := . }}
+            <div class="teaching_entry">
+              <div class="teaching_entry_title">
+              {{ partial "icon.html" ( dict "page" . "icon" "student" ) }}
+              <span style='font-weight: 800;'>
+                {{ $experience.date }} | {{ $experience.school }},
+              </span>
+              <span>{{ $experience.title }}</span><br>
+              </div>
+              <div style='font-style: italic;'>{{ $experience.course }}</div>
             </div>
-            <div style='font-style: italic;'>{{ $experience.course }}</div>
-          </div>
-        {{ end }}
-      </div>
+          {{ end }}
+        </div>
+      {{ end }}
 
-      <h2>Find me on</h2>
+      {{ if ne .Params.showSocials false }}
+        <h2>Find me on</h2>
 
-      {{ partial "social-icons.html" .}}
+        {{ partial "social-icons.html" .}}
+      {{ end }}
 
     </div>
   </main>

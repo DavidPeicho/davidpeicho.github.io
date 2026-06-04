@@ -13,7 +13,8 @@ mkdir -p static/demo
 
 folder=`basename $directory`
 dest="static/demo/$folder"
-cp -r "$directory/deploy" "$dest"
+rm -rf "$dest"
+cp -rf "$directory/deploy" "$dest"
 echo "Copied deploy folder from $directory into $dest"
 
 # Cleanup deploy
