@@ -78,6 +78,13 @@ main {
     };
   }
 
+  .descriptive-title {
+    text-align: right;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: $grey;
+  }
+
   .demo-carousel {
     display: inline-block;
     position: relative;
@@ -85,6 +92,10 @@ main {
     height: 100%;
     aspect-ratio: 1.77;
     margin-bottom: 1.5rem;
+  }
+
+  .demo-carousel.large {
+    min-height: 400px;
   }
 
   .demo-carousel > p {
