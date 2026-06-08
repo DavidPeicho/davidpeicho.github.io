@@ -58,7 +58,7 @@ I have spent the past decade focusing on WebGL, and more recently, WebGPU.
 
 {{< hint info >}}
 
-[Albedo](/albedo) is a passion project that I worked on over time, continued as closed source for the time being.
+[Albedo](/albedo) is a raytracing passion project, continued as closed source for the time being.
 
 {{< /hint >}}
 

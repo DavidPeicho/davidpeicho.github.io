@@ -10,74 +10,73 @@
 
 ## Albedo
 
-Albedo is raytracing ecosystem written in rust and leveraging WebGPU native and WebGPU web:
-* Low level raytracing library
-  * Intersection, shading kernels
-  * Denoising kernels
-* Native editor to process scenes into a custom runtime format
-* Lightweight Web pathtracing runtime
-
-{{< image src="editor.webp" alt="Albedo editor Sponza scene" >}}
+Albedo is a raytracing ecosystem written in **Rust** and leveraging **wgpu native** and **WebGPU**.
 
 {{< hint note >}}
 
 Originally open sourced on [GitHub](https://github.com/davidPeicho/albedo), the project
-is continued closed-source for the time being.
+is being continued as closed source for the time being.
 
 {{< /hint >}}
 
-## Try it!
+### Runtime
 
-<iframe class="demo-carousel demo-carousel__frame" src="/demo/albedo/index.html"></iframe>
+Real-time path tracing runtime, running natively or the web. Try it:
+
+<iframe loading="lazy" class="demo-carousel demo-carousel__frame large" src="/demo/albedo/index.html"></iframe>
 
 {{< hint warning >}}
 
-Currently works on **Firefox**, **Safari**, and **Chromium** browsers.
+Works on **Firefox**, **Safari**, and **Chromium** browsers.
 
-Prefer using Firefox or Canary, since Chrome and Safari have performance issues.
+Prefer Firefox or Canary, as Chrome and Safari suffer performance issues.
 
 {{< /hint >}}
 
-## Use Cases
+Nitty-gritty details:
 
-The albedo ecosystem is flexibile enough to be used in different enviroments (web / native), as well
-as different use cases that need raytracing / pathtracing.
-
-While the demo showcase real-time pathtracing and screen-space denoising, the ecosystem can be integrated
-into a custom engine for:
-
-**Baking:**
-* GI (probes, lightmaps)
-* Ambient Occlusion
-
-**Dynamic Effects:**
-* Ambient Occlusion
-* Shadows
-
-{{< image src="ao-bake.webp" alt="Ambient Occlusiong baking" >}}
-
-## Technical Side
+* Zero-copy file format
+* Custom dynamic data-oriented scene format
+    * Not a general-purpose ECS
+* GPU-driven rendering
 
 ### Editor
 
-* Multithreaded image compression
-* Asset processing cache
-* Instantaneous packaging in a fast runtime format
+Native application used to package scenes for use with the runtime.
 
-<video autoplay loop muted playsinline src="package.mp4" style="width: 100%; display: block; margin: auto"></video>
+{{< image src="editor.webp" alt="Albedo editor Sponza scene" >}}
 
-{{< hint info >}}
+While still minimalistic, it is built around the concept that processing files and packaging
+should be threaded, fast, and painless.
 
-Packaging is instantaneous here, but the progress has a minimum display time for improved UX.
+<video autoplay loop muted playsinline src="compression.mp4"></video>
+<p class="descriptive-title">Editor image compression during asset import</p>
 
-{{< /hint >}}
-### Runtime
+<video autoplay loop muted playsinline src="package.mp4"></video>
+<p class="descriptive-title">Packaging a scene is typically in the milliseconds range</p>
 
-* Custom dynamic data-oriented scene format
-    * Not a general purpose ECS
+### Libraries
+
+While the demo showcases real-time path tracing and screen-space denoising, the ecosystem exposes:
+* Intersection, shading, and denoising kernels
+* Bindless-style textures and materials management
+
+#### Use Cases
+
+* Baking GI (probes, lightmaps)
+* Baking ambient occlusion
+
+{{< image src="ao-bake.webp" alt="Baked Ambient Occlusion" >}}
+
+* Real-time ambient occlusion
+* Real-time shadows
+* GPU Picking
+
+<video autoplay loop muted playsinline src="gpu-picking.mp4"></video>
+<p class="descriptive-title">Albedo low-level raytracing library used for GPU picking</p>
 
 ## Interested?
 
-Please reach out to me via on my socials if this project peaked your interest!
+If this project peaked your interest, please reach out to me on socials:
 
 {{< socials >}}
