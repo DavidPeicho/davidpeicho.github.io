@@ -54,6 +54,14 @@ I have spent the past decade focusing on WebGL, and more recently, WebGPU.
 > * [wgpu-native](https://github.com/gfx-rs/wgpu-native/)
 > * [WebGL](https://github.com/KhronosGroup/WebGL)
 
+{{< image src="albedo.webp" alt="Albedo project example" >}}
+
+{{< hint info >}}
+
+[Albedo](/albedo) is a passion project that I worked on over time, continued as closed source for the time being.
+
+{{< /hint >}}
+
 ## Work
 
 ### Wonderland Engine (2022-Current)
