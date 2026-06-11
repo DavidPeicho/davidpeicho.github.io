@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+
+
+
+  
+    
+  
+
+
+
+
+
+  
+
+  
+
+
+<head>
+  
+  
+    
+    
+  
+
+  
+
+  
+  
+    
+  
+
+  <title>
+    
+      Albedo | David Peicho&#39;s Blog
+    
+  </title>
+
+  <meta charset="UTF-8">
+  <meta name="language" content="en">
+  <meta
+    name="description"
+    content="Albedo: Raytracing tool suite based on Rust, WebGPU, and Wasm"
+  >
+  <meta name="keywords" content="graphics , rendering , 3D , albedo , raytracing">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Albedo | David Peicho&#39;s Blog" />
+  <meta
+    name="twitter:description"
+    content="Albedo: Raytracing tool suite based on Rust, WebGPU, and Wasm"
+  />
+  <meta name="twitter:site" content="@https://twitter.com/DavidPeicho" />
+  <meta name="twitter:creator" content="@https://twitter.com/DavidPeicho" />
+
+  
+
+  
+
+  <meta property="og:title" content="Albedo | David Peicho&#39;s Blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://davidpeicho.github.io/albedo/" />
+  <meta property="og:description" content="Albedo: Raytracing tool suite based on Rust, WebGPU, and Wasm" />
+  <meta property="og:site_name" content="David Peicho&#39;s Blog" />
+
+  
+
+  
+    
+    
+    <meta name="twitter:image" content="https://davidpeicho.github.io/images/me.jpg" />
+    <meta property="og:image" content="https://davidpeicho.github.io/images/me.jpg" />
+    <meta property="og:image:secure_url" content="https://davidpeicho.github.io/images/me.jpg" />
+  
+
+  
+
+  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+
+  
+
+  
+  
+
+  
+
+  
+    
+    <link rel="stylesheet" href="/css/about.min.d9da5653917706a2cc0ef9699d0d7c179116a219dbf031ff037b0f7d7fc23bce.css" integrity="sha256-2dpWU5F3BqLMDvlpnQ18F5EWohnb8DH/A3sPfX/CO84="/>
+  
+
+  
+  <link rel="alternate" type="application/rss+xml+xml" href="https://davidpeicho.github.io/albedo/index.xml" title="David Peicho's Blog" /> 
+  
+   
+  
+
+<script type="application/ld+json">
+  
+    { 
+      "@context": "http://schema.org", 
+      "@type": "WebSite", 
+      "url": "https:\/\/davidpeicho.github.io\/albedo\/",
+      "name": "Albedo",
+      "author": {
+        "@type": "Person",
+        "name": ""
+      },
+      "description": "Albedo: Raytracing tool suite based on Rust, WebGPU, and Wasm"
+    }
+  
+  </script>
+
+
+</head>
+
+
+<body>
+  <div class="burger__container">
+  <div class="burger" aria-controls="navigation" aria-label="Menu">
+    <div class="burger__meat burger__meat--1"></div>
+    <div class="burger__meat burger__meat--2"></div>
+    <div class="burger__meat burger__meat--3"></div>
+  </div>
+</div>
+
+  <nav class="nav" role="navigation">
+  <ul class="nav__list">
+    
+    
+      <li>
+        <a  href="/">home</a>
+      </li>
+    
+      <li>
+        <a  href="/about">about</a>
+      </li>
+    
+      <li>
+        <a  href="/blog">blog</a>
+      </li>
+    
+      <li>
+        <a  href="/teaching">teaching</a>
+      </li>
+    
+      <li>
+        <a  class="active"
+         href="/albedo">albedo</a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  <main>
+    <div class="content">
+
+      <h2 id="albedo">Albedo</h2>
+<p>Albedo is a work-in-progress raytracing ecosystem written in <strong>Rust</strong> and leveraging <strong>wgpu native</strong> and <strong>WebGPU</strong>.</p>
+<ul>
+<li>Runs everywhere: Chrome/Firefox/Safari and native</li>
+<li>No <strong>RT cores</strong> / vendor-specific raytracing hardware required</li>
+</ul>
+<blockquote class="hint note">
+  Originally open sourced on <a href="https://github.com/davidPeicho/albedo">GitHub</a>, the project
+is being continued as closed source for the time being.
+</blockquote>
+
+<h3 id="runtime">Runtime</h3>
+<p>Real-time path tracing runtime, running natively or the web. Try it:</p>
+<iframe loading="lazy" class="demo-carousel demo-carousel__frame large" src="/demo/albedo/index.html"></iframe>
+<blockquote class="hint warning">
+  <p>Works on <strong>Firefox</strong>, <strong>Safari</strong>, and <strong>Chromium</strong> browsers.</p>
+<p>Prefer Firefox or Canary, as Chrome and Safari suffer performance issues.</p>
+
+</blockquote>
+
+<p>Nitty-gritty details:</p>
+<ul>
+<li>Zero-copy file format</li>
+<li>Custom dynamic data-oriented scene format
+<ul>
+<li>Not a general-purpose ECS</li>
+</ul>
+</li>
+<li>GPU-driven rendering</li>
+</ul>
+<h3 id="editor">Editor</h3>
+<p>Native application used to package scenes for use with the runtime.</p>
+
+
+
+
+<p>
+  <img
+    src="editor.webp"
+    alt="Albedo editor Sponza scene"
+    class="centered"
+    style="max-width: 100%; max-height: inherit; width: auto; height: auto"
+  >
+  </img>
+</p>
+
+<p>While still minimalistic, it is built around the concept that processing files and packaging
+should be threaded, fast, and painless.</p>
+<p><video autoplay loop muted playsinline src="compression.mp4"></video></p>
+<p class="descriptive-title">Editor image compression during asset import</p>
+<p><video autoplay loop muted playsinline src="package.mp4"></video></p>
+<p class="descriptive-title">Packaging a scene is typically in the milliseconds range</p>
+<h3 id="libraries">Libraries</h3>
+<p>While the demo showcases real-time path tracing and screen-space denoising, the ecosystem exposes:</p>
+<ul>
+<li>Intersection, shading, and denoising kernels</li>
+<li>Bindless-style textures and materials management</li>
+</ul>
+<h4 id="use-cases">Use Cases</h4>
+<ul>
+<li>Baking GI (probes, lightmaps)</li>
+<li>Baking ambient occlusion</li>
+</ul>
+
+
+
+
+<p>
+  <img
+    src="ao-bake.webp"
+    alt="Baked Ambient Occlusion"
+    class="centered"
+    style="max-width: 100%; max-height: inherit; width: auto; height: auto"
+  >
+  </img>
+</p>
+
+<ul>
+<li>Real-time ambient occlusion</li>
+<li>Real-time shadows</li>
+<li>GPU Picking</li>
+</ul>
+<p><video autoplay loop muted playsinline src="gpu-picking.mp4"></video></p>
+<p class="descriptive-title">Albedo low-level raytracing library used for GPU picking</p>
+<h2 id="interested">Interested?</h2>
+<p>If this project peaked your interest, please reach out to me on socials:</p>
+
+
+
+<div class="social-icons">
+  
+    
+    
+    
+      <a class="social-icons__link" title="Twitter"
+         href="https://twitter.com/DavidPeicho"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/twitter.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+      <a class="social-icons__link" title="GitHub"
+         href="https://github.com/DavidPeicho"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/github.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+      <a class="social-icons__link" title="LinkedIn"
+         href="https://www.linkedin.com/in/david-peicho/"
+         target="_blank" rel="noopener">
+        <div class="social-icons__icon" style="background-image: url('/images/social/linkedin.svg')"></div>
+      </a>
+    
+  
+    
+    
+    
+  
+</div>
+
+
+
+
+      
+
+      
+
+    </div>
+  </main>
+
+   
+
+  
+  <script
+    src="/js/index.min.59f2c87279aa950472de8ffbfb4764414ce922065abf8bddb2838eab8b4690be.js"
+    integrity="sha256-WfLIcnmqlQRy3o/7&#43;0dkQUzpIgZav4vdsoOOq4tGkL4="
+    crossorigin="anonymous"
+  >
+  </script>
+   
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Graphics on David Peicho&#39;s Blog</title>
+    <link>https://davidpeicho.github.io/tags/graphics/</link>
+    <description>Recent content in Graphics on David Peicho&#39;s Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <copyright>© {year}</copyright>
+    <lastBuildDate>Mon, 19 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://davidpeicho.github.io/tags/graphics/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>(2/2) Behind The Scene: Cloud Raymarching Demo</title>
+      <link>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/</link>
+      <pubDate>Mon, 19 Oct 2020 00:00:00 +0000</pubDate>
+      <guid>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part2/</guid>
+      <description>&lt;p&gt;Second part of &lt;a href=&#34;https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/&#34;&gt;Behind The Scene: Cloud Raymarching Demo&lt;/a&gt;,&#xA;in which we will go through how to improve the lighting and how to create the burning effect.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>(1/2) Behind The Scene: Cloud Raymarching Demo</title>
+      <link>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/</link>
+      <pubDate>Thu, 24 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>https://davidpeicho.github.io/blog/cloud-raymarching-walkthrough-part1/</guid>
+      <description>&lt;p&gt;This blog post will walk you through how I created the volume rendering visualization&#xA;available on the &lt;a href=&#34;https://davidpeicho.github.io/&#34;&gt;Home page&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

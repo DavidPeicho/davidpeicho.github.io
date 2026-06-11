@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Albedo</title>
+    <script type="module" crossorigin src="./index-BpUEp6BD.js"></script>
+    <link rel="stylesheet" crossorigin href="./index-ClVRHjrS.css">
+  </head>
+  <body>
+    <div id="app">
+      <div class="demo">
+        <canvas></canvas>
+        <div id="start-overlay" class="start-overlay hidden">
+          <button class="runtime-control-button start-button" type="button" aria-label="Start runtime">
+            <svg class="start-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5v14l11-7z"></path>
+            </svg>
+          </button>
+        </div>
+        <button
+          id="pause-button"
+          class="runtime-control-button pause-button hidden" type="button" aria-label="Pause runtime">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+        <div id="progress" class="loading-overlay" hidden>
+          <div class="loading-panel">
+            <div class="loading-header">
+              <span>Loading</span>
+              <span class="loading-percent">0%</span>
+            </div>
+            <div class="loading-track">
+              <div class="loading-fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

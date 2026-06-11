@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog on David Peicho&#39;s Blog</title>
+    <link>https://davidpeicho.github.io/tags/blog/</link>
+    <description>Recent content in Blog on David Peicho&#39;s Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <copyright>© {year}</copyright>
+    <lastBuildDate>Sun, 22 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://davidpeicho.github.io/tags/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Welcome!</title>
+      <link>https://davidpeicho.github.io/blog/welcome/</link>
+      <pubDate>Sun, 22 Sep 2019 00:00:00 +0000</pubDate>
+      <guid>https://davidpeicho.github.io/blog/welcome/</guid>
+      <description>&lt;p&gt;This is my first blog ever. It&amp;rsquo;s going to be an extra short blog post introducing me, this website, and why I decided to create it.&lt;/p&gt;&#xA;&lt;p&gt;Let&amp;rsquo;s go!&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
