@@ -10,7 +10,7 @@
 
 ## Albedo
 
-Albedo is a raytracing ecosystem written in **Rust** and leveraging **wgpu native** and **WebGPU**.
+Albedo is a work-in-progress raytracing ecosystem written in **Rust** and leveraging **wgpu native** and **WebGPU**.
 
 {{< hint note >}}
 
