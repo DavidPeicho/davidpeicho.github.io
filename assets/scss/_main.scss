@@ -39,6 +39,12 @@ main {
     }
   }
 
+  video {
+    width: 100%;
+    display: block;
+    margin: auto
+  }
+
   @media screen and (min-width: $medium) {
     padding-left: calc(1.5rem + #{$navWidth});
   }
@@ -51,6 +57,11 @@ main {
     width: 100%;
     max-width: 34rem;
     margin: 0 auto;
+  }
+
+  video {
+    width: 100%;
+    margin: 0;
   }
 
   .center {
@@ -78,6 +89,13 @@ main {
     };
   }
 
+  .descriptive-title {
+    text-align: right;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: $grey;
+  }
+
   .demo-carousel {
     display: inline-block;
     position: relative;
@@ -96,6 +114,7 @@ main {
     margin-bottom: 0rem;
     float: right;
     color: $grey;
+    text-align: right;
   }
 
   .demo-carousel__frame {

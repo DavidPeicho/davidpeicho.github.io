@@ -70,6 +70,8 @@ I have spent the past decade focusing on WebGL, and more recently, WebGPU.
 *Senior Rendering Engineer* on the [Wonderland Engine](https://wonderlandengine.com/),
 a C++ game engine compiled to WebAssembly and running in the browser.
 
+The engine was built and optimized for VR and mobile. It was architectured with **tiled GPUs** in mind.
+
 {{< image src="clear-coat.webp" alt="Clear-coat implementation made for Wonderland Engine" >}}
 
 Rendering contributions include:

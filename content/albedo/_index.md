@@ -12,6 +12,9 @@
 
 Albedo is a work-in-progress raytracing ecosystem written in **Rust** and leveraging **wgpu native** and **WebGPU**.
 
+* Runs everywhere: Chrome/Firefox/Safari and native
+* No **RT cores** / vendor-specific raytracing hardware required
+
 {{< hint note >}}
 
 Originally open sourced on [GitHub](https://github.com/davidPeicho/albedo), the project
